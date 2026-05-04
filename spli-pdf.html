@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Split PDF</title>
+</head>
+<body>
+
+  <h1>Split PDF Tool</h1>
+
+  <input type="file" id="pdfInput" accept="application/pdf">
+  <br><br>
+
+  <button onclick="splitPDF()">Split PDF</button>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <script>
+    async function splitPDF() {
+      const file = document.getElementById('pdfInput').files[0];
+
+      if (!file) {
+        alert("Please select a PDF file");
+        return;
+      }
+
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFLib.PDFDocument.load(bytes);
+
+      const totalPages = pdf.getPageCount();
+
+      for (let i = 0; i < totalPages; i++) {
+        const newPdf = await PDFLib.PDFDocument.create();
+        const [page] = await newPdf.copyPages(pdf, [i]);
+        newPdf.addPage(page);
+
+        const pdfBytes = await newPdf.save();
+
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const link = document.createElement("a");
+
+        link.href = URL.createObjectURL(blob);
+        link.download = `page-${i + 1}.pdf`;
+        link.click();
+      }
+    }
+  </script>
+
+</body>
+</html>

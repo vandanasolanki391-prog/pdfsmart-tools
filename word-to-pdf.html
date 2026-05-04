@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Word to PDF</title>
+</head>
+<body>
+
+  <h1>Word to PDF Tool</h1>
+
+  <textarea id="wordText" rows="15" cols="60" placeholder="Paste your Word text here..."></textarea>
+  <br><br>
+
+  <button onclick="convertWordToPDF()">Convert to PDF</button>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    function convertWordToPDF() {
+      const text = document.getElementById("wordText").value;
+
+      if (text.trim() === "") {
+        alert("Please paste your Word text first");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+
+      const lines = pdf.splitTextToSize(text, 180);
+      pdf.text(lines, 10, 20);
+
+      pdf.save("word-to-pdf.pdf");
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Merge PDF</title>
+</head>
+<body>
+
+  <h1>Merge PDF Tool</h1>
+
+  <input type="file" id="pdfInput" accept="application/pdf" multiple>
+  <br><br>
+
+  <button onclick="mergePDF()">Merge PDF</button>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <script>
+    async function mergePDF() {
+      const files = document.getElementById('pdfInput').files;
+
+      if (files.length < 2) {
+        alert("Please select at least 2 PDF files");
+        return;
+      }
+
+      const mergedPdf = await PDFLib.PDFDocument.create();
+
+      for (const file of files) {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(bytes);
+        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+
+        pages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      const blob = new Blob([mergedBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+
+      link.href = URL.createObjectURL(blob);
+      link.download = "merged.pdf";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>

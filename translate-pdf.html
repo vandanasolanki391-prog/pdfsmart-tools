@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Translate PDF</title>
+</head>
+<body>
+
+  <h1>Translate Tool</h1>
+
+  <textarea id="inputText" rows="10" cols="50" placeholder="Enter text here..."></textarea>
+  <br><br>
+
+  <button onclick="translateText()">Translate</button>
+
+  <h3>Output:</h3>
+  <p id="outputText"></p>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script>
+    function translateText() {
+      const text = document.getElementById("inputText").value;
+
+      if (!text.trim()) {
+        alert("Enter text first");
+        return;
+      }
+
+      // Simple demo translation (replace with API later)
+      document.getElementById("outputText").innerText = "Translated: " + text;
+    }
+  </script>
+
+</body>
+</html>

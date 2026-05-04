@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JPG to PDF</title>
+</head>
+<body>
+
+  <h1>JPG to PDF Tool</h1>
+
+  <input type="file" id="imageInput" accept="image/*" multiple>
+  <br><br>
+
+  <button onclick="convertToPDF()">Convert to PDF</button>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script>
+    async function convertToPDF() {
+      const files = document.getElementById('imageInput').files;
+
+      if (files.length === 0) {
+        alert("Please select JPG images first");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+
+      for (let i = 0; i < files.length; i++) {
+        const imgData = await readFileAsDataURL(files[i]);
+
+        if (i > 0) pdf.addPage();
+
+        pdf.addImage(imgData, 'JPEG', 10, 10, 190, 0);
+      }
+
+      pdf.save("converted.pdf");
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
+  </script>
+
+</body>
+</html>

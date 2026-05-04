@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Compress PDF</title>
+</head>
+<body>
+
+  <h1>Compress PDF Tool</h1>
+
+  <input type="file" id="pdfInput" accept="application/pdf">
+  <br><br>
+
+  <button onclick="compressPDF()">Compress PDF</button>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <script>
+    async function compressPDF() {
+      const file = document.getElementById('pdfInput').files[0];
+
+      if (!file) {
+        alert("Please select a PDF file");
+        return;
+      }
+
+      const bytes = await file.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+
+      const compressedBytes = await pdfDoc.save({
+        useObjectStreams: true
+      });
+
+      const blob = new Blob([compressedBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+
+      link.href = URL.createObjectURL(blob);
+      link.download = "compressed.pdf";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>

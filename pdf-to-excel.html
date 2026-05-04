@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF to Excel</title>
+</head>
+<body>
+
+  <h1>PDF to Excel Tool</h1>
+
+  <input type="file" id="pdfInput" accept="application/pdf">
+  <br><br>
+
+  <button onclick="convertPDFtoExcel()">Convert to Excel Text</button>
+
+  <pre id="output"></pre>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+  <script>
+    async function convertPDFtoExcel() {
+      const file = document.getElementById("pdfInput").files[0];
+
+      if (!file) {
+        alert("Please select a PDF file");
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = async function () {
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+
+        let fullText = "";
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items.map(item => item.str).join("\t");
+          fullText += pageText + "\n";
+        }
+
+        const blob = new Blob([fullText], { type: "application/vnd.ms-excel" });
+        const link = document.createElement("a");
+
+        link.href = URL.createObjectURL(blob);
+        link.download = "pdf-to-excel.xls";
+        link.click();
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+
+</body>
+</html>

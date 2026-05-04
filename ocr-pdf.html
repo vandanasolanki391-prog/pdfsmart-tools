@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OCR PDF</title>
+</head>
+<body>
+
+  <h1>OCR PDF Tool</h1>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <br><br>
+
+  <button onclick="runOCR()">Extract Text</button>
+
+  <pre id="output"></pre>
+
+  <br><br>
+
+  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+  <script>
+    async function runOCR() {
+      const file = document.getElementById("imageInput").files[0];
+
+      if (!file) {
+        alert("Please upload an image");
+        return;
+      }
+
+      document.getElementById("output").innerText = "Processing...";
+
+      const { data: { text } } = await Tesseract.recognize(file, 'eng');
+
+      document.getElementById("output").innerText = text;
+    }
+  </script>
+
+</body>
+</html>
