@@ -73,3 +73,18 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+}
+
+.navbar a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: bold;
+}
