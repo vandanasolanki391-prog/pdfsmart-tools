@@ -130,3 +130,9 @@ button {
 .navbar a:hover {
   color: #93c5fd;
 }
+button:hover {
+  transform: translateY(-6px) scale(1.03);
+  color: white;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.8);
+}
