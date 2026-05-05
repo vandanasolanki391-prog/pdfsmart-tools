@@ -104,3 +104,9 @@ button {
   color: #1e293b;
   font-weight: bold;
 }
+.logo {
+  font-size: 50px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px #60a5fa, 0 0 20px #3b82f6;
+}
