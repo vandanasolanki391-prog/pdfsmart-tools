@@ -1,0 +1,228 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+/* TOPBAR */
+
+.topbar{
+    width:100%;
+    height:70px;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+    color:white;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.home-btn{
+    background:white;
+    color:#2563eb;
+    text-decoration:none;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.home-btn:hover{
+    background:#e5e7eb;
+}
+
+/* MAIN LAYOUT */
+
+.editor-layout{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:240px;
+    background:white;
+    padding:25px;
+    border-right:1px solid #ddd;
+    overflow-y:auto;
+}
+
+.sidebar h3{
+    margin-bottom:20px;
+    color:#2563eb;
+}
+
+.sidebar button{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border:none;
+    border-radius:12px;
+    background:#eef2ff;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.sidebar button:hover{
+    background:#2563eb;
+    color:white;
+    transform:translateX(3px);
+}
+
+/* MAIN AREA */
+
+.main-area{
+    flex:1;
+    padding:30px;
+}
+
+/* UPLOAD BOX */
+
+.upload-box{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom:25px;
+}
+
+.upload-box h1{
+    margin-bottom:10px;
+    color:#111827;
+}
+
+.upload-box p{
+    margin-bottom:25px;
+    color:#666;
+}
+
+.upload-label{
+    display:inline-block;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    color:white;
+    padding:14px 28px;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.upload-label:hover{
+    transform:scale(1.05);
+}
+
+#pdfUpload{
+    display:none;
+}
+
+/* PREVIEW BOX */
+
+.preview-box{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+
+.preview-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.preview-header span{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.download-btn{
+    background:#10b981;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.download-btn:hover{
+    background:#059669;
+}
+
+/* PDF PREVIEW */
+
+.pdf-preview{
+    height:600px;
+    border:2px dashed #cbd5e1;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f8fafc;
+    color:#666;
+    font-size:18px;
+}
+
+/* RIGHT PANEL */
+
+.properties{
+    width:260px;
+    background:white;
+    padding:25px;
+    border-left:1px solid #ddd;
+}
+
+.properties h3{
+    margin-bottom:25px;
+    color:#7c3aed;
+}
+
+.properties label{
+    display:block;
+    margin-bottom:8px;
+    margin-top:20px;
+    font-weight:600;
+}
+
+.properties input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+    .editor-layout{
+        flex-direction:column;
+    }
+
+    .sidebar,
+    .properties{
+        width:100%;
+        border:none;
+    }
+
+    .pdf-preview{
+        height:400px;
+    }
+}
