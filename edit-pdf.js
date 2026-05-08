@@ -12,6 +12,7 @@ let offsetX = 0;
 let offsetY = 0;
 
 const previewBox = document.querySelector(".pdf-preview");
+const imageUpload = document.getElementById("imageUpload");
 
 previewBox.style.position = "relative";
 
