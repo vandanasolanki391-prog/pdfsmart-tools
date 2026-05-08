@@ -1,88 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edit PDF - PDFSmart Tools</title>
-  <link rel="stylesheet" href="edit-pdf.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit PDF - PDFSmart Tools</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <link rel="stylesheet" href="edit-pdf.css" />
 
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
+
 <body>
 
-  <header class="topbar">
+<header class="topbar">
     <div class="logo">📄 PDFSmart Tools</div>
     <a href="index.html" class="home-btn">← Back to Home</a>
-  </header>
+</header>
 
-  <section class="editor-layout">
+<section class="editor-layout">
 
     <aside class="sidebar">
-      <h3>PDF Tools</h3>
+        <h3>PDF Tools</h3>
 
-      <button>Add Text</button>
-      <button>Draw</button>
-      <button>Highlight</button>
-      <button>Add Image</button>
-      <button>Signature</button>
-      <button>Watermark</button>
-      <button>Rotate Page</button>
-      <button>Delete Page</button>
-      <button>Page Number</button>
-      <button>OCR Scan</button>
-      <button>Translate PDF</button>
-      <button id="eraseBtn">Erase / Delete Selected</button>
+        <button>Add Text</button>
+        <button>Draw</button>
+        <button>Highlight</button>
+        <button>Add Image</button>
+        <button>Signature</button>
+        <button>Watermark</button>
+        <button>Rotate Page</button>
+        <button>Delete Page</button>
+        <button>Page Number</button>
+        <button>OCR Scan</button>
+        <button>Translate PDF</button>
+        <button id="eraseBtn">Erase / Delete Selected</button>
     </aside>
 
     <main class="main-area">
-      <div class="upload-box">
-        <h1>Edit PDF Tool</h1>
-        <p>Upload your PDF and start editing with smart tools.</p>
 
-        <label for="pdfUpload" class="upload-label">
-          📤 Choose PDF File
-        </label>
-        <input type="file" id="pdfUpload" accept="application/pdf" />
-      </div>
+        <div class="upload-box">
+            <h1>Edit PDF Tool</h1>
+            <p>Upload your PDF and start editing with smart tools.</p>
 
-      <div class="preview-box">
-   <div class="preview-header">
-        <span>PDF Preview</span>
+            <label for="pdfUpload" class="upload-label">
+                📤 Choose PDF File
+            </label>
 
-         <button class="download-btn" id="downloadBtn">
-           Download PDF
-    </button>
-</div>
-</button>
-    </div>
+            <input type="file" id="pdfUpload" accept="application/pdf" />
+        </div>
 
-    <div class="pdf-preview">
-        <canvas id="pdfCanvas"></canvas>
-    </div>
-</div>
+        <div class="preview-box">
+            <div class="preview-header">
+                <span>PDF Preview</span>
+
+                <button class="download-btn" id="downloadBtn">
+                    Download PDF
+                </button>
+            </div>
+
+            <div class="pdf-preview">
+                <canvas id="pdfCanvas"></canvas>
+            </div>
+        </div>
+
     </main>
 
     <aside class="properties">
-      <h3>Properties</h3>
+        <h3>Properties</h3>
 
-      <label>Font Size</label>
-      <input type="number" value="16" />
+        <label>Font Size</label>
+        <input type="number" value="16" />
 
-      <label>Text Color</label>
-      <input type="color" value="#000000" />
+        <label>Text Color</label>
+        <input type="color" value="#000000" />
 
-      <label>Brush Size</label>
-      <input type="range" min="1" max="20" value="3" />
+        <label>Draw Color</label>
+        <input type="color" id="drawColor" value="#ff0000" />
 
-      <label>Opacity</label>
-      <input type="range" min="10" max="100" value="100" />
+        <label>Brush Size</label>
+        <input type="range" id="brushSize" min="1" max="20" value="3" />
+
+        <button id="undoBtn" class="download-btn" style="margin-top:20px; width:100%;">
+            Undo
+        </button>
+
+        <label>Opacity</label>
+        <input type="range" min="10" max="100" value="100" />
     </aside>
 
-  </section>
-  <input type="file" id="imageUpload" accept="image/*" hidden>
-  <script src="edit-pdf.js"></script>
+</section>
+
+<input type="file" id="imageUpload" accept="image/*" hidden>
+
+<script src="edit-pdf.js"></script>
+
 </body>
 </html>
