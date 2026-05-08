@@ -1,6 +1,12 @@
 const pdfUpload = document.getElementById("pdfUpload");
+const imageUpload = document.getElementById("imageUpload");
+
 const canvas = document.getElementById("pdfCanvas");
 const ctx = canvas.getContext("2d");
+
+const previewBox = document.querySelector(".pdf-preview");
+
+previewBox.style.position = "relative";
 
 let pdfDoc = null;
 let currentPage = 1;
@@ -10,11 +16,6 @@ let dragElement = null;
 
 let offsetX = 0;
 let offsetY = 0;
-
-const previewBox = document.querySelector(".pdf-preview");
-const imageUpload = document.getElementById("imageUpload");
-
-previewBox.style.position = "relative";
 
 /* PDF LOAD */
 
@@ -70,22 +71,18 @@ function addEditableText(){
     textBox.className = "editable-text";
 
     textBox.style.position = "absolute";
-
     textBox.style.left = "120px";
-
     textBox.style.top = "120px";
 
     textBox.style.fontSize = "20px";
-
     textBox.style.fontFamily = "Arial";
-
     textBox.style.color = "#000";
 
     textBox.style.padding = "5px 8px";
 
     textBox.style.border = "1px dashed #2563eb";
 
-    textBox.style.background = "rgba(255,255,255,0.5)";
+    textBox.style.background = "rgba(255,255,255,0.6)";
 
     textBox.style.cursor = "move";
 
@@ -119,6 +116,51 @@ function addEditableText(){
 
     });
 
+}
+
+/* ADD IMAGE */
+
+function addImageToPDF(file){
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const img = document.createElement("img");
+
+        img.src = e.target.result;
+
+        img.className = "draggable-image";
+
+        img.style.left = "150px";
+
+        img.style.top = "150px";
+
+        previewBox.appendChild(img);
+
+        selectedElement = img;
+
+        img.addEventListener("click", function(e){
+
+            e.stopPropagation();
+
+            selectedElement = img;
+
+        });
+
+        img.addEventListener("mousedown", function(e){
+
+            dragElement = img;
+
+            offsetX = e.clientX - img.offsetLeft;
+
+            offsetY = e.clientY - img.offsetTop;
+
+        });
+
+    };
+
+    reader.readAsDataURL(file);
 }
 
 /* DRAG MOVE */
@@ -158,11 +200,25 @@ function deleteSelected(){
     }
     else{
 
-        alert("Please select text first.");
+        alert("Please select element first.");
 
     }
 
 }
+
+/* IMAGE INPUT */
+
+imageUpload.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(file){
+
+        addImageToPDF(file);
+
+    }
+
+});
 
 /* BUTTON ACTIONS */
 
@@ -175,6 +231,12 @@ buttons.forEach(btn => {
         if(btn.innerText === "Add Text"){
 
             addEditableText();
+
+        }
+
+        else if(btn.innerText === "Add Image"){
+
+            imageUpload.click();
 
         }
 
