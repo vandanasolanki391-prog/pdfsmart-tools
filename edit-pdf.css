@@ -234,3 +234,14 @@ body{
 .editable-text:hover{
     border:1px dashed #7c3aed;
 }
+.draggable-image{
+    position:absolute;
+    width:150px;
+    cursor:move;
+    z-index:1000;
+    border:2px dashed transparent;
+}
+
+.draggable-image:hover{
+    border:2px dashed #2563eb;
+}
