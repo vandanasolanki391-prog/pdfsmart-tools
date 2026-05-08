@@ -439,9 +439,35 @@ undoBtn.addEventListener("click", function(){
     }
 });
 
-downloadBtn.addEventListener("click", function(){
+downloadBtn.addEventListener("click", async function(){
+
+    const imageData = canvas.toDataURL("image/png");
+
+    const pdf = await PDFLib.PDFDocument.create();
+
+    const page = pdf.addPage([canvas.width, canvas.height]);
+
+    const pngImage = await pdf.embedPng(imageData);
+
+    page.drawImage(pngImage, {
+        x: 0,
+        y: 0,
+        width: canvas.width,
+        height: canvas.height
+    });
+
+    const pdfBytes = await pdf.save();
+
+    const blob = new Blob([pdfBytes], {
+        type: "application/pdf"
+    });
+
     const link = document.createElement("a");
-    link.download = "edited-pdf.png";
-    link.href = canvas.toDataURL("image/png");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "edited-pdf.pdf";
+
     link.click();
+
 });
