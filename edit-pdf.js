@@ -254,5 +254,19 @@ buttons.forEach(btn => {
         }
 
     });
+    
+
+});
+/* DOWNLOAD PDF AS IMAGE */
+
+downloadBtn.addEventListener("click", function(){
+
+    const link = document.createElement("a");
+
+    link.download = "edited-pdf.png";
+
+    link.href = canvas.toDataURL("image/png");
+
+    link.click();
 
 });
