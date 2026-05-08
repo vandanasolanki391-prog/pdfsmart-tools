@@ -200,26 +200,151 @@ function deleteSelected(){
 }
 
 function addWatermark(){
+
     saveUndo();
 
+    const text =
+        document.getElementById("watermarkText").value;
+
+    const color =
+        document.getElementById("watermarkColor").value;
+
+    const size =
+        document.getElementById("watermarkSize").value;
+
+    const opacity =
+        document.getElementById("watermarkOpacity").value / 100;
+
+    const rotation =
+        document.getElementById("watermarkRotation").value;
+
     ctx.save();
-    ctx.globalAlpha = 0.18;
-    ctx.font = "60px Arial";
-    ctx.fillStyle = "gray";
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(-Math.PI / 6);
+
+    ctx.globalAlpha = opacity;
+
+    ctx.font = size + "px Arial";
+
+    ctx.fillStyle = color;
+
+    ctx.translate(
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    ctx.rotate(rotation * Math.PI / 180);
+
     ctx.textAlign = "center";
-    ctx.fillText("PDFSmart Tools", 0, 0);
+
+    ctx.fillText(text, 0, 0);
+
     ctx.restore();
 }
 
 function addPageNumber(){
+
     saveUndo();
 
-    ctx.font = "18px Arial";
-    ctx.fillStyle = "black";
+    const position =
+        document.getElementById("pageNumberPosition").value;
+
+    const format =
+        document.getElementById("pageNumberFormat").value;
+
+    const startNumber =
+        parseInt(
+            document.getElementById("pageStartNumber").value
+        );
+
+    const color =
+        document.getElementById("pageNumberColor").value;
+
+    const size =
+        document.getElementById("pageNumberSize").value;
+
+    let text = "";
+
+    const current =
+        startNumber + currentPage - 1;
+
+    if(format === "number"){
+
+        text = current;
+
+    }
+
+    else if(format === "page-number"){
+
+        text = "Page " + current;
+
+    }
+
+    else if(format === "number-of-total"){
+
+        text =
+            current + " of " + pdfDoc.numPages;
+
+    }
+
+    else{
+
+        text =
+            "Page " +
+            current +
+            " of " +
+            pdfDoc.numPages;
+
+    }
+
+    ctx.save();
+
+    ctx.font = size + "px Arial";
+
+    ctx.fillStyle = color;
+
+    let x = canvas.width / 2;
+
+    let y = canvas.height - 20;
+
+    if(position === "bottom-right"){
+
+        x = canvas.width - 80;
+        y = canvas.height - 20;
+
+    }
+
+    else if(position === "bottom-left"){
+
+        x = 80;
+        y = canvas.height - 20;
+
+    }
+
+    else if(position === "top-center"){
+
+        x = canvas.width / 2;
+        y = 30;
+
+    }
+
+    else if(position === "top-right"){
+
+        x = canvas.width - 80;
+        y = 30;
+
+    }
+
+    else if(position === "top-left"){
+
+        x = 80;
+        y = 30;
+
+    }
+
     ctx.textAlign = "center";
-    ctx.fillText("Page " + currentPage, canvas.width / 2, canvas.height - 25);
+
+    ctx.fillText(text, x, y);
+
+    ctx.restore();
 }
 
 function deletePage(){
