@@ -68,27 +68,74 @@
     </main>
 
     <aside class="properties">
-        <h3>Properties</h3>
+    <h3>Properties</h3>
 
-        <label>Font Size</label>
-        <input type="number" value="16" />
+    <label>Font Size</label>
+    <input type="number" id="textFontSize" value="20" />
 
-        <label>Text Color</label>
-        <input type="color" value="#000000" />
+    <label>Text Color</label>
+    <input type="color" id="textColor" value="#000000" />
 
-        <label>Draw Color</label>
-        <input type="color" id="drawColor" value="#ff0000" />
+    <label>Draw Color</label>
+    <input type="color" id="drawColor" value="#ff0000" />
 
-        <label>Brush Size</label>
-        <input type="range" id="brushSize" min="1" max="20" value="3" />
+    <label>Brush Size</label>
+    <input type="range" id="brushSize" min="1" max="20" value="3" />
 
-        <button id="undoBtn" class="download-btn" style="margin-top:20px; width:100%;">
-            Undo
-        </button>
+    <button id="undoBtn" class="download-btn" style="margin-top:20px; width:100%;">
+        Undo
+    </button>
 
-        <label>Opacity</label>
-        <input type="range" min="10" max="100" value="100" />
-    </aside>
+    <hr style="margin:25px 0;">
+
+    <h3>Page Number</h3>
+
+    <label>Position</label>
+    <select id="pageNumberPosition">
+        <option value="bottom-center">Bottom Center</option>
+        <option value="bottom-right">Bottom Right</option>
+        <option value="bottom-left">Bottom Left</option>
+        <option value="top-center">Top Center</option>
+        <option value="top-right">Top Right</option>
+        <option value="top-left">Top Left</option>
+    </select>
+
+    <label>Format</label>
+    <select id="pageNumberFormat">
+        <option value="number">1</option>
+        <option value="page-number">Page 1</option>
+        <option value="number-of-total">1 of 1</option>
+        <option value="page-number-of-total">Page 1 of 1</option>
+    </select>
+
+    <label>Start Number</label>
+    <input type="number" id="pageStartNumber" value="1" />
+
+    <label>Number Color</label>
+    <input type="color" id="pageNumberColor" value="#000000" />
+
+    <label>Number Size</label>
+    <input type="number" id="pageNumberSize" value="18" />
+
+    <hr style="margin:25px 0;">
+
+    <h3>Watermark</h3>
+
+    <label>Watermark Text</label>
+    <input type="text" id="watermarkText" value="PDFSmart Tools" />
+
+    <label>Watermark Color</label>
+    <input type="color" id="watermarkColor" value="#808080" />
+
+    <label>Watermark Size</label>
+    <input type="number" id="watermarkSize" value="60" />
+
+    <label>Opacity</label>
+    <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+
+    <label>Rotation</label>
+    <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
+</aside>
 
 </section>
 
