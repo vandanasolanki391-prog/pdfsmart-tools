@@ -98,6 +98,10 @@ function addEditableText(){
     textBox.focus();
 
     selectedElement = textBox;
+    document.querySelectorAll(".editable-text, .draggable-image")
+    .forEach(el => el.classList.remove("selected-element"));
+
+textBox.classList.add("selected-element");
 
     /* SELECT */
 
@@ -150,6 +154,10 @@ function addImageToPDF(file){
             e.stopPropagation();
 
             selectedElement = img;
+            document.querySelectorAll(".editable-text, .draggable-image")
+            .forEach(el => el.classList.remove("selected-element"));
+
+        img.classList.add("selected-element");
 
         });
 
