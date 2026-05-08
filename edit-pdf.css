@@ -245,3 +245,6 @@ body{
 .draggable-image:hover{
     border:2px dashed #2563eb;
 }
+.selected-element{
+    border:2px solid red !important;
+}
