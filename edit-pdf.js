@@ -167,7 +167,51 @@ function addImageToPDF(file){
 
     reader.readAsDataURL(file);
 }
+/* DRAW FEATURE */
 
+canvas.addEventListener("mousedown", function(e){
+
+    if(drawMode){
+
+        isDrawing = true;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            e.offsetX,
+            e.offsetY
+        );
+
+    }
+
+});
+
+canvas.addEventListener("mousemove", function(e){
+
+    if(isDrawing && drawMode){
+
+        ctx.lineWidth = 3;
+
+        ctx.lineCap = "round";
+
+        ctx.strokeStyle = "red";
+
+        ctx.lineTo(
+            e.offsetX,
+            e.offsetY
+        );
+
+        ctx.stroke();
+
+    }
+
+});
+
+canvas.addEventListener("mouseup", function(){
+
+    isDrawing = false;
+
+});
 /* DRAG MOVE */
 
 document.addEventListener("mousemove", function(e){
@@ -250,7 +294,22 @@ buttons.forEach(btn => {
             deleteSelected();
 
         }
+else if(btn.innerText === "Draw"){
 
+    drawMode = !drawMode;
+
+    if(drawMode){
+
+        alert("Draw Mode Enabled");
+
+    }
+    else{
+
+        alert("Draw Mode Disabled");
+
+    }
+
+}
         else{
 
             alert(btn.innerText + " feature coming soon!");
