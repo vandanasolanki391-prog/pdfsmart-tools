@@ -1,5 +1,6 @@
 const pdfUpload = document.getElementById("pdfUpload");
 const imageUpload = document.getElementById("imageUpload");
+const downloadBtn = document.getElementById("downloadBtn");
 
 const canvas = document.getElementById("pdfCanvas");
 const ctx = canvas.getContext("2d");
