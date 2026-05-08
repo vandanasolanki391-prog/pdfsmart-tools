@@ -18,6 +18,10 @@ let dragElement = null;
 let offsetX = 0;
 let offsetY = 0;
 
+
+let isDrawing = false;
+let drawMode = false;
+
 /* PDF LOAD */
 
 pdfUpload.addEventListener("change", async function(e){
