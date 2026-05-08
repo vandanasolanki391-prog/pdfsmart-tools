@@ -5,6 +5,18 @@ const ctx = canvas.getContext("2d");
 let pdfDoc = null;
 let currentPage = 1;
 
+let selectedElement = null;
+let dragElement = null;
+
+let offsetX = 0;
+let offsetY = 0;
+
+const previewBox = document.querySelector(".pdf-preview");
+
+previewBox.style.position = "relative";
+
+/* PDF LOAD */
+
 pdfUpload.addEventListener("change", async function(e){
 
     const file = e.target.files[0];
@@ -27,6 +39,7 @@ pdfUpload.addEventListener("change", async function(e){
 
 });
 
+/* RENDER PDF */
 
 async function renderPage(pageNumber){
 
@@ -37,57 +50,120 @@ async function renderPage(pageNumber){
     canvas.height = viewport.height;
     canvas.width = viewport.width;
 
-    const renderContext = {
+    await page.render({
         canvasContext: ctx,
         viewport: viewport
-    };
-
-    await page.render(renderContext).promise;
+    }).promise;
 }
 
+/* ADD EDITABLE TEXT */
 
-/* DRAW TOOL */
+function addEditableText(){
 
-let drawing = false;
+    const textBox = document.createElement("div");
 
-canvas.addEventListener("mousedown", () => {
-    drawing = true;
-});
+    textBox.innerText = "Type here";
 
-canvas.addEventListener("mouseup", () => {
-    drawing = false;
-    ctx.beginPath();
-});
+    textBox.contentEditable = true;
 
-canvas.addEventListener("mousemove", draw);
+    textBox.className = "editable-text";
 
-function draw(e){
+    textBox.style.position = "absolute";
 
-    if(!drawing) return;
+    textBox.style.left = "120px";
 
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "red";
+    textBox.style.top = "120px";
 
-    const rect = canvas.getBoundingClientRect();
+    textBox.style.fontSize = "20px";
 
-    ctx.lineTo(
-        e.clientX - rect.left,
-        e.clientY - rect.top
-    );
+    textBox.style.fontFamily = "Arial";
 
-    ctx.stroke();
+    textBox.style.color = "#000";
 
-    ctx.beginPath();
+    textBox.style.padding = "5px 8px";
 
-    ctx.moveTo(
-        e.clientX - rect.left,
-        e.clientY - rect.top
-    );
+    textBox.style.border = "1px dashed #2563eb";
+
+    textBox.style.background = "rgba(255,255,255,0.5)";
+
+    textBox.style.cursor = "move";
+
+    textBox.style.zIndex = "1000";
+
+    previewBox.appendChild(textBox);
+
+    textBox.focus();
+
+    selectedElement = textBox;
+
+    /* SELECT */
+
+    textBox.addEventListener("click", function(e){
+
+        e.stopPropagation();
+
+        selectedElement = textBox;
+
+    });
+
+    /* DRAG START */
+
+    textBox.addEventListener("mousedown", function(e){
+
+        dragElement = textBox;
+
+        offsetX = e.clientX - textBox.offsetLeft;
+
+        offsetY = e.clientY - textBox.offsetTop;
+
+    });
+
 }
 
+/* DRAG MOVE */
 
-/* ADD TEXT */
+document.addEventListener("mousemove", function(e){
+
+    if(dragElement){
+
+        dragElement.style.left =
+            (e.clientX - offsetX) + "px";
+
+        dragElement.style.top =
+            (e.clientY - offsetY) + "px";
+
+    }
+
+});
+
+/* DRAG END */
+
+document.addEventListener("mouseup", function(){
+
+    dragElement = null;
+
+});
+
+/* DELETE SELECTED */
+
+function deleteSelected(){
+
+    if(selectedElement){
+
+        selectedElement.remove();
+
+        selectedElement = null;
+
+    }
+    else{
+
+        alert("Please select text first.");
+
+    }
+
+}
+
+/* BUTTON ACTIONS */
 
 const buttons = document.querySelectorAll(".sidebar button");
 
@@ -97,15 +173,20 @@ buttons.forEach(btn => {
 
         if(btn.innerText === "Add Text"){
 
-            const text = prompt("Enter Text");
+            addEditableText();
 
-            if(text){
+        }
 
-                ctx.font = "30px Arial";
-                ctx.fillStyle = "blue";
-                ctx.fillText(text, 100, 100);
+        else if(btn.innerText === "Erase / Delete Selected"){
 
-            }
+            deleteSelected();
+
+        }
+
+        else{
+
+            alert(btn.innerText + " feature coming soon!");
+
         }
 
     });
