@@ -4,6 +4,22 @@ const downloadBtn = document.getElementById("downloadBtn");
 
 const drawColor = document.getElementById("drawColor");
 const brushSize = document.getElementById("brushSize");
+const imageSize = document.getElementById("imageSize");
+/* IMAGE RESIZE */
+
+imageSize.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("draggable-image")
+    ){
+
+        selectedElement.style.width =
+            imageSize.value + "px";
+
+    }
+
+});
 const undoBtn = document.getElementById("undoBtn");
 
 const canvas = document.getElementById("pdfCanvas");
