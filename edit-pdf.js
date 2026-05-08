@@ -20,6 +20,39 @@ imageSize.addEventListener("input", function(){
     }
 
 });
+/* TEXT FONT SIZE */
+
+document.getElementById("textFontSize")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.fontSize =
+            this.value + "px";
+
+    }
+
+});
+
+/* TEXT COLOR */
+
+document.getElementById("textColor")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.color =
+            this.value;
+
+    }
+
+});
 const undoBtn = document.getElementById("undoBtn");
 
 const canvas = document.getElementById("pdfCanvas");
