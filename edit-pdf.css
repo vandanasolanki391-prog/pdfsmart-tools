@@ -226,3 +226,11 @@ body{
         height:400px;
     }
 }
+.editable-text:focus{
+    outline:2px solid #2563eb;
+    background:white;
+}
+
+.editable-text:hover{
+    border:1px dashed #7c3aed;
+}
