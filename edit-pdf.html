@@ -1,23 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Edit PDF</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit PDF - PDFSmart Tools</title>
+  <link rel="stylesheet" href="edit-pdf.css" />
 </head>
 <body>
 
-  <h1>Edit PDF Tool</h1>
+  <header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+  </header>
 
-  <input type="file">
-  <br><br>
+  <section class="editor-layout">
 
-  <button>Add Text</button>
-  <button>Draw</button>
-  <button>Download</button>
+    <aside class="sidebar">
+      <h3>PDF Tools</h3>
 
-  <br><br>
+      <button>Add Text</button>
+      <button>Draw</button>
+      <button>Highlight</button>
+      <button>Add Image</button>
+      <button>Signature</button>
+      <button>Watermark</button>
+      <button>Rotate Page</button>
+      <button>Delete Page</button>
+      <button>Page Number</button>
+      <button>OCR Scan</button>
+      <button>Translate PDF</button>
+    </aside>
 
-  <!-- Back button -->
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+    <main class="main-area">
+      <div class="upload-box">
+        <h1>Edit PDF Tool</h1>
+        <p>Upload your PDF and start editing with smart tools.</p>
 
+        <label for="pdfUpload" class="upload-label">
+          📤 Choose PDF File
+        </label>
+        <input type="file" id="pdfUpload" accept="application/pdf" />
+      </div>
+
+      <div class="preview-box">
+        <div class="preview-header">
+          <span>PDF Preview</span>
+          <button class="download-btn">Download PDF</button>
+        </div>
+
+        <div class="pdf-preview">
+          <p>Your PDF preview will appear here</p>
+        </div>
+      </div>
+    </main>
+
+    <aside class="properties">
+      <h3>Properties</h3>
+
+      <label>Font Size</label>
+      <input type="number" value="16" />
+
+      <label>Text Color</label>
+      <input type="color" value="#000000" />
+
+      <label>Brush Size</label>
+      <input type="range" min="1" max="20" value="3" />
+
+      <label>Opacity</label>
+      <input type="range" min="10" max="100" value="100" />
+    </aside>
+
+  </section>
+
+  <script src="edit-pdf.js"></script>
 </body>
 </html>
