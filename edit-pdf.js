@@ -53,6 +53,22 @@ document.getElementById("textColor")
     }
 
 });
+/* TEXT BACKGROUND */
+
+document.getElementById("textBgColor")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.background =
+            this.value;
+
+    }
+
+});
 const undoBtn = document.getElementById("undoBtn");
 
 const canvas = document.getElementById("pdfCanvas");
