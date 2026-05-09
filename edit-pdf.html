@@ -7,8 +7,8 @@
 
     <link rel="stylesheet" href="edit-pdf.css" />
 
+    <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
 </head>
@@ -22,23 +22,35 @@
 
 <section class="editor-layout">
 
+    <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
         <h3>PDF Tools</h3>
 
-        <button>Add Text</button>
-        <button>Draw</button>
-        <button>Highlight</button>
-        <button>Add Image</button>
-        <button>Signature</button>
-        <button>Watermark</button>
-        <button>Rotate Page</button>
-        <button>Delete Page</button>
-        <button>Page Number</button>
-        <button>OCR Scan</button>
-        <button>Translate PDF</button>
-        <button id="eraseBtn">Erase / Delete Selected</button>
+        <button id="addTextBtn">Add Text</button>
+        <button id="editTextBtn">Edit Text</button>
+        <button id="whiteEraserBtn">White Eraser</button>
+
+        <button id="drawBtn">Draw</button>
+        <button id="highlightBtn">Highlight</button>
+
+        <button id="rectangleBtn">Rectangle</button>
+        <button id="circleBtn">Circle</button>
+        <button id="lineBtn">Line</button>
+        <button id="arrowBtn">Arrow</button>
+
+        <button id="addImageBtn">Add Image</button>
+        <button id="signatureBtn">Signature</button>
+
+        <button id="watermarkBtn">Watermark</button>
+        <button id="rotateBtn">Rotate Page</button>
+        <button id="deletePageBtn">Delete Page</button>
+        <button id="pageNumberBtn">Page Number</button>
+
+        <button id="ocrBtn">OCR Scan</button>
+        <button id="translateBtn">Translate PDF</button>
     </aside>
 
+    <!-- MAIN AREA -->
     <main class="main-area">
 
         <div class="upload-box">
@@ -61,90 +73,96 @@
                 </button>
             </div>
 
-            <div class="pdf-preview">
+            <div class="pdf-preview" id="pdfPreview">
                 <canvas id="pdfCanvas"></canvas>
             </div>
         </div>
 
     </main>
 
+    <!-- RIGHT PROPERTIES PANEL -->
     <aside class="properties">
-    <h3>Properties</h3>
+        <h3>Properties</h3>
 
-    <label>Font Size</label>
-    <input type="number" id="textFontSize" value="20" />
+        <label>Text Font Size</label>
+        <input type="number" id="textFontSize" value="20" />
 
-    <label>Text Color</label>
-    <input type="color" id="textColor" value="#000000" />
-    
-    <label>Text Background</label>
-    <input type="color" id="textBgColor" value="#ffffff" />    
-   
+        <label>Text Color</label>
+        <input type="color" id="textColor" value="#000000" />
 
-    <label>Draw Color</label>
-    <input type="color" id="drawColor" value="#ff0000" />
+        <label>Text Background</label>
+        <input type="color" id="textBgColor" value="#ffffff" />
 
-    <label>Brush Size</label>
-    <input type="range" id="brushSize" min="1" max="20" value="3" />
-    <label>Image / Signature Size</label>
-    <input type="range" id="imageSize" min="50" max="500" value="150" />    
+        <label>Draw Color</label>
+        <input type="color" id="drawColor" value="#ff0000" />
 
-    <button id="undoBtn" class="download-btn" style="margin-top:20px; width:100%;">
-        Undo
-    </button>
+        <label>Brush Size</label>
+        <input type="range" id="brushSize" min="1" max="25" value="3" />
 
-    <hr style="margin:25px 0;">
+        <label>Image / Signature Size</label>
+        <input type="range" id="imageSize" min="50" max="500" value="150" />
 
-    <h3>Page Number</h3>
+        <label>Eraser Box Size</label>
+        <input type="range" id="eraserSize" min="20" max="500" value="150" />
 
-    <label>Position</label>
-    <select id="pageNumberPosition">
-        <option value="bottom-center">Bottom Center</option>
-        <option value="bottom-right">Bottom Right</option>
-        <option value="bottom-left">Bottom Left</option>
-        <option value="top-center">Top Center</option>
-        <option value="top-right">Top Right</option>
-        <option value="top-left">Top Left</option>
-    </select>
+        <button id="undoBtn" class="green-btn">
+            Undo
+        </button>
 
-    <label>Format</label>
-    <select id="pageNumberFormat">
-        <option value="number">1</option>
-        <option value="page-number">Page 1</option>
-        <option value="number-of-total">1 of 1</option>
-        <option value="page-number-of-total">Page 1 of 1</option>
-    </select>
+        <hr>
 
-    <label>Start Number</label>
-    <input type="number" id="pageStartNumber" value="1" />
+        <h3>Page Number</h3>
 
-    <label>Number Color</label>
-    <input type="color" id="pageNumberColor" value="#000000" />
+        <label>Position</label>
+        <select id="pageNumberPosition">
+            <option value="bottom-center">Bottom Center</option>
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="top-center">Top Center</option>
+            <option value="top-right">Top Right</option>
+            <option value="top-left">Top Left</option>
+        </select>
 
-    <label>Number Size</label>
-    <input type="number" id="pageNumberSize" value="18" />
+        <label>Format</label>
+        <select id="pageNumberFormat">
+            <option value="number">1</option>
+            <option value="page-number">Page 1</option>
+            <option value="number-of-total">1 of 1</option>
+            <option value="page-number-of-total">Page 1 of 1</option>
+        </select>
 
-    <hr style="margin:25px 0;">
+        <label>Start Number</label>
+        <input type="number" id="pageStartNumber" value="1" />
 
-    <h3>Watermark</h3>
+        <label>Number Color</label>
+        <input type="color" id="pageNumberColor" value="#000000" />
 
-    <label>Watermark Text</label>
-    <input type="text" id="watermarkText" value="PDFSmart Tools" />
+        <label>Number Size</label>
+        <input type="number" id="pageNumberSize" value="18" />
 
-    <label>Watermark Color</label>
-    <input type="color" id="watermarkColor" value="#808080" />
+        <hr>
 
-    <label>Watermark Size</label>
-    <input type="number" id="watermarkSize" value="60" />
+        <h3>Watermark</h3>
 
-    <label>Opacity</label>
-    <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+        <label>Watermark Text</label>
+        <input type="text" id="watermarkText" value="PDFSmart Tools" />
 
-    <label>Rotation</label>
-    <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
-</aside>
+        <label>Watermark Color</label>
+        <input type="color" id="watermarkColor" value="#808080" />
+
+        <label>Watermark Size</label>
+        <input type="number" id="watermarkSize" value="60" />
+
+        <label>Opacity</label>
+        <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+
+        <label>Rotation</label>
+        <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
+    </aside>
 
 </section>
+
+<!-- OCR OUTPUT -->
 <div class="ocr-output-box" id="ocrOutputBox" style="display:none;">
     <h3>OCR / Translate Output</h3>
 
@@ -153,6 +171,18 @@
         placeholder="OCR text will appear here..."
     ></textarea>
 </div>
+
+<!-- RIGHT CLICK MENU -->
+<div id="contextMenu" class="context-menu">
+    <button id="ctxDelete">Delete</button>
+    <button id="ctxDuplicate">Duplicate</button>
+    <button id="ctxBringFront">Bring Front</button>
+    <button id="ctxSendBack">Send Back</button>
+    <button id="ctxIncrease">Increase Size</button>
+    <button id="ctxDecrease">Decrease Size</button>
+</div>
+
+<!-- HIDDEN IMAGE UPLOAD -->
 <input type="file" id="imageUpload" accept="image/*" hidden>
 
 <script src="edit-pdf.js"></script>
