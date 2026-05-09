@@ -74,7 +74,11 @@ const undoBtn = document.getElementById("undoBtn");
 const canvas = document.getElementById("pdfCanvas");
 const ctx = canvas.getContext("2d");
 const previewBox = document.querySelector(".pdf-preview");
+const ocrOutputBox =
+    document.getElementById("ocrOutputBox");
 
+const ocrText =
+    document.getElementById("ocrText");
 previewBox.style.position = "relative";
 
 let pdfDoc = null;
