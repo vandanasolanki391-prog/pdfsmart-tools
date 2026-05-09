@@ -10,6 +10,8 @@ body{
     color:#222;
 }
 
+/* TOPBAR */
+
 .topbar{
     width:100%;
     height:70px;
@@ -36,13 +38,17 @@ body{
     font-weight:bold;
 }
 
+/* MAIN LAYOUT */
+
 .editor-layout{
     display:flex;
     min-height:calc(100vh - 70px);
 }
 
+/* SIDEBAR */
+
 .sidebar{
-    width:240px;
+    width:250px;
     background:white;
     padding:25px;
     border-right:1px solid #ddd;
@@ -72,10 +78,14 @@ body{
     transform:translateX(3px);
 }
 
+/* MAIN AREA */
+
 .main-area{
     flex:1;
     padding:30px;
 }
+
+/* UPLOAD BOX */
 
 .upload-box{
     background:white;
@@ -109,6 +119,8 @@ body{
     display:none;
 }
 
+/* PREVIEW */
+
 .preview-box{
     background:white;
     border-radius:20px;
@@ -128,7 +140,8 @@ body{
     font-weight:bold;
 }
 
-.download-btn{
+.download-btn,
+.green-btn{
     background:#10b981;
     color:white;
     border:none;
@@ -139,12 +152,9 @@ body{
 }
 
 .pdf-preview{
-    min-height:600px;
+    min-height:650px;
     border:2px dashed #cbd5e1;
     border-radius:16px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
     background:#f8fafc;
     overflow:auto;
     position:relative;
@@ -156,34 +166,53 @@ body{
     box-shadow:0 6px 25px rgba(0,0,0,0.15);
 }
 
+/* PROPERTIES */
+
 .properties{
-    width:260px;
+    width:280px;
     background:white;
     padding:25px;
     border-left:1px solid #ddd;
+    overflow-y:auto;
 }
 
 .properties h3{
-    margin-bottom:25px;
+    margin-bottom:20px;
     color:#7c3aed;
 }
 
 .properties label{
     display:block;
+    margin-top:18px;
     margin-bottom:8px;
-    margin-top:20px;
     font-weight:600;
 }
 
-.properties input{
+.properties input,
+.properties select{
     width:100%;
     padding:10px;
     border:1px solid #ddd;
     border-radius:10px;
+    background:white;
 }
+
+.properties hr{
+    margin:25px 0;
+    border:none;
+    border-top:1px solid #ddd;
+}
+
+/* TEXT */
 
 .editable-text{
     min-width:60px;
+    position:absolute;
+    padding:5px 8px;
+    border:1px dashed #2563eb;
+    background:rgba(255,255,255,0.7);
+    cursor:move;
+    z-index:1000;
 }
 
 .editable-text:focus{
@@ -194,6 +223,8 @@ body{
 .editable-text:hover{
     border:1px dashed #7c3aed;
 }
+
+/* IMAGE */
 
 .draggable-image{
     position:absolute;
@@ -207,25 +238,71 @@ body{
     border:2px dashed #2563eb;
 }
 
+/* SHAPES */
+
+.shape-element{
+    position:absolute;
+    cursor:move;
+    z-index:1000;
+}
+
+.rectangle-shape{
+    width:150px;
+    height:100px;
+    border:4px solid red;
+    background:transparent;
+}
+
+.circle-shape{
+    width:120px;
+    height:120px;
+    border:4px solid blue;
+    border-radius:50%;
+    background:transparent;
+}
+
+.line-shape{
+    width:180px;
+    height:4px;
+    background:black;
+}
+
+.arrow-shape{
+    width:150px;
+    height:4px;
+    background:black;
+}
+
+.arrow-shape::after{
+    content:"";
+    position:absolute;
+    right:-10px;
+    top:-6px;
+    border-left:12px solid black;
+    border-top:8px solid transparent;
+    border-bottom:8px solid transparent;
+}
+
+/* WHITE ERASER */
+
+.white-eraser{
+    position:absolute;
+    width:150px;
+    height:60px;
+    background:white;
+    border:2px dashed #999;
+    cursor:move;
+    z-index:1000;
+}
+
+/* SELECTED */
+
 .selected-element{
-    border:2px solid red !important;
+    outline:3px solid red !important;
 }
 
-@media(max-width:1000px){
-    .editor-layout{
-        flex-direction:column;
-    }
+/* OCR BOX */
 
-    .sidebar,
-    .properties{
-        width:100%;
-        border:none;
-    }
-
-    .pdf-preview{
-        min-height:400px;
-    }
-}
 .ocr-output-box{
     background:white;
     margin:25px;
@@ -247,4 +324,52 @@ body{
     border-radius:12px;
     font-size:15px;
     resize:vertical;
+}
+
+/* RIGHT CLICK MENU */
+
+.context-menu{
+    position:absolute;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    padding:10px;
+    display:none;
+    z-index:99999;
+    min-width:180px;
+}
+
+.context-menu button{
+    width:100%;
+    padding:10px;
+    border:none;
+    background:#f3f4f6;
+    margin-bottom:8px;
+    border-radius:8px;
+    cursor:pointer;
+    text-align:left;
+}
+
+.context-menu button:hover{
+    background:#2563eb;
+    color:white;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .editor-layout{
+        flex-direction:column;
+    }
+
+    .sidebar,
+    .properties{
+        width:100%;
+        border:none;
+    }
+
+    .pdf-preview{
+        min-height:450px;
+    }
 }
