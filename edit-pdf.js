@@ -21,6 +21,14 @@ const shapeColor = document.getElementById("shapeColor");
 const shapeBorderSize = document.getElementById("shapeBorderSize");
 const shapeSize = document.getElementById("shapeSize");
 
+const fontFamily = document.getElementById("fontFamily");
+const textAlign = document.getElementById("textAlign");
+const transparentBg = document.getElementById("transparentBg");
+
+const boldBtn = document.getElementById("boldBtn");
+const italicBtn = document.getElementById("italicBtn");
+const underlineBtn = document.getElementById("underlineBtn");
+
 const ocrOutputBox = document.getElementById("ocrOutputBox");
 const ocrText = document.getElementById("ocrText");
 
@@ -49,7 +57,7 @@ function setInfo(text){
 
 function saveUndo(){
     if(canvas.width && canvas.height){
-        undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        undoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
     }
 }
 
@@ -57,40 +65,46 @@ function hideContextMenu(){
     contextMenu.style.display = "none";
 }
 
-function clearSelection(){
-    document.querySelectorAll(".editable-text, .draggable-image, .shape-element, .white-eraser")
-        .forEach(item => item.classList.remove("selected-element"));
-
-    selectedElement = null;
-}
-
 function selectElement(el){
-    document.querySelectorAll(".editable-text, .draggable-image, .shape-element, .white-eraser")
-        .forEach(item => item.classList.remove("selected-element"));
+
+    document.querySelectorAll(
+        ".editable-text, .draggable-image, .shape-element, .white-eraser"
+    ).forEach(item=>{
+        item.classList.remove("selected-element");
+    });
 
     selectedElement = el;
-    selectedElement.classList.add("selected-element");
+
+    if(selectedElement){
+        selectedElement.classList.add("selected-element");
+    }
 }
 
 function makeDraggable(el){
+
     el.addEventListener("click", function(e){
         e.stopPropagation();
         selectElement(el);
     });
 
     el.addEventListener("mousedown", function(e){
+
         if(e.button !== 0) return;
 
         e.stopPropagation();
+
         selectElement(el);
 
         dragElement = el;
+
         offsetX = e.clientX - el.offsetLeft;
         offsetY = e.clientY - el.offsetTop;
     });
 
     el.addEventListener("contextmenu", function(e){
+
         e.preventDefault();
+
         selectElement(el);
 
         contextMenu.style.left = e.pageX + "px";
@@ -99,18 +113,15 @@ function makeDraggable(el){
     });
 }
 
-document.addEventListener("click", function(){
-    hideContextMenu();
-});
-
-previewBox.addEventListener("click", function(){
-    hideContextMenu();
-});
-
 document.addEventListener("mousemove", function(e){
+
     if(dragElement){
-        dragElement.style.left = (e.clientX - offsetX) + "px";
-        dragElement.style.top = (e.clientY - offsetY) + "px";
+
+        dragElement.style.left =
+            (e.clientX - offsetX) + "px";
+
+        dragElement.style.top =
+            (e.clientY - offsetY) + "px";
     }
 });
 
@@ -118,116 +129,233 @@ document.addEventListener("mouseup", function(){
     dragElement = null;
 });
 
+document.addEventListener("click", function(){
+    hideContextMenu();
+});
+
 /* PDF LOAD */
 
 pdfUpload.addEventListener("change", async function(e){
+
     const file = e.target.files[0];
+
     if(!file) return;
 
     const fileReader = new FileReader();
 
     fileReader.onload = async function(){
-        const typedarray = new Uint8Array(this.result);
-        pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+
+        const typedarray =
+            new Uint8Array(this.result);
+
+        pdfDoc =
+            await pdfjsLib
+            .getDocument(typedarray)
+            .promise;
+
         renderPage(currentPage);
-        setInfo("PDF uploaded. Now choose any tool from the left side.");
+
+        setInfo(
+            "PDF uploaded successfully."
+        );
     };
 
     fileReader.readAsArrayBuffer(file);
 });
 
-/* RENDER PDF */
+/* RENDER */
 
 async function renderPage(pageNumber){
-    const page = await pdfDoc.getPage(pageNumber);
 
-    const viewport = page.getViewport({
-        scale: 1.5,
-        rotation: rotation
-    });
+    const page =
+        await pdfDoc.getPage(pageNumber);
+
+    const viewport =
+        page.getViewport({
+            scale:1.5,
+            rotation:rotation
+        });
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({
-        canvasContext: ctx,
-        viewport: viewport
+        canvasContext:ctx,
+        viewport:viewport
     }).promise;
 }
 
 /* ADD TEXT */
 
 function addEditableText(){
-    const textBox = document.createElement("div");
+
+    const textBox =
+        document.createElement("div");
 
     textBox.innerText = "Type here";
+
     textBox.contentEditable = true;
+
     textBox.className = "editable-text";
 
     textBox.style.left = "120px";
     textBox.style.top = "120px";
-    textBox.style.fontSize = document.getElementById("textFontSize").value + "px";
-    textBox.style.color = document.getElementById("textColor").value;
-    textBox.style.background = document.getElementById("textBgColor").value;
+
+    textBox.style.fontSize =
+        document.getElementById("textFontSize").value + "px";
+
+    textBox.style.fontFamily =
+        fontFamily.value;
+
+    textBox.style.color =
+        document.getElementById("textColor").value;
+
+    textBox.style.textAlign =
+        textAlign.value;
+
+    if(transparentBg.checked){
+        textBox.style.background = "transparent";
+    }
+    else{
+        textBox.style.background =
+            document.getElementById("textBgColor").value;
+    }
 
     previewBox.appendChild(textBox);
+
     makeDraggable(textBox);
+
     selectElement(textBox);
+
     textBox.focus();
 
-    setInfo("Text added. You can type, drag, change font size/color, or right-click for options.");
+    setInfo(
+        "Text added. Type and drag anywhere."
+    );
 }
+
+/* TEXT STYLE BUTTONS */
+
+boldBtn.addEventListener("click", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.fontWeight =
+            selectedElement.style.fontWeight === "bold"
+            ? "normal"
+            : "bold";
+    }
+});
+
+italicBtn.addEventListener("click", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.fontStyle =
+            selectedElement.style.fontStyle === "italic"
+            ? "normal"
+            : "italic";
+    }
+});
+
+underlineBtn.addEventListener("click", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.textDecoration =
+            selectedElement.style.textDecoration === "underline"
+            ? "none"
+            : "underline";
+    }
+});
 
 /* EDIT TEXT MODE */
 
 function editTextMode(){
-    setInfo("Edit Text Mode: Use White Eraser to cover old PDF text, then use Add Text to write new text.");
+
+    setInfo(
+        "Use White Eraser to cover old PDF text. Then Add Text to write new text."
+    );
 }
 
 /* WHITE ERASER */
 
 function addWhiteEraser(){
-    const eraser = document.createElement("div");
+
+    const eraser =
+        document.createElement("div");
 
     eraser.className = "white-eraser";
+
     eraser.style.left = "150px";
     eraser.style.top = "150px";
-    eraser.style.width = eraserWidth.value + "px";
-    eraser.style.height = eraserHeight.value + "px";
-    eraser.style.background = eraserColor.value;
+
+    eraser.style.width =
+        eraserWidth.value + "px";
+
+    eraser.style.height =
+        eraserHeight.value + "px";
+
+    eraser.style.background =
+        eraserColor.value;
 
     previewBox.appendChild(eraser);
+
     makeDraggable(eraser);
+
     selectElement(eraser);
 
-    setInfo("White Eraser added. Drag it over old PDF text. Adjust width/height from right panel.");
+    setInfo(
+        "White Eraser added."
+    );
 }
 
-/* IMAGE / SIGNATURE */
+/* IMAGE */
 
 function addImageToPDF(file){
+
     const reader = new FileReader();
 
     reader.onload = function(e){
-        const img = document.createElement("img");
+
+        const img =
+            document.createElement("img");
 
         img.src = e.target.result;
+
         img.className = "draggable-image";
+
         img.style.left = "150px";
         img.style.top = "150px";
-        img.style.width = imageSize.value + "px";
+
+        img.style.width =
+            imageSize.value + "px";
 
         previewBox.appendChild(img);
+
         makeDraggable(img);
+
         selectElement(img);
 
-        setInfo("Image/Signature added. Drag it, resize it from right panel, or right-click for options.");
+        setInfo(
+            "Image/Signature added."
+        );
     };
 
     reader.readAsDataURL(file);
 }
 
 imageUpload.addEventListener("change", function(){
+
     const file = this.files[0];
 
     if(file){
@@ -240,43 +368,82 @@ imageUpload.addEventListener("change", function(){
 /* SHAPES */
 
 function applyShapeStyle(shape, type){
+
     const color = shapeColor.value;
-    const border = shapeBorderSize.value + "px";
-    const size = parseInt(shapeSize.value);
+
+    const border =
+        shapeBorderSize.value + "px";
+
+    const size =
+        parseInt(shapeSize.value);
 
     if(type === "rectangle"){
-        shape.style.width = size + "px";
-        shape.style.height = Math.round(size * 0.65) + "px";
-        shape.style.border = border + " solid " + color;
-        shape.style.background = "transparent";
+
+        shape.style.width =
+            size + "px";
+
+        shape.style.height =
+            Math.round(size * 0.65) + "px";
+
+        shape.style.border =
+            border + " solid " + color;
+
+        shape.style.background =
+            "transparent";
     }
 
     if(type === "circle"){
-        shape.style.width = size + "px";
-        shape.style.height = size + "px";
-        shape.style.border = border + " solid " + color;
-        shape.style.borderRadius = "50%";
-        shape.style.background = "transparent";
+
+        shape.style.width =
+            size + "px";
+
+        shape.style.height =
+            size + "px";
+
+        shape.style.border =
+            border + " solid " + color;
+
+        shape.style.borderRadius =
+            "50%";
     }
 
     if(type === "line"){
-        shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
-        shape.style.background = color;
+
+        shape.style.width =
+            size + "px";
+
+        shape.style.height =
+            shapeBorderSize.value + "px";
+
+        shape.style.background =
+            color;
     }
 
     if(type === "arrow"){
-        shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
-        shape.style.background = color;
-        shape.style.setProperty("--arrow-color", color);
+
+        shape.style.width =
+            size + "px";
+
+        shape.style.height =
+            shapeBorderSize.value + "px";
+
+        shape.style.background =
+            color;
+
+        shape.style.setProperty(
+            "--arrow-color",
+            color
+        );
     }
 }
 
 function addShape(type){
-    const shape = document.createElement("div");
+
+    const shape =
+        document.createElement("div");
 
     shape.classList.add("shape-element");
+
     shape.dataset.shapeType = type;
 
     if(type === "rectangle"){
@@ -301,54 +468,78 @@ function addShape(type){
     applyShapeStyle(shape, type);
 
     previewBox.appendChild(shape);
+
     makeDraggable(shape);
+
     selectElement(shape);
 
-    setInfo(type + " shape added. Drag it, change color/size from right panel, or right-click for options.");
+    setInfo(type + " added.");
 }
 
-/* DRAW + HIGHLIGHT */
+/* DRAW */
 
 canvas.addEventListener("mousedown", function(e){
+
     if(drawMode || highlightMode){
+
         saveUndo();
+
         isDrawing = true;
+
         ctx.beginPath();
+
         ctx.moveTo(e.offsetX, e.offsetY);
     }
 });
 
 canvas.addEventListener("mousemove", function(e){
+
     if(isDrawing && drawMode){
-        ctx.lineWidth = brushSize.value;
+
+        ctx.lineWidth =
+            brushSize.value;
+
         ctx.lineCap = "round";
-        ctx.strokeStyle = drawColor.value;
+
+        ctx.strokeStyle =
+            drawColor.value;
+
         ctx.globalAlpha = 1;
 
         ctx.lineTo(e.offsetX, e.offsetY);
+
         ctx.stroke();
     }
 
     if(isDrawing && highlightMode){
+
         ctx.lineWidth = 18;
+
         ctx.lineCap = "round";
+
         ctx.strokeStyle = "yellow";
+
         ctx.globalAlpha = 0.35;
 
         ctx.lineTo(e.offsetX, e.offsetY);
+
         ctx.stroke();
+
         ctx.globalAlpha = 1;
     }
 });
 
 canvas.addEventListener("mouseup", function(){
+
     isDrawing = false;
+
     ctx.globalAlpha = 1;
 });
 
 /* WATERMARK */
 
 function addWatermark(){
+
     if(!canvas.width){
         alert("Please upload PDF first.");
         return;
@@ -356,20 +547,43 @@ function addWatermark(){
 
     saveUndo();
 
-    const text = document.getElementById("watermarkText").value;
-    const color = document.getElementById("watermarkColor").value;
-    const size = document.getElementById("watermarkSize").value;
-    const opacity = document.getElementById("watermarkOpacity").value / 100;
-    const rotate = document.getElementById("watermarkRotation").value;
+    const text =
+        document.getElementById("watermarkText").value;
+
+    const color =
+        document.getElementById("watermarkColor").value;
+
+    const size =
+        document.getElementById("watermarkSize").value;
+
+    const opacity =
+        document.getElementById("watermarkOpacity").value / 100;
+
+    const rotate =
+        document.getElementById("watermarkRotation").value;
 
     ctx.save();
+
     ctx.globalAlpha = opacity;
-    ctx.font = size + "px Arial";
+
+    ctx.font =
+        size + "px Arial";
+
     ctx.fillStyle = color;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(rotate * Math.PI / 180);
+
+    ctx.translate(
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    ctx.rotate(
+        rotate * Math.PI / 180
+    );
+
     ctx.textAlign = "center";
-    ctx.fillText(text, 0, 0);
+
+    ctx.fillText(text,0,0);
+
     ctx.restore();
 
     setInfo("Watermark added.");
@@ -378,6 +592,7 @@ function addWatermark(){
 /* PAGE NUMBER */
 
 function addPageNumber(){
+
     if(!canvas.width){
         alert("Please upload PDF first.");
         return;
@@ -385,14 +600,26 @@ function addPageNumber(){
 
     saveUndo();
 
-    const position = document.getElementById("pageNumberPosition").value;
-    const format = document.getElementById("pageNumberFormat").value;
-    const startNumber = parseInt(document.getElementById("pageStartNumber").value);
-    const color = document.getElementById("pageNumberColor").value;
-    const size = document.getElementById("pageNumberSize").value;
+    const position =
+        document.getElementById("pageNumberPosition").value;
 
-    const current = startNumber + currentPage - 1;
-    const total = pdfDoc ? pdfDoc.numPages : 1;
+    const format =
+        document.getElementById("pageNumberFormat").value;
+
+    const startNumber =
+        parseInt(document.getElementById("pageStartNumber").value);
+
+    const color =
+        document.getElementById("pageNumberColor").value;
+
+    const size =
+        document.getElementById("pageNumberSize").value;
+
+    const current =
+        startNumber + currentPage - 1;
+
+    const total =
+        pdfDoc ? pdfDoc.numPages : 1;
 
     let text = "";
 
@@ -414,447 +641,506 @@ function addPageNumber(){
 
     if(position === "bottom-right"){
         x = canvas.width - 80;
-        y = canvas.height - 25;
     }
-    else if(position === "bottom-left"){
+
+    if(position === "bottom-left"){
         x = 80;
-        y = canvas.height - 25;
     }
-    else if(position === "top-center"){
-        x = canvas.width / 2;
+
+    if(position === "top-center"){
         y = 35;
     }
-    else if(position === "top-right"){
+
+    if(position === "top-right"){
         x = canvas.width - 80;
         y = 35;
     }
-    else if(position === "top-left"){
+
+    if(position === "top-left"){
         x = 80;
         y = 35;
     }
 
     ctx.save();
-    ctx.font = size + "px Arial";
+
+    ctx.font =
+        size + "px Arial";
+
     ctx.fillStyle = color;
+
     ctx.textAlign = "center";
-    ctx.fillText(text, x, y);
+
+    ctx.fillText(text,x,y);
+
     ctx.restore();
 
     setInfo("Page number added.");
 }
 
-/* DELETE PAGE */
-
-function deletePage(){
-    if(!canvas.width){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    saveUndo();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setInfo("Current page cleared.");
-}
-
 /* OCR */
 
 async function runOCR(){
+
     if(!canvas.width){
         alert("Please upload PDF first.");
         return;
     }
 
     ocrOutputBox.style.display = "block";
-    ocrText.value = "Scanning text... Please wait. OCR may take 1–3 minutes for scanned PDFs.";
+
+    ocrText.value =
+        "Scanning text... Please wait.";
 
     try{
-        const result = await Tesseract.recognize(
-            canvas.toDataURL(),
-            "eng"
-        );
 
-        ocrText.value = result.data.text;
-        setInfo("OCR completed. Text is available below.");
+        const result =
+            await Tesseract.recognize(
+                canvas.toDataURL(),
+                "eng"
+            );
+
+        ocrText.value =
+            result.data.text;
+
+        setInfo("OCR completed.");
     }
+
     catch(error){
+
         console.error(error);
-        ocrText.value = "OCR failed.";
-        setInfo("OCR failed. Please try with a clearer PDF.");
+
+        ocrText.value =
+            "OCR failed.";
     }
 }
 
-/* BASIC TRANSLATE */
+/* TRANSLATE */
 
 function translateText(){
+
     if(
         !ocrText.value ||
-        ocrText.value.includes("Scanning text")
+        ocrText.value.includes("Scanning")
     ){
-        alert("Please run OCR Scan first.");
+
+        alert("Please run OCR first.");
+
         return;
     }
 
-    let translated = ocrText.value;
+    let translated =
+        ocrText.value;
 
     translated = translated
-        .replace(/Medical/gi, "મેડિકલ")
-        .replace(/Hospital/gi, "હોસ્પિટલ")
-        .replace(/Tender/gi, "ટેન્ડર")
-        .replace(/Page/gi, "પેજ")
-        .replace(/Date/gi, "તારીખ")
-        .replace(/Name/gi, "નામ")
-        .replace(/Amount/gi, "રકમ")
-        .replace(/Document/gi, "દસ્તાવેજ")
-        .replace(/Invoice/gi, "ઇન્વોઇસ")
-        .replace(/Certificate/gi, "સર્ટિફિકેટ");
+        .replace(/Medical/gi,"મેડિકલ")
+        .replace(/Hospital/gi,"હોસ્પિટલ")
+        .replace(/Tender/gi,"ટેન્ડર")
+        .replace(/Page/gi,"પેજ")
+        .replace(/Date/gi,"તારીખ");
 
-    ocrText.value = translated;
-    ocrOutputBox.style.display = "block";
+    ocrText.value =
+        translated;
 
-    setInfo("Basic translation completed.");
+    setInfo("Translation completed.");
 }
 
 /* PROPERTY CONTROLS */
 
-document.getElementById("textFontSize").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.fontSize = this.value + "px";
+document.getElementById("textFontSize")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.fontSize =
+            this.value + "px";
     }
 });
 
-document.getElementById("textColor").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.color = this.value;
+document.getElementById("textColor")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.color =
+            this.value;
     }
 });
 
-document.getElementById("textBgColor").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.background = this.value;
+document.getElementById("textBgColor")
+.addEventListener("input", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.background =
+            this.value;
+    }
+});
+
+fontFamily.addEventListener("change", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.fontFamily =
+            this.value;
+    }
+});
+
+textAlign.addEventListener("change", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.textAlign =
+            this.value;
+    }
+});
+
+transparentBg.addEventListener("change", function(){
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("editable-text")
+    ){
+
+        selectedElement.style.background =
+            this.checked
+            ? "transparent"
+            : document.getElementById("textBgColor").value;
     }
 });
 
 imageSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("draggable-image")){
-        selectedElement.style.width = this.value + "px";
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("draggable-image")
+    ){
+
+        selectedElement.style.width =
+            this.value + "px";
     }
 });
 
 eraserWidth.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.width = this.value + "px";
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("white-eraser")
+    ){
+
+        selectedElement.style.width =
+            this.value + "px";
     }
 });
 
 eraserHeight.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.height = this.value + "px";
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("white-eraser")
+    ){
+
+        selectedElement.style.height =
+            this.value + "px";
     }
 });
 
 eraserColor.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.background = this.value;
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("white-eraser")
+    ){
+
+        selectedElement.style.background =
+            this.value;
     }
 });
 
 shapeColor.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("shape-element")
+    ){
+
+        applyShapeStyle(
+            selectedElement,
+            selectedElement.dataset.shapeType
+        );
     }
 });
 
 shapeBorderSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("shape-element")
+    ){
+
+        applyShapeStyle(
+            selectedElement,
+            selectedElement.dataset.shapeType
+        );
     }
 });
 
 shapeSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+
+    if(
+        selectedElement &&
+        selectedElement.classList.contains("shape-element")
+    ){
+
+        applyShapeStyle(
+            selectedElement,
+            selectedElement.dataset.shapeType
+        );
     }
 });
 
 /* BUTTONS */
 
-document.getElementById("addTextBtn").addEventListener("click", addEditableText);
+document.getElementById("addTextBtn")
+.addEventListener("click", addEditableText);
 
-document.getElementById("editTextBtn").addEventListener("click", editTextMode);
+document.getElementById("editTextBtn")
+.addEventListener("click", editTextMode);
 
-document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
+document.getElementById("whiteEraserBtn")
+.addEventListener("click", addWhiteEraser);
 
-document.getElementById("drawBtn").addEventListener("click", function(){
+document.getElementById("drawBtn")
+.addEventListener("click", function(){
+
     drawMode = !drawMode;
+
     highlightMode = false;
 
-    setInfo(drawMode ? "Draw Mode Enabled. Draw on the PDF." : "Draw Mode Disabled.");
+    setInfo(
+        drawMode
+        ? "Draw enabled."
+        : "Draw disabled."
+    );
 });
 
-document.getElementById("highlightBtn").addEventListener("click", function(){
+document.getElementById("highlightBtn")
+.addEventListener("click", function(){
+
     highlightMode = !highlightMode;
+
     drawMode = false;
 
-    setInfo(highlightMode ? "Highlight Mode Enabled. Drag over text to highlight." : "Highlight Mode Disabled.");
+    setInfo(
+        highlightMode
+        ? "Highlight enabled."
+        : "Highlight disabled."
+    );
 });
 
-document.getElementById("shapesBtn").addEventListener("click", function(){
-    document.getElementById("shapePanel").classList.toggle("show");
+document.getElementById("shapesBtn")
+.addEventListener("click", function(){
+
+    document.getElementById("shapePanel")
+    .classList.toggle("show");
 });
 
-document.getElementById("rectangleBtn").addEventListener("click", function(){
+document.getElementById("rectangleBtn")
+.addEventListener("click", function(){
     addShape("rectangle");
 });
 
-document.getElementById("circleBtn").addEventListener("click", function(){
+document.getElementById("circleBtn")
+.addEventListener("click", function(){
     addShape("circle");
 });
 
-document.getElementById("lineBtn").addEventListener("click", function(){
+document.getElementById("lineBtn")
+.addEventListener("click", function(){
     addShape("line");
 });
 
-document.getElementById("arrowBtn").addEventListener("click", function(){
+document.getElementById("arrowBtn")
+.addEventListener("click", function(){
     addShape("arrow");
 });
 
-document.getElementById("addImageBtn").addEventListener("click", function(){
+document.getElementById("addImageBtn")
+.addEventListener("click", function(){
     imageUpload.click();
 });
 
-document.getElementById("signatureBtn").addEventListener("click", function(){
+document.getElementById("signatureBtn")
+.addEventListener("click", function(){
     imageUpload.click();
 });
 
-document.getElementById("watermarkBtn").addEventListener("click", addWatermark);
+document.getElementById("watermarkBtn")
+.addEventListener("click", addWatermark);
 
-document.getElementById("rotateBtn").addEventListener("click", function(){
+document.getElementById("rotateBtn")
+.addEventListener("click", function(){
+
     if(!pdfDoc){
         alert("Please upload PDF first.");
         return;
     }
 
-    rotation = (rotation + 90) % 360;
+    rotation =
+        (rotation + 90) % 360;
+
     renderPage(currentPage);
+
     setInfo("Page rotated.");
 });
 
-document.getElementById("deletePageBtn").addEventListener("click", deletePage);
+document.getElementById("deletePageBtn")
+.addEventListener("click", function(){
 
-document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
-document.getElementById("ocrBtn").addEventListener("click", runOCR);
+    setInfo("Page cleared.");
+});
 
-document.getElementById("translateBtn").addEventListener("click", function(){
+document.getElementById("pageNumberBtn")
+.addEventListener("click", addPageNumber);
+
+document.getElementById("ocrBtn")
+.addEventListener("click", runOCR);
+
+document.getElementById("translateBtn")
+.addEventListener("click", function(){
+
     ocrOutputBox.style.display = "block";
+
     translateText();
 });
 
 /* CONTEXT MENU */
 
-document.getElementById("ctxDelete").addEventListener("click", function(){
+document.getElementById("ctxDelete")
+.addEventListener("click", function(){
+
     if(selectedElement){
+
         selectedElement.remove();
+
         selectedElement = null;
     }
+
     hideContextMenu();
 });
 
-document.getElementById("ctxDuplicate").addEventListener("click", function(){
-    if(selectedElement){
-        const clone = selectedElement.cloneNode(true);
+document.getElementById("ctxDuplicate")
+.addEventListener("click", function(){
 
-        clone.style.left = (selectedElement.offsetLeft + 20) + "px";
-        clone.style.top = (selectedElement.offsetTop + 20) + "px";
+    if(selectedElement){
+
+        const clone =
+            selectedElement.cloneNode(true);
+
+        clone.style.left =
+            (selectedElement.offsetLeft + 20) + "px";
+
+        clone.style.top =
+            (selectedElement.offsetTop + 20) + "px";
 
         previewBox.appendChild(clone);
+
         makeDraggable(clone);
+
         selectElement(clone);
     }
-    hideContextMenu();
-});
 
-document.getElementById("ctxBringFront").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.zIndex = "5000";
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxSendBack").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.zIndex = "900";
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxIncrease").addEventListener("click", function(){
-    if(selectedElement){
-        if(selectedElement.classList.contains("draggable-image")){
-            selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
-        }
-        else if(selectedElement.classList.contains("white-eraser")){
-            selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
-        }
-        else{
-            selectedElement.style.transform = "scale(1.15)";
-        }
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxDecrease").addEventListener("click", function(){
-    if(selectedElement){
-        if(selectedElement.classList.contains("draggable-image")){
-            selectedElement.style.width = Math.max(40, selectedElement.offsetWidth - 20) + "px";
-        }
-        else if(selectedElement.classList.contains("white-eraser")){
-            selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
-        }
-        else{
-            selectedElement.style.transform = "scale(0.9)";
-        }
-    }
     hideContextMenu();
 });
 
 /* UNDO */
 
 undoBtn.addEventListener("click", function(){
+
     if(undoStack.length > 0){
-        const lastState = undoStack.pop();
-        ctx.putImageData(lastState, 0, 0);
+
+        const lastState =
+            undoStack.pop();
+
+        ctx.putImageData(lastState,0,0);
     }
+
     else{
         alert("Nothing to undo.");
     }
 });
 
-/* DOWNLOAD AS PDF */
+/* DOWNLOAD */
 
 downloadBtn.addEventListener("click", async function(){
+
     if(!canvas.width){
         alert("Please upload PDF first.");
         return;
     }
 
-    hideContextMenu();
+    const imageData =
+        canvas.toDataURL("image/png");
 
-    const tempCanvas = document.createElement("canvas");
-    const tempCtx = tempCanvas.getContext("2d");
+    const pdf =
+        await PDFLib.PDFDocument.create();
 
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
+    const page =
+        pdf.addPage([
+            canvas.width,
+            canvas.height
+        ]);
 
-    tempCtx.drawImage(canvas, 0, 0);
+    const pngImage =
+        await pdf.embedPng(imageData);
 
-    const elements = previewBox.querySelectorAll(
-        ".editable-text, .draggable-image, .shape-element, .white-eraser"
-    );
-
-    for(const el of elements){
-        const x = el.offsetLeft - canvas.offsetLeft;
-        const y = el.offsetTop - canvas.offsetTop;
-
-        if(el.classList.contains("white-eraser")){
-            tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
-            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
-        }
-
-        if(el.classList.contains("editable-text")){
-            const style = window.getComputedStyle(el);
-
-            tempCtx.fillStyle = style.backgroundColor;
-            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
-
-            tempCtx.font = style.fontSize + " Arial";
-            tempCtx.fillStyle = style.color;
-            tempCtx.fillText(el.innerText, x + 5, y + el.offsetHeight - 8);
-        }
-
-        if(el.classList.contains("draggable-image")){
-            await new Promise(resolve => {
-                const img = new Image();
-                img.onload = function(){
-                    tempCtx.drawImage(img, x, y, el.offsetWidth, el.offsetHeight);
-                    resolve();
-                };
-                img.src = el.src;
-            });
-        }
-
-        if(el.classList.contains("rectangle-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.strokeRect(x, y, el.offsetWidth, el.offsetHeight);
-        }
-
-        if(el.classList.contains("circle-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.beginPath();
-            tempCtx.ellipse(
-                x + el.offsetWidth / 2,
-                y + el.offsetHeight / 2,
-                el.offsetWidth / 2,
-                el.offsetHeight / 2,
-                0,
-                0,
-                Math.PI * 2
-            );
-            tempCtx.stroke();
-        }
-
-        if(el.classList.contains("line-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.beginPath();
-            tempCtx.moveTo(x, y);
-            tempCtx.lineTo(x + el.offsetWidth, y);
-            tempCtx.stroke();
-        }
-
-        if(el.classList.contains("arrow-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.fillStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-
-            tempCtx.beginPath();
-            tempCtx.moveTo(x, y);
-            tempCtx.lineTo(x + el.offsetWidth, y);
-            tempCtx.stroke();
-
-            tempCtx.beginPath();
-            tempCtx.moveTo(x + el.offsetWidth, y);
-            tempCtx.lineTo(x + el.offsetWidth - 15, y - 8);
-            tempCtx.lineTo(x + el.offsetWidth - 15, y + 8);
-            tempCtx.closePath();
-            tempCtx.fill();
-        }
-    }
-
-    const imageData = tempCanvas.toDataURL("image/png");
-
-    const pdf = await PDFLib.PDFDocument.create();
-    const page = pdf.addPage([canvas.width, canvas.height]);
-
-    const pngImage = await pdf.embedPng(imageData);
-
-    page.drawImage(pngImage, {
-        x: 0,
-        y: 0,
-        width: canvas.width,
-        height: canvas.height
+    page.drawImage(pngImage,{
+        x:0,
+        y:0,
+        width:canvas.width,
+        height:canvas.height
     });
 
-    const pdfBytes = await pdf.save();
+    const pdfBytes =
+        await pdf.save();
 
-    const blob = new Blob([pdfBytes], {
-        type: "application/pdf"
-    });
+    const blob =
+        new Blob(
+            [pdfBytes],
+            {type:"application/pdf"}
+        );
 
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "edited-pdf.pdf";
+    const link =
+        document.createElement("a");
+
+    link.href =
+        URL.createObjectURL(blob);
+
+    link.download =
+        "edited-pdf.pdf";
+
     link.click();
+
+    setInfo("PDF downloaded.");
 });
