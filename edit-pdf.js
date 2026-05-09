@@ -6,11 +6,20 @@ const canvas = document.getElementById("pdfCanvas");
 const ctx = canvas.getContext("2d");
 const previewBox = document.getElementById("pdfPreview");
 
+const toolInfo = document.getElementById("toolInfo");
+
 const drawColor = document.getElementById("drawColor");
 const brushSize = document.getElementById("brushSize");
 const undoBtn = document.getElementById("undoBtn");
 const imageSize = document.getElementById("imageSize");
-const eraserSize = document.getElementById("eraserSize");
+
+const eraserWidth = document.getElementById("eraserWidth");
+const eraserHeight = document.getElementById("eraserHeight");
+const eraserColor = document.getElementById("eraserColor");
+
+const shapeColor = document.getElementById("shapeColor");
+const shapeBorderSize = document.getElementById("shapeBorderSize");
+const shapeSize = document.getElementById("shapeSize");
 
 const ocrOutputBox = document.getElementById("ocrOutputBox");
 const ocrText = document.getElementById("ocrText");
@@ -32,7 +41,11 @@ let highlightMode = false;
 
 let undoStack = [];
 
-/* BASIC FUNCTIONS */
+/* BASIC */
+
+function setInfo(text){
+    toolInfo.innerText = text;
+}
 
 function saveUndo(){
     if(canvas.width && canvas.height){
@@ -42,6 +55,13 @@ function saveUndo(){
 
 function hideContextMenu(){
     contextMenu.style.display = "none";
+}
+
+function clearSelection(){
+    document.querySelectorAll(".editable-text, .draggable-image, .shape-element, .white-eraser")
+        .forEach(item => item.classList.remove("selected-element"));
+
+    selectedElement = null;
 }
 
 function selectElement(el){
@@ -83,6 +103,10 @@ document.addEventListener("click", function(){
     hideContextMenu();
 });
 
+previewBox.addEventListener("click", function(){
+    hideContextMenu();
+});
+
 document.addEventListener("mousemove", function(e){
     if(dragElement){
         dragElement.style.left = (e.clientX - offsetX) + "px";
@@ -106,6 +130,7 @@ pdfUpload.addEventListener("change", async function(e){
         const typedarray = new Uint8Array(this.result);
         pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
         renderPage(currentPage);
+        setInfo("PDF uploaded. Now choose any tool from the left side.");
     };
 
     fileReader.readAsArrayBuffer(file);
@@ -149,12 +174,14 @@ function addEditableText(){
     makeDraggable(textBox);
     selectElement(textBox);
     textBox.focus();
+
+    setInfo("Text added. You can type, drag, change font size/color, or right-click for options.");
 }
 
-/* EDIT TEXT PRACTICAL TOOL */
+/* EDIT TEXT MODE */
 
-function editTextTool(){
-    alert("Old PDF text cannot be directly edited in browser. Use White Eraser to cover old text, then Add Text to place new text.");
+function editTextMode(){
+    setInfo("Edit Text Mode: Use White Eraser to cover old PDF text, then use Add Text to write new text.");
 }
 
 /* WHITE ERASER */
@@ -165,15 +192,18 @@ function addWhiteEraser(){
     eraser.className = "white-eraser";
     eraser.style.left = "150px";
     eraser.style.top = "150px";
-    eraser.style.width = eraserSize.value + "px";
-    eraser.style.height = "60px";
+    eraser.style.width = eraserWidth.value + "px";
+    eraser.style.height = eraserHeight.value + "px";
+    eraser.style.background = eraserColor.value;
 
     previewBox.appendChild(eraser);
     makeDraggable(eraser);
     selectElement(eraser);
+
+    setInfo("White Eraser added. Drag it over old PDF text. Adjust width/height from right panel.");
 }
 
-/* ADD IMAGE / SIGNATURE */
+/* IMAGE / SIGNATURE */
 
 function addImageToPDF(file){
     const reader = new FileReader();
@@ -190,6 +220,8 @@ function addImageToPDF(file){
         previewBox.appendChild(img);
         makeDraggable(img);
         selectElement(img);
+
+        setInfo("Image/Signature added. Drag it, resize it from right panel, or right-click for options.");
     };
 
     reader.readAsDataURL(file);
@@ -207,10 +239,45 @@ imageUpload.addEventListener("change", function(){
 
 /* SHAPES */
 
+function applyShapeStyle(shape, type){
+    const color = shapeColor.value;
+    const border = shapeBorderSize.value + "px";
+    const size = parseInt(shapeSize.value);
+
+    if(type === "rectangle"){
+        shape.style.width = size + "px";
+        shape.style.height = Math.round(size * 0.65) + "px";
+        shape.style.border = border + " solid " + color;
+        shape.style.background = "transparent";
+    }
+
+    if(type === "circle"){
+        shape.style.width = size + "px";
+        shape.style.height = size + "px";
+        shape.style.border = border + " solid " + color;
+        shape.style.borderRadius = "50%";
+        shape.style.background = "transparent";
+    }
+
+    if(type === "line"){
+        shape.style.width = size + "px";
+        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.background = color;
+    }
+
+    if(type === "arrow"){
+        shape.style.width = size + "px";
+        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.background = color;
+        shape.style.setProperty("--arrow-color", color);
+    }
+}
+
 function addShape(type){
     const shape = document.createElement("div");
 
     shape.classList.add("shape-element");
+    shape.dataset.shapeType = type;
 
     if(type === "rectangle"){
         shape.classList.add("rectangle-shape");
@@ -231,9 +298,13 @@ function addShape(type){
     shape.style.left = "180px";
     shape.style.top = "180px";
 
+    applyShapeStyle(shape, type);
+
     previewBox.appendChild(shape);
     makeDraggable(shape);
     selectElement(shape);
+
+    setInfo(type + " shape added. Drag it, change color/size from right panel, or right-click for options.");
 }
 
 /* DRAW + HIGHLIGHT */
@@ -300,6 +371,8 @@ function addWatermark(){
     ctx.textAlign = "center";
     ctx.fillText(text, 0, 0);
     ctx.restore();
+
+    setInfo("Watermark added.");
 }
 
 /* PAGE NUMBER */
@@ -366,6 +439,8 @@ function addPageNumber(){
     ctx.textAlign = "center";
     ctx.fillText(text, x, y);
     ctx.restore();
+
+    setInfo("Page number added.");
 }
 
 /* DELETE PAGE */
@@ -378,7 +453,7 @@ function deletePage(){
 
     saveUndo();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    alert("Current page cleared.");
+    setInfo("Current page cleared.");
 }
 
 /* OCR */
@@ -390,7 +465,7 @@ async function runOCR(){
     }
 
     ocrOutputBox.style.display = "block";
-    ocrText.value = "Scanning text... Please wait.";
+    ocrText.value = "Scanning text... Please wait. OCR may take 1–3 minutes for scanned PDFs.";
 
     try{
         const result = await Tesseract.recognize(
@@ -399,10 +474,12 @@ async function runOCR(){
         );
 
         ocrText.value = result.data.text;
+        setInfo("OCR completed. Text is available below.");
     }
     catch(error){
         console.error(error);
         ocrText.value = "OCR failed.";
+        setInfo("OCR failed. Please try with a clearer PDF.");
     }
 }
 
@@ -411,7 +488,7 @@ async function runOCR(){
 function translateText(){
     if(
         !ocrText.value ||
-        ocrText.value === "Scanning text... Please wait."
+        ocrText.value.includes("Scanning text")
     ){
         alert("Please run OCR Scan first.");
         return;
@@ -434,7 +511,7 @@ function translateText(){
     ocrText.value = translated;
     ocrOutputBox.style.display = "block";
 
-    alert("Basic translation completed.");
+    setInfo("Basic translation completed.");
 }
 
 /* PROPERTY CONTROLS */
@@ -463,9 +540,39 @@ imageSize.addEventListener("input", function(){
     }
 });
 
-eraserSize.addEventListener("input", function(){
+eraserWidth.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("white-eraser")){
         selectedElement.style.width = this.value + "px";
+    }
+});
+
+eraserHeight.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("white-eraser")){
+        selectedElement.style.height = this.value + "px";
+    }
+});
+
+eraserColor.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("white-eraser")){
+        selectedElement.style.background = this.value;
+    }
+});
+
+shapeColor.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+    }
+});
+
+shapeBorderSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+    }
+});
+
+shapeSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
     }
 });
 
@@ -473,20 +580,26 @@ eraserSize.addEventListener("input", function(){
 
 document.getElementById("addTextBtn").addEventListener("click", addEditableText);
 
-document.getElementById("editTextBtn").addEventListener("click", editTextTool);
+document.getElementById("editTextBtn").addEventListener("click", editTextMode);
 
 document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
 
 document.getElementById("drawBtn").addEventListener("click", function(){
     drawMode = !drawMode;
     highlightMode = false;
-    alert(drawMode ? "Draw Mode Enabled" : "Draw Mode Disabled");
+
+    setInfo(drawMode ? "Draw Mode Enabled. Draw on the PDF." : "Draw Mode Disabled.");
 });
 
 document.getElementById("highlightBtn").addEventListener("click", function(){
     highlightMode = !highlightMode;
     drawMode = false;
-    alert(highlightMode ? "Highlight Mode Enabled" : "Highlight Mode Disabled");
+
+    setInfo(highlightMode ? "Highlight Mode Enabled. Drag over text to highlight." : "Highlight Mode Disabled.");
+});
+
+document.getElementById("shapesBtn").addEventListener("click", function(){
+    document.getElementById("shapePanel").classList.toggle("show");
 });
 
 document.getElementById("rectangleBtn").addEventListener("click", function(){
@@ -523,6 +636,7 @@ document.getElementById("rotateBtn").addEventListener("click", function(){
 
     rotation = (rotation + 90) % 360;
     renderPage(currentPage);
+    setInfo("Page rotated.");
 });
 
 document.getElementById("deletePageBtn").addEventListener("click", deletePage);
@@ -579,6 +693,9 @@ document.getElementById("ctxIncrease").addEventListener("click", function(){
         if(selectedElement.classList.contains("draggable-image")){
             selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
         }
+        else if(selectedElement.classList.contains("white-eraser")){
+            selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
+        }
         else{
             selectedElement.style.transform = "scale(1.15)";
         }
@@ -590,6 +707,9 @@ document.getElementById("ctxDecrease").addEventListener("click", function(){
     if(selectedElement){
         if(selectedElement.classList.contains("draggable-image")){
             selectedElement.style.width = Math.max(40, selectedElement.offsetWidth - 20) + "px";
+        }
+        else if(selectedElement.classList.contains("white-eraser")){
+            selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
         }
         else{
             selectedElement.style.transform = "scale(0.9)";
@@ -636,18 +756,20 @@ downloadBtn.addEventListener("click", async function(){
         const x = el.offsetLeft - canvas.offsetLeft;
         const y = el.offsetTop - canvas.offsetTop;
 
-        if(el.classList.contains("editable-text")){
-            tempCtx.font = window.getComputedStyle(el).fontSize + " Arial";
+        if(el.classList.contains("white-eraser")){
             tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
             tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
-
-            tempCtx.fillStyle = window.getComputedStyle(el).color;
-            tempCtx.fillText(el.innerText, x + 5, y + el.offsetHeight - 8);
         }
 
-        if(el.classList.contains("white-eraser")){
-            tempCtx.fillStyle = "white";
+        if(el.classList.contains("editable-text")){
+            const style = window.getComputedStyle(el);
+
+            tempCtx.fillStyle = style.backgroundColor;
             tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
+
+            tempCtx.font = style.fontSize + " Arial";
+            tempCtx.fillStyle = style.color;
+            tempCtx.fillText(el.innerText, x + 5, y + el.offsetHeight - 8);
         }
 
         if(el.classList.contains("draggable-image")){
@@ -662,14 +784,14 @@ downloadBtn.addEventListener("click", async function(){
         }
 
         if(el.classList.contains("rectangle-shape")){
-            tempCtx.strokeStyle = "red";
-            tempCtx.lineWidth = 4;
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
             tempCtx.strokeRect(x, y, el.offsetWidth, el.offsetHeight);
         }
 
         if(el.classList.contains("circle-shape")){
-            tempCtx.strokeStyle = "blue";
-            tempCtx.lineWidth = 4;
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
             tempCtx.beginPath();
             tempCtx.ellipse(
                 x + el.offsetWidth / 2,
@@ -684,8 +806,8 @@ downloadBtn.addEventListener("click", async function(){
         }
 
         if(el.classList.contains("line-shape")){
-            tempCtx.strokeStyle = "black";
-            tempCtx.lineWidth = 4;
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
             tempCtx.beginPath();
             tempCtx.moveTo(x, y);
             tempCtx.lineTo(x + el.offsetWidth, y);
@@ -693,9 +815,9 @@ downloadBtn.addEventListener("click", async function(){
         }
 
         if(el.classList.contains("arrow-shape")){
-            tempCtx.strokeStyle = "black";
-            tempCtx.fillStyle = "black";
-            tempCtx.lineWidth = 4;
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.fillStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
 
             tempCtx.beginPath();
             tempCtx.moveTo(x, y);
