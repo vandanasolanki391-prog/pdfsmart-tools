@@ -549,11 +549,20 @@ buttons.forEach(btn => {
             addPageNumber();
         }
 
-      else if(btn.innerText === "OCR Scan"){
-    runOCR();
-        }
+     else if(btn.innerText.includes("Translate")){
 
-      else if(btn.innerText === "Translate PDF"){
+    ocrOutputBox.style.display = "block";
+
+    if(
+        !ocrText.value ||
+        ocrText.value === "Scanning text... Please wait."
+    ){
+
+        alert("Please run OCR Scan first.");
+
+        return;
+
+    }
 
     translateText();
 
