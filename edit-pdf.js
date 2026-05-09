@@ -2,19 +2,20 @@ const pdfUpload = document.getElementById("pdfUpload");
 const imageUpload = document.getElementById("imageUpload");
 const downloadBtn = document.getElementById("downloadBtn");
 
+const canvas = document.getElementById("pdfCanvas");
+const ctx = canvas.getContext("2d");
+const previewBox = document.getElementById("pdfPreview");
+
 const drawColor = document.getElementById("drawColor");
 const brushSize = document.getElementById("brushSize");
 const undoBtn = document.getElementById("undoBtn");
 const imageSize = document.getElementById("imageSize");
-
-const canvas = document.getElementById("pdfCanvas");
-const ctx = canvas.getContext("2d");
-const previewBox = document.querySelector(".pdf-preview");
+const eraserSize = document.getElementById("eraserSize");
 
 const ocrOutputBox = document.getElementById("ocrOutputBox");
 const ocrText = document.getElementById("ocrText");
 
-previewBox.style.position = "relative";
+const contextMenu = document.getElementById("contextMenu");
 
 let pdfDoc = null;
 let currentPage = 1;
@@ -22,7 +23,6 @@ let rotation = 0;
 
 let selectedElement = null;
 let dragElement = null;
-
 let offsetX = 0;
 let offsetY = 0;
 
@@ -32,19 +32,67 @@ let highlightMode = false;
 
 let undoStack = [];
 
+/* BASIC FUNCTIONS */
+
 function saveUndo(){
     if(canvas.width && canvas.height){
         undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
     }
 }
 
+function hideContextMenu(){
+    contextMenu.style.display = "none";
+}
+
 function selectElement(el){
-    document.querySelectorAll(".editable-text, .draggable-image")
-    .forEach(item => item.classList.remove("selected-element"));
+    document.querySelectorAll(".editable-text, .draggable-image, .shape-element, .white-eraser")
+        .forEach(item => item.classList.remove("selected-element"));
 
     selectedElement = el;
     selectedElement.classList.add("selected-element");
 }
+
+function makeDraggable(el){
+    el.addEventListener("click", function(e){
+        e.stopPropagation();
+        selectElement(el);
+    });
+
+    el.addEventListener("mousedown", function(e){
+        if(e.button !== 0) return;
+
+        e.stopPropagation();
+        selectElement(el);
+
+        dragElement = el;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+    });
+
+    el.addEventListener("contextmenu", function(e){
+        e.preventDefault();
+        selectElement(el);
+
+        contextMenu.style.left = e.pageX + "px";
+        contextMenu.style.top = e.pageY + "px";
+        contextMenu.style.display = "block";
+    });
+}
+
+document.addEventListener("click", function(){
+    hideContextMenu();
+});
+
+document.addEventListener("mousemove", function(e){
+    if(dragElement){
+        dragElement.style.left = (e.clientX - offsetX) + "px";
+        dragElement.style.top = (e.clientY - offsetY) + "px";
+    }
+});
+
+document.addEventListener("mouseup", function(){
+    dragElement = null;
+});
 
 /* PDF LOAD */
 
@@ -67,13 +115,14 @@ pdfUpload.addEventListener("change", async function(e){
 
 async function renderPage(pageNumber){
     const page = await pdfDoc.getPage(pageNumber);
+
     const viewport = page.getViewport({
         scale: 1.5,
         rotation: rotation
     });
 
-    canvas.height = viewport.height;
     canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
     await page.render({
         canvasContext: ctx,
@@ -90,35 +139,38 @@ function addEditableText(){
     textBox.contentEditable = true;
     textBox.className = "editable-text";
 
-    textBox.style.position = "absolute";
     textBox.style.left = "120px";
     textBox.style.top = "120px";
-    textBox.style.fontSize = "20px";
-    textBox.style.fontFamily = "Arial";
-    textBox.style.color = "#000";
-    textBox.style.padding = "5px 8px";
-    textBox.style.border = "1px dashed #2563eb";
-    textBox.style.background = "rgba(255,255,255,0.7)";
-    textBox.style.cursor = "move";
-    textBox.style.zIndex = "1000";
+    textBox.style.fontSize = document.getElementById("textFontSize").value + "px";
+    textBox.style.color = document.getElementById("textColor").value;
+    textBox.style.background = document.getElementById("textBgColor").value;
 
     previewBox.appendChild(textBox);
+    makeDraggable(textBox);
     selectElement(textBox);
     textBox.focus();
+}
 
-    textBox.addEventListener("click", function(e){
-        e.stopPropagation();
-        selectElement(textBox);
-    });
+/* EDIT TEXT PRACTICAL TOOL */
 
-    textBox.addEventListener("mousedown", function(e){
-        e.stopPropagation();
-        selectElement(textBox);
+function editTextTool(){
+    alert("Old PDF text cannot be directly edited in browser. Use White Eraser to cover old text, then Add Text to place new text.");
+}
 
-        dragElement = textBox;
-        offsetX = e.clientX - textBox.offsetLeft;
-        offsetY = e.clientY - textBox.offsetTop;
-    });
+/* WHITE ERASER */
+
+function addWhiteEraser(){
+    const eraser = document.createElement("div");
+
+    eraser.className = "white-eraser";
+    eraser.style.left = "150px";
+    eraser.style.top = "150px";
+    eraser.style.width = eraserSize.value + "px";
+    eraser.style.height = "60px";
+
+    previewBox.appendChild(eraser);
+    makeDraggable(eraser);
+    selectElement(eraser);
 }
 
 /* ADD IMAGE / SIGNATURE */
@@ -131,33 +183,57 @@ function addImageToPDF(file){
 
         img.src = e.target.result;
         img.className = "draggable-image";
-
-        img.style.position = "absolute";
         img.style.left = "150px";
         img.style.top = "150px";
-        img.style.width = "150px";
-        img.style.zIndex = "1000";
-        img.style.cursor = "move";
+        img.style.width = imageSize.value + "px";
 
         previewBox.appendChild(img);
+        makeDraggable(img);
         selectElement(img);
-
-        img.addEventListener("click", function(e){
-            e.stopPropagation();
-            selectElement(img);
-        });
-
-        img.addEventListener("mousedown", function(e){
-            e.stopPropagation();
-            selectElement(img);
-
-            dragElement = img;
-            offsetX = e.clientX - img.offsetLeft;
-            offsetY = e.clientY - img.offsetTop;
-        });
     };
 
     reader.readAsDataURL(file);
+}
+
+imageUpload.addEventListener("change", function(){
+    const file = this.files[0];
+
+    if(file){
+        addImageToPDF(file);
+    }
+
+    imageUpload.value = "";
+});
+
+/* SHAPES */
+
+function addShape(type){
+    const shape = document.createElement("div");
+
+    shape.classList.add("shape-element");
+
+    if(type === "rectangle"){
+        shape.classList.add("rectangle-shape");
+    }
+
+    if(type === "circle"){
+        shape.classList.add("circle-shape");
+    }
+
+    if(type === "line"){
+        shape.classList.add("line-shape");
+    }
+
+    if(type === "arrow"){
+        shape.classList.add("arrow-shape");
+    }
+
+    shape.style.left = "180px";
+    shape.style.top = "180px";
+
+    previewBox.appendChild(shape);
+    makeDraggable(shape);
+    selectElement(shape);
 }
 
 /* DRAW + HIGHLIGHT */
@@ -165,7 +241,6 @@ function addImageToPDF(file){
 canvas.addEventListener("mousedown", function(e){
     if(drawMode || highlightMode){
         saveUndo();
-
         isDrawing = true;
         ctx.beginPath();
         ctx.moveTo(e.offsetX, e.offsetY);
@@ -191,7 +266,6 @@ canvas.addEventListener("mousemove", function(e){
 
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
-
         ctx.globalAlpha = 1;
     }
 });
@@ -200,30 +274,6 @@ canvas.addEventListener("mouseup", function(){
     isDrawing = false;
     ctx.globalAlpha = 1;
 });
-
-/* DRAG MOVE */
-
-document.addEventListener("mousemove", function(e){
-    if(dragElement){
-        dragElement.style.left = (e.clientX - offsetX) + "px";
-        dragElement.style.top = (e.clientY - offsetY) + "px";
-    }
-});
-
-document.addEventListener("mouseup", function(){
-    dragElement = null;
-});
-
-/* DELETE SELECTED */
-
-function deleteSelected(){
-    if(selectedElement){
-        selectedElement.remove();
-        selectedElement = null;
-    } else {
-        alert("Please select text/image first.");
-    }
-}
 
 /* WATERMARK */
 
@@ -239,19 +289,16 @@ function addWatermark(){
     const color = document.getElementById("watermarkColor").value;
     const size = document.getElementById("watermarkSize").value;
     const opacity = document.getElementById("watermarkOpacity").value / 100;
-    const rotationValue = document.getElementById("watermarkRotation").value;
+    const rotate = document.getElementById("watermarkRotation").value;
 
     ctx.save();
     ctx.globalAlpha = opacity;
     ctx.font = size + "px Arial";
     ctx.fillStyle = color;
-
     ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(rotationValue * Math.PI / 180);
+    ctx.rotate(rotate * Math.PI / 180);
     ctx.textAlign = "center";
-
     ctx.fillText(text, 0, 0);
-
     ctx.restore();
 }
 
@@ -390,140 +437,165 @@ function translateText(){
     alert("Basic translation completed.");
 }
 
-/* IMAGE UPLOAD */
-
-imageUpload.addEventListener("change", function(){
-    const file = this.files[0];
-
-    if(file){
-        addImageToPDF(file);
-    }
-
-    imageUpload.value = "";
-});
-
-/* IMAGE RESIZE */
-
-if(imageSize){
-    imageSize.addEventListener("input", function(){
-        if(
-            selectedElement &&
-            selectedElement.classList.contains("draggable-image")
-        ){
-            selectedElement.style.width = imageSize.value + "px";
-        }
-    });
-}
-
-/* TEXT FONT SIZE */
+/* PROPERTY CONTROLS */
 
 document.getElementById("textFontSize").addEventListener("input", function(){
-    if(
-        selectedElement &&
-        selectedElement.classList.contains("editable-text")
-    ){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
         selectedElement.style.fontSize = this.value + "px";
     }
 });
 
-/* TEXT COLOR */
-
 document.getElementById("textColor").addEventListener("input", function(){
-    if(
-        selectedElement &&
-        selectedElement.classList.contains("editable-text")
-    ){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
         selectedElement.style.color = this.value;
     }
 });
 
-/* TEXT BACKGROUND */
-
 document.getElementById("textBgColor").addEventListener("input", function(){
-    if(
-        selectedElement &&
-        selectedElement.classList.contains("editable-text")
-    ){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
         selectedElement.style.background = this.value;
     }
 });
 
-/* BUTTON ACTIONS */
+imageSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("draggable-image")){
+        selectedElement.style.width = this.value + "px";
+    }
+});
 
-const buttons = document.querySelectorAll(".sidebar button");
+eraserSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("white-eraser")){
+        selectedElement.style.width = this.value + "px";
+    }
+});
 
-buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
+/* BUTTONS */
 
-        if(btn.innerText === "Add Text"){
-            addEditableText();
+document.getElementById("addTextBtn").addEventListener("click", addEditableText);
+
+document.getElementById("editTextBtn").addEventListener("click", editTextTool);
+
+document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
+
+document.getElementById("drawBtn").addEventListener("click", function(){
+    drawMode = !drawMode;
+    highlightMode = false;
+    alert(drawMode ? "Draw Mode Enabled" : "Draw Mode Disabled");
+});
+
+document.getElementById("highlightBtn").addEventListener("click", function(){
+    highlightMode = !highlightMode;
+    drawMode = false;
+    alert(highlightMode ? "Highlight Mode Enabled" : "Highlight Mode Disabled");
+});
+
+document.getElementById("rectangleBtn").addEventListener("click", function(){
+    addShape("rectangle");
+});
+
+document.getElementById("circleBtn").addEventListener("click", function(){
+    addShape("circle");
+});
+
+document.getElementById("lineBtn").addEventListener("click", function(){
+    addShape("line");
+});
+
+document.getElementById("arrowBtn").addEventListener("click", function(){
+    addShape("arrow");
+});
+
+document.getElementById("addImageBtn").addEventListener("click", function(){
+    imageUpload.click();
+});
+
+document.getElementById("signatureBtn").addEventListener("click", function(){
+    imageUpload.click();
+});
+
+document.getElementById("watermarkBtn").addEventListener("click", addWatermark);
+
+document.getElementById("rotateBtn").addEventListener("click", function(){
+    if(!pdfDoc){
+        alert("Please upload PDF first.");
+        return;
+    }
+
+    rotation = (rotation + 90) % 360;
+    renderPage(currentPage);
+});
+
+document.getElementById("deletePageBtn").addEventListener("click", deletePage);
+
+document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
+
+document.getElementById("ocrBtn").addEventListener("click", runOCR);
+
+document.getElementById("translateBtn").addEventListener("click", function(){
+    ocrOutputBox.style.display = "block";
+    translateText();
+});
+
+/* CONTEXT MENU */
+
+document.getElementById("ctxDelete").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.remove();
+        selectedElement = null;
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxDuplicate").addEventListener("click", function(){
+    if(selectedElement){
+        const clone = selectedElement.cloneNode(true);
+
+        clone.style.left = (selectedElement.offsetLeft + 20) + "px";
+        clone.style.top = (selectedElement.offsetTop + 20) + "px";
+
+        previewBox.appendChild(clone);
+        makeDraggable(clone);
+        selectElement(clone);
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxBringFront").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.style.zIndex = "5000";
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxSendBack").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.style.zIndex = "900";
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxIncrease").addEventListener("click", function(){
+    if(selectedElement){
+        if(selectedElement.classList.contains("draggable-image")){
+            selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
         }
-
-        else if(btn.innerText === "Draw"){
-            drawMode = !drawMode;
-            highlightMode = false;
-            alert(drawMode ? "Draw Mode Enabled" : "Draw Mode Disabled");
+        else{
+            selectedElement.style.transform = "scale(1.15)";
         }
+    }
+    hideContextMenu();
+});
 
-        else if(btn.innerText === "Highlight"){
-            highlightMode = !highlightMode;
-            drawMode = false;
-            alert(highlightMode ? "Highlight Mode Enabled" : "Highlight Mode Disabled");
+document.getElementById("ctxDecrease").addEventListener("click", function(){
+    if(selectedElement){
+        if(selectedElement.classList.contains("draggable-image")){
+            selectedElement.style.width = Math.max(40, selectedElement.offsetWidth - 20) + "px";
         }
-
-        else if(btn.innerText === "Add Image"){
-            imageUpload.click();
+        else{
+            selectedElement.style.transform = "scale(0.9)";
         }
-
-        else if(btn.innerText === "Signature"){
-            imageUpload.click();
-        }
-
-        else if(btn.innerText === "Watermark"){
-            addWatermark();
-        }
-
-        else if(btn.innerText === "Rotate Page"){
-            if(!pdfDoc){
-                alert("Please upload PDF first.");
-                return;
-            }
-
-            rotation = (rotation + 90) % 360;
-            renderPage(currentPage);
-        }
-
-        else if(btn.innerText === "Delete Page"){
-            deletePage();
-        }
-
-        else if(btn.innerText === "Page Number"){
-            addPageNumber();
-        }
-
-        else if(btn.innerText === "OCR Scan"){
-            runOCR();
-        }
-
-        else if(btn.innerText.includes("Translate")){
-            ocrOutputBox.style.display = "block";
-
-            if(
-                !ocrText.value ||
-                ocrText.value === "Scanning text... Please wait."
-            ){
-                alert("Please run OCR Scan first.");
-                return;
-            }
-
-            translateText();
-        }
-
-        else if(btn.innerText === "Erase / Delete Selected"){
-            deleteSelected();
-        }
-
-    });
+    }
+    hideContextMenu();
 });
 
 /* UNDO */
@@ -532,7 +604,8 @@ undoBtn.addEventListener("click", function(){
     if(undoStack.length > 0){
         const lastState = undoStack.pop();
         ctx.putImageData(lastState, 0, 0);
-    } else {
+    }
+    else{
         alert("Nothing to undo.");
     }
 });
@@ -545,10 +618,102 @@ downloadBtn.addEventListener("click", async function(){
         return;
     }
 
-    const imageData = canvas.toDataURL("image/png");
+    hideContextMenu();
+
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
+
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+
+    tempCtx.drawImage(canvas, 0, 0);
+
+    const elements = previewBox.querySelectorAll(
+        ".editable-text, .draggable-image, .shape-element, .white-eraser"
+    );
+
+    for(const el of elements){
+        const x = el.offsetLeft - canvas.offsetLeft;
+        const y = el.offsetTop - canvas.offsetTop;
+
+        if(el.classList.contains("editable-text")){
+            tempCtx.font = window.getComputedStyle(el).fontSize + " Arial";
+            tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
+            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
+
+            tempCtx.fillStyle = window.getComputedStyle(el).color;
+            tempCtx.fillText(el.innerText, x + 5, y + el.offsetHeight - 8);
+        }
+
+        if(el.classList.contains("white-eraser")){
+            tempCtx.fillStyle = "white";
+            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
+        }
+
+        if(el.classList.contains("draggable-image")){
+            await new Promise(resolve => {
+                const img = new Image();
+                img.onload = function(){
+                    tempCtx.drawImage(img, x, y, el.offsetWidth, el.offsetHeight);
+                    resolve();
+                };
+                img.src = el.src;
+            });
+        }
+
+        if(el.classList.contains("rectangle-shape")){
+            tempCtx.strokeStyle = "red";
+            tempCtx.lineWidth = 4;
+            tempCtx.strokeRect(x, y, el.offsetWidth, el.offsetHeight);
+        }
+
+        if(el.classList.contains("circle-shape")){
+            tempCtx.strokeStyle = "blue";
+            tempCtx.lineWidth = 4;
+            tempCtx.beginPath();
+            tempCtx.ellipse(
+                x + el.offsetWidth / 2,
+                y + el.offsetHeight / 2,
+                el.offsetWidth / 2,
+                el.offsetHeight / 2,
+                0,
+                0,
+                Math.PI * 2
+            );
+            tempCtx.stroke();
+        }
+
+        if(el.classList.contains("line-shape")){
+            tempCtx.strokeStyle = "black";
+            tempCtx.lineWidth = 4;
+            tempCtx.beginPath();
+            tempCtx.moveTo(x, y);
+            tempCtx.lineTo(x + el.offsetWidth, y);
+            tempCtx.stroke();
+        }
+
+        if(el.classList.contains("arrow-shape")){
+            tempCtx.strokeStyle = "black";
+            tempCtx.fillStyle = "black";
+            tempCtx.lineWidth = 4;
+
+            tempCtx.beginPath();
+            tempCtx.moveTo(x, y);
+            tempCtx.lineTo(x + el.offsetWidth, y);
+            tempCtx.stroke();
+
+            tempCtx.beginPath();
+            tempCtx.moveTo(x + el.offsetWidth, y);
+            tempCtx.lineTo(x + el.offsetWidth - 15, y - 8);
+            tempCtx.lineTo(x + el.offsetWidth - 15, y + 8);
+            tempCtx.closePath();
+            tempCtx.fill();
+        }
+    }
+
+    const imageData = tempCanvas.toDataURL("image/png");
 
     const pdf = await PDFLib.PDFDocument.create();
-
     const page = pdf.addPage([canvas.width, canvas.height]);
 
     const pngImage = await pdf.embedPng(imageData);
@@ -567,9 +732,7 @@ downloadBtn.addEventListener("click", async function(){
     });
 
     const link = document.createElement("a");
-
     link.href = URL.createObjectURL(blob);
     link.download = "edited-pdf.pdf";
-
     link.click();
 });
