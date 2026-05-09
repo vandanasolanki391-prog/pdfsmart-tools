@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="edit-pdf.css" />
 
-    <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
@@ -22,21 +21,24 @@
 
 <section class="editor-layout">
 
-    <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
         <h3>PDF Tools</h3>
 
         <button id="addTextBtn">Add Text</button>
-        <button id="editTextBtn">Edit Text</button>
+        <button id="editTextBtn">Edit Text Mode</button>
         <button id="whiteEraserBtn">White Eraser</button>
 
         <button id="drawBtn">Draw</button>
         <button id="highlightBtn">Highlight</button>
 
-        <button id="rectangleBtn">Rectangle</button>
-        <button id="circleBtn">Circle</button>
-        <button id="lineBtn">Line</button>
-        <button id="arrowBtn">Arrow</button>
+        <button id="shapesBtn">Shapes ▾</button>
+
+        <div class="shape-panel" id="shapePanel">
+            <button id="rectangleBtn">▭ Rectangle</button>
+            <button id="circleBtn">◯ Circle</button>
+            <button id="lineBtn">／ Line</button>
+            <button id="arrowBtn">➜ Arrow</button>
+        </div>
 
         <button id="addImageBtn">Add Image</button>
         <button id="signatureBtn">Signature</button>
@@ -50,18 +52,21 @@
         <button id="translateBtn">Translate PDF</button>
     </aside>
 
-    <!-- MAIN AREA -->
     <main class="main-area">
 
         <div class="upload-box">
             <h1>Edit PDF Tool</h1>
-            <p>Upload your PDF and start editing with smart tools.</p>
+            <p>Upload your PDF and edit using text, eraser, shapes, watermark, OCR and more.</p>
 
             <label for="pdfUpload" class="upload-label">
                 📤 Choose PDF File
             </label>
 
             <input type="file" id="pdfUpload" accept="application/pdf" />
+        </div>
+
+        <div class="tool-info" id="toolInfo">
+            Select any tool from the left side to start editing.
         </div>
 
         <div class="preview-box">
@@ -80,7 +85,6 @@
 
     </main>
 
-    <!-- RIGHT PROPERTIES PANEL -->
     <aside class="properties">
         <h3>Properties</h3>
 
@@ -93,17 +97,48 @@
         <label>Text Background</label>
         <input type="color" id="textBgColor" value="#ffffff" />
 
+        <hr>
+
+        <h3>Draw</h3>
+
         <label>Draw Color</label>
         <input type="color" id="drawColor" value="#ff0000" />
 
         <label>Brush Size</label>
         <input type="range" id="brushSize" min="1" max="25" value="3" />
 
+        <hr>
+
+        <h3>Image / Signature</h3>
+
         <label>Image / Signature Size</label>
         <input type="range" id="imageSize" min="50" max="500" value="150" />
 
-        <label>Eraser Box Size</label>
-        <input type="range" id="eraserSize" min="20" max="500" value="150" />
+        <hr>
+
+        <h3>White Eraser</h3>
+
+        <label>Eraser Width</label>
+        <input type="range" id="eraserWidth" min="20" max="600" value="180" />
+
+        <label>Eraser Height</label>
+        <input type="range" id="eraserHeight" min="10" max="250" value="60" />
+
+        <label>Eraser Color</label>
+        <input type="color" id="eraserColor" value="#ffffff" />
+
+        <hr>
+
+        <h3>Shapes</h3>
+
+        <label>Shape Color</label>
+        <input type="color" id="shapeColor" value="#ff0000" />
+
+        <label>Border / Line Size</label>
+        <input type="range" id="shapeBorderSize" min="1" max="12" value="4" />
+
+        <label>Shape Size</label>
+        <input type="range" id="shapeSize" min="40" max="400" value="150" />
 
         <button id="undoBtn" class="green-btn">
             Undo
@@ -162,7 +197,6 @@
 
 </section>
 
-<!-- OCR OUTPUT -->
 <div class="ocr-output-box" id="ocrOutputBox" style="display:none;">
     <h3>OCR / Translate Output</h3>
 
@@ -172,7 +206,6 @@
     ></textarea>
 </div>
 
-<!-- RIGHT CLICK MENU -->
 <div id="contextMenu" class="context-menu">
     <button id="ctxDelete">Delete</button>
     <button id="ctxDuplicate">Duplicate</button>
@@ -182,7 +215,6 @@
     <button id="ctxDecrease">Decrease Size</button>
 </div>
 
-<!-- HIDDEN IMAGE UPLOAD -->
 <input type="file" id="imageUpload" accept="image/*" hidden>
 
 <script src="edit-pdf.js"></script>
