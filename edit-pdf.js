@@ -426,6 +426,33 @@ async function runOCR(){
         return;
 
     }
+    /* TRANSLATE FUNCTION */
+
+async function translateText(){
+
+    if(
+        !ocrText.value ||
+        ocrText.value === "Scanning text... Please wait."
+    ){
+
+        alert("Please run OCR first.");
+
+        return;
+
+    }
+
+    const translated =
+        ocrText.value
+        .replace(/Medical/g, "મેડિકલ")
+        .replace(/Hospital/g, "હોસ્પિટલ")
+        .replace(/Tender/g, "ટેન્ડર")
+        .replace(/Page/g, "પેજ");
+
+    ocrText.value = translated;
+
+    alert("Basic translation completed.");
+
+}
 
     ocrOutputBox.style.display = "block";
 
