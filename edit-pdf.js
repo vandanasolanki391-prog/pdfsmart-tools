@@ -553,9 +553,11 @@ buttons.forEach(btn => {
     runOCR();
         }
 
-        else if(btn.innerText === "Translate PDF"){
-            alert("Translate PDF needs backend/API. We can add it later using Google Translate API or LibreTranslate.");
-        }
+      else if(btn.innerText === "Translate PDF"){
+
+    translateText();
+
+}
 
         else if(btn.innerText === "Erase / Delete Selected"){
             deleteSelected();
