@@ -415,7 +415,45 @@ function addPageNumber(){
 
     ctx.restore();
 }
+/* OCR FUNCTION */
 
+async function runOCR(){
+
+    if(!canvas.width){
+
+        alert("Please upload PDF first.");
+
+        return;
+
+    }
+
+    ocrOutputBox.style.display = "block";
+
+    ocrText.value = "Scanning text... Please wait.";
+
+    try{
+
+        const result =
+            await Tesseract.recognize(
+                canvas.toDataURL(),
+                "eng"
+            );
+
+        ocrText.value =
+            result.data.text;
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        ocrText.value =
+            "OCR failed.";
+
+    }
+
+}
 function deletePage(){
     saveUndo();
 
@@ -484,8 +522,8 @@ buttons.forEach(btn => {
             addPageNumber();
         }
 
-        else if(btn.innerText === "OCR Scan"){
-            alert("OCR Scan needs backend/API. We can add it later using Tesseract.js or server.");
+      else if(btn.innerText === "OCR Scan"){
+    runOCR();
         }
 
         else if(btn.innerText === "Translate PDF"){
