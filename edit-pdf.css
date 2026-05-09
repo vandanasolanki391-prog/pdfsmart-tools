@@ -185,7 +185,7 @@ body{
 }
 
 .properties{
-    width:300px;
+    width:310px;
     background:white;
     padding:25px;
     border-left:1px solid #ddd;
@@ -217,6 +217,38 @@ body{
     margin:25px 0;
     border:none;
     border-top:1px solid #ddd;
+}
+
+.text-toolbar{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.text-toolbar button{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#eef2ff;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.text-toolbar button:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.check-row{
+    display:flex !important;
+    align-items:center;
+    gap:10px;
+    margin-top:18px;
+}
+
+.check-row input{
+    width:auto;
 }
 
 .editable-text{
@@ -280,7 +312,7 @@ body{
     position:absolute;
     right:-12px;
     top:-7px;
-    border-left:14px solid red;
+    border-left:14px solid var(--arrow-color, red);
     border-top:9px solid transparent;
     border-bottom:9px solid transparent;
 }
