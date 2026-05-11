@@ -25,6 +25,7 @@
         <h3>PDF Tools</h3>
 
         <button id="addTextBtn">Add Text</button>
+        <button id="editTextBoxBtn">Edit Text Box</button>
         <button id="editTextBtn">Edit Text Mode</button>
         <button id="whiteEraserBtn">White Eraser</button>
 
@@ -111,6 +112,8 @@
             <button id="boldBtn" type="button">B</button>
             <button id="italicBtn" type="button"><i>I</i></button>
             <button id="underlineBtn" type="button"><u>U</u></button>
+            <button id="supBtn" type="button">X²</button>
+            <button id="subBtn" type="button">X₂</button>
         </div>
 
         <label>Text Align</label>
@@ -124,6 +127,16 @@
             <input type="checkbox" id="transparentBg" />
             Transparent Background
         </label>
+
+        <hr>
+
+        <h3>Edit Text Box</h3>
+
+        <label>Edit Box Width</label>
+        <input type="range" id="editBoxWidth" min="50" max="600" value="180" />
+
+        <label>Edit Box Height</label>
+        <input type="range" id="editBoxHeight" min="20" max="250" value="60" />
 
         <hr>
 
