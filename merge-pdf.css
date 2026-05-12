@@ -209,3 +209,22 @@ body{
         gap:8px;
     }
 }
+.file-actions{
+    display:flex;
+    gap:8px;
+}
+
+.file-actions button{
+    border:none;
+    background:#eef2ff;
+    color:#2563eb;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.file-actions button:hover{
+    background:#2563eb;
+    color:white;
+}
