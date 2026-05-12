@@ -476,3 +476,34 @@ body{
         min-height:450px;
     }
 }
+/* MOUSE RESIZE FOR ALL ADDED BOXES */
+
+.editable-text,
+.edit-text-box,
+.white-eraser,
+.rectangle-shape,
+.circle-shape{
+    resize:both;
+    overflow:auto;
+    min-width:30px;
+    min-height:20px;
+}
+
+/* LINE / ARROW HORIZONTAL RESIZE */
+
+.line-shape,
+.arrow-shape{
+    resize:horizontal;
+    overflow:auto;
+    min-width:40px;
+}
+
+/* RESIZE HANDLE FEEL */
+
+.editable-text:hover,
+.edit-text-box:hover,
+.white-eraser:hover,
+.shape-element:hover{
+    outline:2px dashed #2563eb;
+    outline-offset:2px;
+}
