@@ -10,8 +10,6 @@ body{
     color:#222;
 }
 
-/* TOPBAR */
-
 .topbar{
     width:100%;
     height:70px;
@@ -126,11 +124,6 @@ body{
     background:#2563eb;
     color:white;
     transform:translateX(3px);
-}
-
-.sidebar button.active-tool{
-    background:#2563eb;
-    color:white;
 }
 
 .shape-panel{
@@ -254,10 +247,6 @@ body{
     background:white;
 }
 
-.properties input[type="range"]{
-    cursor:pointer;
-}
-
 .properties hr{
     margin:22px 0;
     border:none;
@@ -278,7 +267,6 @@ body{
     background:#eef2ff;
     cursor:pointer;
     font-weight:bold;
-    transition:0.3s;
 }
 
 .text-toolbar button:hover{
@@ -297,31 +285,33 @@ body{
     width:auto;
 }
 
-/* EDITABLE ITEMS */
+/* EDITABLE ELEMENTS */
+
+.editable-text,
+.edit-text-box,
+.white-eraser,
+.shape-element,
+.draggable-image{
+    position:absolute;
+    z-index:1000;
+}
 
 .editable-text{
     min-width:60px;
-    position:absolute;
+    min-height:28px;
     padding:5px 8px;
     border:1px dashed #2563eb;
     background:rgba(255,255,255,0.7);
     cursor:move;
-    z-index:1000;
-}
-
-.editable-text:focus{
-    outline:2px solid #2563eb;
 }
 
 .edit-text-box{
-    position:absolute;
     min-width:120px;
     min-height:40px;
     padding:8px 10px;
     background:white;
     border:2px dashed #2563eb;
     cursor:move;
-    z-index:1200;
     overflow:hidden;
     color:#000;
     font-size:20px;
@@ -329,34 +319,24 @@ body{
     user-select:text;
 }
 
-.edit-text-box:focus{
-    outline:2px solid #2563eb;
-}
-
 .draggable-image{
-    position:absolute;
     width:150px;
     cursor:move;
-    z-index:1000;
     border:2px dashed transparent;
 }
 
 .white-eraser{
-    position:absolute;
     width:180px;
     height:60px;
     background:white;
     border:2px dashed #9ca3af;
     cursor:move;
-    z-index:1000;
 }
 
 /* SHAPES */
 
 .shape-element{
-    position:absolute;
     cursor:move;
-    z-index:1000;
 }
 
 .rectangle-shape{
@@ -396,12 +376,25 @@ body{
     border-bottom:9px solid transparent;
 }
 
-/* SELECTED */
+/* SELECTED + RESIZE HANDLE */
 
 .selected-element{
     outline:3px solid #ef4444 !important;
     outline-offset:3px;
     box-shadow:0 0 10px rgba(239,68,68,0.35);
+}
+
+.resize-handle{
+    width:12px;
+    height:12px;
+    background:#ef4444;
+    border:2px solid white;
+    border-radius:50%;
+    position:absolute;
+    right:-8px;
+    bottom:-8px;
+    cursor:nwse-resize;
+    z-index:99999;
 }
 
 /* OCR */
@@ -458,8 +451,6 @@ body{
     color:white;
 }
 
-/* RESPONSIVE */
-
 @media(max-width:1100px){
     .editor-layout{
         grid-template-columns:1fr;
@@ -475,35 +466,4 @@ body{
     .pdf-preview{
         min-height:450px;
     }
-}
-/* MOUSE RESIZE FOR ALL ADDED BOXES */
-
-.editable-text,
-.edit-text-box,
-.white-eraser,
-.rectangle-shape,
-.circle-shape{
-    resize:both;
-    overflow:auto;
-    min-width:30px;
-    min-height:20px;
-}
-
-/* LINE / ARROW HORIZONTAL RESIZE */
-
-.line-shape,
-.arrow-shape{
-    resize:horizontal;
-    overflow:auto;
-    min-width:40px;
-}
-
-/* RESIZE HANDLE FEEL */
-
-.editable-text:hover,
-.edit-text-box:hover,
-.white-eraser:hover,
-.shape-element:hover{
-    outline:2px dashed #2563eb;
-    outline-offset:2px;
 }
