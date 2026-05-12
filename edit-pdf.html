@@ -19,14 +19,26 @@
     <a href="index.html" class="home-btn">← Back to Home</a>
 </header>
 
-<section class="editor-layout">
+<section class="upload-only" id="uploadOnly">
+    <div class="upload-card">
+        <h1>Edit PDF Tool</h1>
+        <p>Upload your PDF and edit using text, eraser, shapes, watermark, OCR and more.</p>
+
+        <label for="pdfUpload" class="main-upload-btn">
+            📤 Choose PDF File
+        </label>
+
+        <input type="file" id="pdfUpload" accept="application/pdf" />
+    </div>
+</section>
+
+<section class="editor-layout hidden" id="editorLayout">
 
     <aside class="sidebar">
         <h3>PDF Tools</h3>
 
         <button id="addTextBtn">Add Text</button>
         <button id="editTextBoxBtn">Edit Text Box</button>
-        <button id="editTextBtn">Edit Text Mode</button>
         <button id="whiteEraserBtn">White Eraser</button>
 
         <button id="drawBtn">Draw</button>
@@ -55,19 +67,8 @@
 
     <main class="main-area">
 
-        <div class="upload-box">
-            <h1>Edit PDF Tool</h1>
-            <p>Upload your PDF and edit using text, eraser, shapes, watermark, OCR and more.</p>
-
-            <label for="pdfUpload" class="upload-label">
-                📤 Choose PDF File
-            </label>
-
-            <input type="file" id="pdfUpload" accept="application/pdf" />
-        </div>
-
         <div class="tool-info" id="toolInfo">
-            Select any tool from the left side to start editing.
+            PDF uploaded. Select any tool from the left side.
         </div>
 
         <div class="preview-box">
@@ -87,153 +88,156 @@
     </main>
 
     <aside class="properties">
-        <h3>Text Editing</h3>
+        <h3>Formatting Options</h3>
 
-        <label>Font Family</label>
-        <select id="fontFamily">
-            <option value="Arial">Arial</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Calibri">Calibri</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Courier New">Courier New</option>
-        </select>
+        <div class="option-group" id="textOptions">
+            <h4>Text</h4>
 
-        <label>Text Font Size</label>
-        <input type="number" id="textFontSize" value="20" />
+            <label>Font Family</label>
+            <select id="fontFamily">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Courier New">Courier New</option>
+            </select>
 
-        <label>Text Color</label>
-        <input type="color" id="textColor" value="#000000" />
+            <label>Font Size</label>
+            <input type="number" id="textFontSize" value="20" />
 
-        <label>Text Background</label>
-        <input type="color" id="textBgColor" value="#ffffff" />
+            <label>Text Color</label>
+            <input type="color" id="textColor" value="#000000" />
 
-        <div class="text-toolbar">
-            <button id="boldBtn" type="button">B</button>
-            <button id="italicBtn" type="button"><i>I</i></button>
-            <button id="underlineBtn" type="button"><u>U</u></button>
-            <button id="supBtn" type="button">X²</button>
-            <button id="subBtn" type="button">X₂</button>
+            <label>Text Background</label>
+            <input type="color" id="textBgColor" value="#ffffff" />
+
+            <div class="text-toolbar">
+                <button id="boldBtn" type="button">B</button>
+                <button id="italicBtn" type="button"><i>I</i></button>
+                <button id="underlineBtn" type="button"><u>U</u></button>
+                <button id="supBtn" type="button">X²</button>
+                <button id="subBtn" type="button">X₂</button>
+            </div>
+
+            <label>Text Align</label>
+            <select id="textAlign">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+            </select>
+
+            <label class="check-row">
+                <input type="checkbox" id="transparentBg" />
+                Transparent Background
+            </label>
         </div>
 
-        <label>Text Align</label>
-        <select id="textAlign">
-            <option value="left">Left</option>
-            <option value="center">Center</option>
-            <option value="right">Right</option>
-        </select>
+        <hr>
 
-        <label class="check-row">
-            <input type="checkbox" id="transparentBg" />
-            Transparent Background
-        </label>
+        <div class="option-group" id="boxOptions">
+            <h4>Selected Box Size</h4>
+
+            <label>Width</label>
+            <input type="range" id="boxWidth" min="20" max="700" value="180" />
+
+            <label>Height</label>
+            <input type="range" id="boxHeight" min="10" max="300" value="60" />
+        </div>
 
         <hr>
 
-        <h3>Edit Text Box</h3>
+        <div class="option-group" id="drawOptions">
+            <h4>Draw / Highlight</h4>
 
-        <label>Edit Box Width</label>
-        <input type="range" id="editBoxWidth" min="50" max="600" value="180" />
+            <label>Draw Color</label>
+            <input type="color" id="drawColor" value="#ff0000" />
 
-        <label>Edit Box Height</label>
-        <input type="range" id="editBoxHeight" min="20" max="250" value="60" />
-
-        <hr>
-
-        <h3>Draw</h3>
-
-        <label>Draw Color</label>
-        <input type="color" id="drawColor" value="#ff0000" />
-
-        <label>Brush Size</label>
-        <input type="range" id="brushSize" min="1" max="25" value="3" />
+            <label>Brush Size</label>
+            <input type="range" id="brushSize" min="1" max="25" value="3" />
+        </div>
 
         <hr>
 
-        <h3>Image / Signature</h3>
+        <div class="option-group" id="imageOptions">
+            <h4>Image / Signature</h4>
 
-        <label>Image / Signature Size</label>
-        <input type="range" id="imageSize" min="50" max="500" value="150" />
-
-        <hr>
-
-        <h3>White Eraser</h3>
-
-        <label>Eraser Width</label>
-        <input type="range" id="eraserWidth" min="20" max="600" value="180" />
-
-        <label>Eraser Height</label>
-        <input type="range" id="eraserHeight" min="10" max="250" value="60" />
-
-        <label>Eraser Color</label>
-        <input type="color" id="eraserColor" value="#ffffff" />
+            <label>Image Size</label>
+            <input type="range" id="imageSize" min="50" max="500" value="150" />
+        </div>
 
         <hr>
 
-        <h3>Shapes</h3>
+        <div class="option-group" id="shapeOptions">
+            <h4>Shapes</h4>
 
-        <label>Shape Color</label>
-        <input type="color" id="shapeColor" value="#ff0000" />
+            <label>Shape Color</label>
+            <input type="color" id="shapeColor" value="#ff0000" />
 
-        <label>Border / Line Size</label>
-        <input type="range" id="shapeBorderSize" min="1" max="12" value="4" />
+            <label>Border / Line Size</label>
+            <input type="range" id="shapeBorderSize" min="1" max="12" value="4" />
 
-        <label>Shape Size</label>
-        <input type="range" id="shapeSize" min="40" max="400" value="150" />
+            <label>Shape Size</label>
+            <input type="range" id="shapeSize" min="40" max="400" value="150" />
+        </div>
+
+        <hr>
+
+        <div class="option-group" id="pageNumberOptions">
+            <h4>Page Number</h4>
+
+            <label>Position</label>
+            <select id="pageNumberPosition">
+                <option value="bottom-center">Bottom Center</option>
+                <option value="bottom-right">Bottom Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="top-center">Top Center</option>
+                <option value="top-right">Top Right</option>
+                <option value="top-left">Top Left</option>
+            </select>
+
+            <label>Format</label>
+            <select id="pageNumberFormat">
+                <option value="number">1</option>
+                <option value="page-number">Page 1</option>
+                <option value="number-of-total">1 of 1</option>
+                <option value="page-number-of-total">Page 1 of 1</option>
+            </select>
+
+            <label>Start Number</label>
+            <input type="number" id="pageStartNumber" value="1" />
+
+            <label>Number Color</label>
+            <input type="color" id="pageNumberColor" value="#000000" />
+
+            <label>Number Size</label>
+            <input type="number" id="pageNumberSize" value="18" />
+        </div>
+
+        <hr>
+
+        <div class="option-group" id="watermarkOptions">
+            <h4>Watermark</h4>
+
+            <label>Watermark Text</label>
+            <input type="text" id="watermarkText" value="PDFSmart Tools" />
+
+            <label>Watermark Color</label>
+            <input type="color" id="watermarkColor" value="#808080" />
+
+            <label>Watermark Size</label>
+            <input type="number" id="watermarkSize" value="60" />
+
+            <label>Opacity</label>
+            <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+
+            <label>Rotation</label>
+            <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
+        </div>
 
         <button id="undoBtn" class="green-btn">
             Undo
         </button>
-
-        <hr>
-
-        <h3>Page Number</h3>
-
-        <label>Position</label>
-        <select id="pageNumberPosition">
-            <option value="bottom-center">Bottom Center</option>
-            <option value="bottom-right">Bottom Right</option>
-            <option value="bottom-left">Bottom Left</option>
-            <option value="top-center">Top Center</option>
-            <option value="top-right">Top Right</option>
-            <option value="top-left">Top Left</option>
-        </select>
-
-        <label>Format</label>
-        <select id="pageNumberFormat">
-            <option value="number">1</option>
-            <option value="page-number">Page 1</option>
-            <option value="number-of-total">1 of 1</option>
-            <option value="page-number-of-total">Page 1 of 1</option>
-        </select>
-
-        <label>Start Number</label>
-        <input type="number" id="pageStartNumber" value="1" />
-
-        <label>Number Color</label>
-        <input type="color" id="pageNumberColor" value="#000000" />
-
-        <label>Number Size</label>
-        <input type="number" id="pageNumberSize" value="18" />
-
-        <hr>
-
-        <h3>Watermark</h3>
-
-        <label>Watermark Text</label>
-        <input type="text" id="watermarkText" value="PDFSmart Tools" />
-
-        <label>Watermark Color</label>
-        <input type="color" id="watermarkColor" value="#808080" />
-
-        <label>Watermark Size</label>
-        <input type="number" id="watermarkSize" value="60" />
-
-        <label>Opacity</label>
-        <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
-
-        <label>Rotation</label>
-        <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
     </aside>
 
 </section>
