@@ -1,907 +1,231 @@
-const uploadOnly = document.getElementById("uploadOnly");
-const editorLayout = document.getElementById("editorLayout");
-
-const pdfUpload = document.getElementById("pdfUpload");
-const imageUpload = document.getElementById("imageUpload");
-const downloadBtn = document.getElementById("downloadBtn");
-
-const canvas = document.getElementById("pdfCanvas");
-const ctx = canvas.getContext("2d");
-const previewBox = document.getElementById("pdfPreview");
-
-const toolInfo = document.getElementById("toolInfo");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="edit-pdf.css" />
 
-const drawColor = document.getElementById("drawColor");
-const brushSize = document.getElementById("brushSize");
-const undoBtn = document.getElementById("undoBtn");
-const imageSize = document.getElementById("imageSize");
-
-const shapeColor = document.getElementById("shapeColor");
-const shapeBorderSize = document.getElementById("shapeBorderSize");
-const shapeSize = document.getElementById("shapeSize");
-
-const fontFamily = document.getElementById("fontFamily");
-const textAlign = document.getElementById("textAlign");
-const transparentBg = document.getElementById("transparentBg");
-
-const boldBtn = document.getElementById("boldBtn");
-const italicBtn = document.getElementById("italicBtn");
-const underlineBtn = document.getElementById("underlineBtn");
-const supBtn = document.getElementById("supBtn");
-const subBtn = document.getElementById("subBtn");
-
-const ocrOutputBox = document.getElementById("ocrOutputBox");
-const ocrText = document.getElementById("ocrText");
-const contextMenu = document.getElementById("contextMenu");
-
-let pdfDoc = null;
-let currentPage = 1;
-let rotation = 0;
-
-let selectedElement = null;
-let dragElement = null;
-let resizeElement = null;
-
-let offsetX = 0;
-let offsetY = 0;
-
-let startX = 0;
-let startY = 0;
-let startWidth = 0;
-let startHeight = 0;
-
-let isDrawing = false;
-let drawMode = false;
-let highlightMode = false;
-
-let undoStack = [];
-
-function setInfo(text){
-    toolInfo.innerText = text;
-}
-
-function saveUndo(){
-    if(canvas.width && canvas.height){
-        undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
-    }
-}
-
-function hideContextMenu(){
-    contextMenu.style.display = "none";
-}
-
-function removeResizeHandles(){
-    document.querySelectorAll(".resize-handle").forEach(h => h.remove());
-}
-
-function addResizeHandle(el){
-    removeResizeHandles();
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
+</head>
+
+<body>
 
-    const handle = document.createElement("div");
-    handle.className = "resize-handle";
-    el.appendChild(handle);
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
+
+<section class="upload-only" id="uploadOnly">
+    <div class="upload-card">
+        <h1>Edit PDF Tool</h1>
+        <p>Upload your PDF and edit using text, eraser, shapes, watermark, OCR and more.</p>
+
+        <label for="pdfUpload" class="main-upload-btn">
+            📤 Choose PDF File
+        </label>
+
+        <input type="file" id="pdfUpload" accept="application/pdf" />
+    </div>
+</section>
+
+<section class="editor-layout hidden" id="editorLayout">
+
+    <aside class="sidebar">
+        <h3>PDF Tools</h3>
+
+        <button id="addTextBtn">Add Text</button>
+        <button id="editTextBoxBtn">Edit Text Box</button>
+        <button id="whiteEraserBtn">White Eraser</button>
+
+        <button id="drawBtn">Draw</button>
+        <button id="highlightBtn">Highlight</button>
+
+        <button id="shapesBtn">Shapes ▾</button>
+
+        <div class="shape-panel" id="shapePanel">
+            <button id="rectangleBtn">▭ Rectangle</button>
+            <button id="circleBtn">◯ Circle</button>
+            <button id="lineBtn">／ Line</button>
+            <button id="arrowBtn">➜ Arrow</button>
+        </div>
+
+        <button id="addImageBtn">Add Image</button>
+        <button id="signatureBtn">Signature</button>
+
+        <button id="watermarkBtn">Watermark</button>
+        <button id="rotateBtn">Rotate Page</button>
+        <button id="deletePageBtn">Delete Page</button>
+        <button id="pageNumberBtn">Page Number</button>
 
-    handle.addEventListener("mousedown", function(e){
-        e.stopPropagation();
+        <button id="ocrBtn">OCR Scan</button>
+        <button id="translateBtn">Translate PDF</button>
+    </aside>
 
-        resizeElement = el;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = el.offsetWidth;
-        startHeight = el.offsetHeight;
+    <main class="main-area">
 
-        document.body.style.userSelect = "none";
-    });
-}
+        <div class="tool-info" id="toolInfo">
+            PDF uploaded. Select any tool from the left side.
+        </div>
 
+        <div class="preview-box">
+            <div class="preview-header">
+                <span>PDF Preview</span>
 
-function makeDraggable(el){
-    el.addEventListener("click", function(e){
-        e.stopPropagation();
-        selectElement(el);
-    });
+                <button class="download-btn" id="downloadBtn">
+                    Download PDF
+                </button>
+            </div>
 
-    el.addEventListener("mousedown", function(e){
-        if(e.button !== 0) return;
-        if(e.target.classList.contains("resize-handle")) return;
-        if(e.detail === 2) return;
+            <div class="pdf-preview" id="pdfPreview">
+                <canvas id="pdfCanvas"></canvas>
+            </div>
+        </div>
 
-        e.stopPropagation();
-        selectElement(el);
+    </main>
 
-        dragElement = el;
-        offsetX = e.clientX - el.offsetLeft;
-        offsetY = e.clientY - el.offsetTop;
-    });
+    <aside class="properties">
+        <h3>Formatting Options</h3>
 
-    el.addEventListener("contextmenu", function(e){
-        e.preventDefault();
-        selectElement(el);
+        <div class="option-group">
+            <h4>Text</h4>
 
-        contextMenu.style.left = e.pageX + "px";
-        contextMenu.style.top = e.pageY + "px";
-        contextMenu.style.display = "block";
-    });
-}
-
-document.addEventListener("mousemove", function(e){
-    if(dragElement){
-        dragElement.style.left = (e.clientX - offsetX) + "px";
-        dragElement.style.top = (e.clientY - offsetY) + "px";
-    }
+            <label>Font Family</label>
+            <select id="fontFamily">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Courier New">Courier New</option>
+            </select>
 
-    if(resizeElement){
-        let newWidth = startWidth + (e.clientX - startX);
-        let newHeight = startHeight + (e.clientY - startY);
-
-        if(newWidth < 30) newWidth = 30;
-        if(newHeight < 20) newHeight = 20;
-
-        resizeElement.style.width = newWidth + "px";
+            <label>Font Size</label>
+            <input type="number" id="textFontSize" value="20" />
 
-        if(
-            !resizeElement.classList.contains("line-shape") &&
-            !resizeElement.classList.contains("arrow-shape")
-        ){
-            resizeElement.style.height = newHeight + "px";
-        }
+            <label>Text Color</label>
+            <input type="color" id="textColor" value="#000000" />
 
-        if(resizeElement.classList.contains("circle-shape")){
-            resizeElement.style.height = newWidth + "px";
-        }
-    }
-});
-
-document.addEventListener("mouseup", function(){
-    dragElement = null;
-    resizeElement = null;
-    document.body.style.userSelect = "auto";
-});
-
-document.addEventListener("click", function(){
-    hideContextMenu();
-});
-
-/* PDF LOAD */
-
-pdfUpload.addEventListener("change", async function(e){
-    const file = e.target.files[0];
-
-    if(!file) return;
-
-    const fileReader = new FileReader();
-
-    fileReader.onload = async function(){
-        const typedarray = new Uint8Array(this.result);
-
-        pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
-
-        await renderPage(currentPage);
-
-        uploadOnly.classList.add("hidden");
-        editorLayout.classList.remove("hidden");
-
-        setInfo("PDF uploaded. Now select any editing tool.");
-    };
-
-    fileReader.readAsArrayBuffer(file);
-});
-
-async function renderPage(pageNumber){
-    const page = await pdfDoc.getPage(pageNumber);
-
-    const viewport = page.getViewport({
-        scale: 1.5,
-        rotation: rotation
-    });
-
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    await page.render({
-        canvasContext: ctx,
-        viewport: viewport
-    }).promise;
-}
-
-/* TEXT */
-
-function addEditableText(){
-    const textBox = document.createElement("div");
-
-    textBox.innerText = "Type here";
-    textBox.contentEditable = true;
-    textBox.addEventListener("dblclick", function(){
-    textBox.focus();
-});
-    textBox.className = "editable-text";
-
-    textBox.style.left = "120px";
-    textBox.style.top = "120px";
-    textBox.style.width = "160px";
-    textBox.style.minHeight = "35px";
-    textBox.style.fontSize = document.getElementById("textFontSize").value + "px";
-    textBox.style.fontFamily = fontFamily.value;
-    textBox.style.color = document.getElementById("textColor").value;
-    textBox.style.textAlign = textAlign.value;
-
-    textBox.style.background = transparentBg.checked
-        ? "transparent"
-        : document.getElementById("textBgColor").value;
-
-    previewBox.appendChild(textBox);
-    makeDraggable(textBox);
-    selectElement(textBox);
-    textBox.focus();
-
-    setInfo("Text added. Drag or resize by red corner.");
-}
-
-function addEditTextBox(){
-    const box = document.createElement("div");
-
-    box.className = "edit-text-box editable-text";
-    box.contentEditable = true;
-    box.innerText = "Edit text here";
-
-    box.style.left = "140px";
-    box.style.top = "140px";
-    box.style.width = "180px";
-    box.style.height = "60px";
-    box.style.fontSize = document.getElementById("textFontSize").value + "px";
-    box.style.fontFamily = fontFamily.value;
-    box.style.color = document.getElementById("textColor").value;
-    box.style.textAlign = textAlign.value;
-
-    box.style.background = transparentBg.checked
-        ? "transparent"
-        : document.getElementById("textBgColor").value;
-
-    previewBox.appendChild(box);
-    makeDraggable(box);
-    selectElement(box);
-    box.focus();
-
-    setInfo("Edit Text Box added. Resize by red corner.");
-}
-
-function applyTextCommand(command){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.focus();
-        document.execCommand(command);
-    }
-}
-
-boldBtn.addEventListener("click", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.fontWeight =
-            selectedElement.style.fontWeight === "bold" ? "normal" : "bold";
-    }
-});
-
-italicBtn.addEventListener("click", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.fontStyle =
-            selectedElement.style.fontStyle === "italic" ? "normal" : "italic";
-    }
-});
-
-underlineBtn.addEventListener("click", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.textDecoration =
-            selectedElement.style.textDecoration === "underline" ? "none" : "underline";
-    }
-});
-
-supBtn.addEventListener("click", function(){
-    applyTextCommand("superscript");
-});
-
-subBtn.addEventListener("click", function(){
-    applyTextCommand("subscript");
-});
-
-/* ERASER */
-
-function addWhiteEraser(){
-    const eraser = document.createElement("div");
-
-    eraser.className = "white-eraser";
-    eraser.style.left = "150px";
-    eraser.style.top = "150px";
-    eraser.style.width = "180px";
-    eraser.style.height = "60px";
-    eraser.style.background = "#ffffff";
-
-    previewBox.appendChild(eraser);
-    makeDraggable(eraser);
-    selectElement(eraser);
-
-    setInfo("White Eraser added. Resize by red corner.");
-}
-
-/* IMAGE */
-
-function addImageToPDF(file){
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-        const img = document.createElement("img");
-
-        img.src = e.target.result;
-        img.className = "draggable-image";
-        img.style.left = "150px";
-        img.style.top = "150px";
-        img.style.width = imageSize.value + "px";
-
-        previewBox.appendChild(img);
-        makeDraggable(img);
-        selectElement(img);
-
-        setInfo("Image/Signature added.");
-    };
-
-    reader.readAsDataURL(file);
-}
-
-imageUpload.addEventListener("change", function(){
-    const file = this.files[0];
-
-    if(file){
-        addImageToPDF(file);
-    }
-
-    imageUpload.value = "";
-});
-
-/* SHAPES */
-
-function applyShapeStyle(shape, type){
-    const color = shapeColor.value;
-    const border = shapeBorderSize.value + "px";
-    const size = parseInt(shapeSize.value);
-
-    if(type === "rectangle"){
-        shape.style.width = size + "px";
-        shape.style.height = Math.round(size * 0.65) + "px";
-        shape.style.border = border + " solid " + color;
-        shape.style.background = "transparent";
-    }
-
-    if(type === "circle"){
-        shape.style.width = size + "px";
-        shape.style.height = size + "px";
-        shape.style.border = border + " solid " + color;
-        shape.style.borderRadius = "50%";
-        shape.style.background = "transparent";
-    }
-
-    if(type === "line"){
-        shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
-        shape.style.background = color;
-    }
-
-    if(type === "arrow"){
-        shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
-        shape.style.background = color;
-        shape.style.setProperty("--arrow-color", color);
-    }
-}
-
-function addShape(type){
-    const shape = document.createElement("div");
-
-    shape.classList.add("shape-element");
-    shape.dataset.shapeType = type;
-
-    if(type === "rectangle") shape.classList.add("rectangle-shape");
-    if(type === "circle") shape.classList.add("circle-shape");
-    if(type === "line") shape.classList.add("line-shape");
-    if(type === "arrow") shape.classList.add("arrow-shape");
-
-    shape.style.left = "180px";
-    shape.style.top = "180px";
-
-    applyShapeStyle(shape, type);
-
-    previewBox.appendChild(shape);
-    makeDraggable(shape);
-    selectElement(shape);
-
-    setInfo(type + " added.");
-}
-
-/* DRAW */
-
-canvas.addEventListener("mousedown", function(e){
-    if(drawMode || highlightMode){
-        saveUndo();
-        isDrawing = true;
-        ctx.beginPath();
-        ctx.moveTo(e.offsetX, e.offsetY);
-    }
-});
-
-canvas.addEventListener("mousemove", function(e){
-    if(isDrawing && drawMode){
-        ctx.lineWidth = brushSize.value;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = drawColor.value;
-        ctx.globalAlpha = 1;
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-    }
-
-    if(isDrawing && highlightMode){
-        ctx.lineWidth = 18;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "yellow";
-        ctx.globalAlpha = 0.35;
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-    }
-});
-
-canvas.addEventListener("mouseup", function(){
-    isDrawing = false;
-    ctx.globalAlpha = 1;
-});
-
-/* WATERMARK */
-
-function addWatermark(){
-    if(!canvas.width){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    saveUndo();
-
-    const text = document.getElementById("watermarkText").value;
-    const color = document.getElementById("watermarkColor").value;
-    const size = document.getElementById("watermarkSize").value;
-    const opacity = document.getElementById("watermarkOpacity").value / 100;
-    const rotate = document.getElementById("watermarkRotation").value;
-
-    ctx.save();
-    ctx.globalAlpha = opacity;
-    ctx.font = size + "px Arial";
-    ctx.fillStyle = color;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(rotate * Math.PI / 180);
-    ctx.textAlign = "center";
-    ctx.fillText(text, 0, 0);
-    ctx.restore();
-
-    setInfo("Watermark added.");
-}
-
-/* PAGE NUMBER */
-
-function addPageNumber(){
-    if(!canvas.width){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    saveUndo();
-
-    const color = document.getElementById("pageNumberColor").value;
-    const size = document.getElementById("pageNumberSize").value;
-
-    ctx.save();
-    ctx.font = size + "px Arial";
-    ctx.fillStyle = color;
-    ctx.textAlign = "center";
-    ctx.fillText("Page " + currentPage, canvas.width / 2, canvas.height - 25);
-    ctx.restore();
-
-    setInfo("Page number added.");
-}
-
-/* OCR */
-
-async function runOCR(){
-    if(!canvas.width){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    ocrOutputBox.style.display = "block";
-    ocrText.value = "Scanning text... Please wait.";
-
-    try{
-        const result = await Tesseract.recognize(canvas.toDataURL(), "eng");
-        ocrText.value = result.data.text;
-        setInfo("OCR completed.");
-    }
-    catch(error){
-        console.error(error);
-        ocrText.value = "OCR failed.";
-    }
-}
-
-function translateText(){
-    if(!ocrText.value || ocrText.value.includes("Scanning")){
-        alert("Please run OCR first.");
-        return;
-    }
-
-    let translated = ocrText.value;
-
-    translated = translated
-        .replace(/Medical/gi, "મેડિકલ")
-        .replace(/Hospital/gi, "હોસ્પિટલ")
-        .replace(/Tender/gi, "ટેન્ડર")
-        .replace(/Page/gi, "પેજ")
-        .replace(/Date/gi, "તારીખ");
-
-    ocrText.value = translated;
-    setInfo("Translation completed.");
-}
-
-/* PROPERTY CONTROLS */
-
-document.getElementById("textFontSize").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.fontSize = this.value + "px";
-    }
-});
-
-document.getElementById("textColor").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.color = this.value;
-    }
-});
-
-document.getElementById("textBgColor").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.background = this.value;
-    }
-});
-
-fontFamily.addEventListener("change", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.fontFamily = this.value;
-    }
-});
-
-textAlign.addEventListener("change", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.textAlign = this.value;
-    }
-});
-
-transparentBg.addEventListener("change", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.background = this.checked
-            ? "transparent"
-            : document.getElementById("textBgColor").value;
-    }
-});
-
-imageSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("draggable-image")){
-        selectedElement.style.width = this.value + "px";
-    }
-});
-
-shapeColor.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
-    }
-});
-
-shapeBorderSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
-    }
-});
-
-shapeSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
-    }
-});
-
-/* BUTTONS */
-
-document.getElementById("addTextBtn").addEventListener("click", addEditableText);
-document.getElementById("editTextBoxBtn").addEventListener("click", addEditTextBox);
-document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
-
-document.getElementById("drawBtn").addEventListener("click", function(){
-    drawMode = !drawMode;
-    highlightMode = false;
-    setInfo(drawMode ? "Draw enabled." : "Draw disabled.");
-});
-
-document.getElementById("highlightBtn").addEventListener("click", function(){
-    highlightMode = !highlightMode;
-    drawMode = false;
-    setInfo(highlightMode ? "Highlight enabled." : "Highlight disabled.");
-});
-
-document.getElementById("shapesBtn").addEventListener("click", function(){
-    document.getElementById("shapePanel").classList.toggle("show");
-});
-
-document.getElementById("rectangleBtn").addEventListener("click", function(){
-    addShape("rectangle");
-});
-
-document.getElementById("circleBtn").addEventListener("click", function(){
-    addShape("circle");
-});
-
-document.getElementById("lineBtn").addEventListener("click", function(){
-    addShape("line");
-});
-
-document.getElementById("arrowBtn").addEventListener("click", function(){
-    addShape("arrow");
-});
-
-document.getElementById("addImageBtn").addEventListener("click", function(){
-    imageUpload.click();
-});
-
-document.getElementById("signatureBtn").addEventListener("click", function(){
-    imageUpload.click();
-});
-
-document.getElementById("watermarkBtn").addEventListener("click", addWatermark);
-
-document.getElementById("rotateBtn").addEventListener("click", function(){
-    if(!pdfDoc){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    rotation = (rotation + 90) % 360;
-    renderPage(currentPage);
-});
-
-document.getElementById("deletePageBtn").addEventListener("click", function(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
-document.getElementById("ocrBtn").addEventListener("click", runOCR);
-
-document.getElementById("translateBtn").addEventListener("click", function(){
-    ocrOutputBox.style.display = "block";
-    translateText();
-});
-
-/* CONTEXT MENU */
-
-document.getElementById("ctxDelete").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.remove();
-        selectedElement = null;
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxDuplicate").addEventListener("click", function(){
-    if(selectedElement){
-        const clone = selectedElement.cloneNode(true);
-
-        clone.style.left = (selectedElement.offsetLeft + 20) + "px";
-        clone.style.top = (selectedElement.offsetTop + 20) + "px";
-
-        previewBox.appendChild(clone);
-        makeDraggable(clone);
-        selectElement(clone);
-    }
-
-    hideContextMenu();
-});
-
-document.getElementById("ctxBringFront").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.zIndex = "5000";
-    }
-
-    hideContextMenu();
-});
-
-document.getElementById("ctxSendBack").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.zIndex = "900";
-    }
-
-    hideContextMenu();
-});
-
-document.getElementById("ctxIncrease").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
-        selectedElement.style.height = (selectedElement.offsetHeight + 10) + "px";
-    }
-
-    hideContextMenu();
-});
-
-document.getElementById("ctxDecrease").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
-        selectedElement.style.height = Math.max(10, selectedElement.offsetHeight - 10) + "px";
-    }
-
-    hideContextMenu();
-});
-
-/* UNDO */
-
-undoBtn.addEventListener("click", function(){
-    if(undoStack.length > 0){
-        const lastState = undoStack.pop();
-        ctx.putImageData(lastState, 0, 0);
-    }
-    else{
-        alert("Nothing to undo.");
-    }
-});
-
-/* DOWNLOAD */
-
-downloadBtn.addEventListener("click", async function(){
-    if(!canvas.width){
-        alert("Please upload PDF first.");
-        return;
-    }
-
-    hideContextMenu();
-    removeResizeHandles();
-
-    const tempCanvas = document.createElement("canvas");
-    const tempCtx = tempCanvas.getContext("2d");
-
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-
-    tempCtx.drawImage(canvas, 0, 0);
-
-    const elements = previewBox.querySelectorAll(
-        ".white-eraser, .editable-text, .edit-text-box, .draggable-image, .shape-element"
-    );
-
-    for(const el of elements){
-        const x = el.offsetLeft - canvas.offsetLeft;
-        const y = el.offsetTop - canvas.offsetTop;
-
-        if(el.classList.contains("white-eraser")){
-            tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
-            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
-        }
-
-        if(el.classList.contains("editable-text")){
-            const style = window.getComputedStyle(el);
-
-            if(style.backgroundColor !== "rgba(0, 0, 0, 0)"){
-                tempCtx.fillStyle = style.backgroundColor;
-                tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
-            }
-
-            tempCtx.font = `${style.fontWeight} ${style.fontStyle} ${style.fontSize} ${style.fontFamily}`;
-            tempCtx.fillStyle = style.color;
-            tempCtx.textAlign = style.textAlign || "left";
-
-            const lines = el.innerText.split("\n");
-            const fontSize = parseInt(style.fontSize);
-
-            lines.forEach((line, index) => {
-                let textX = x + 5;
-
-                if(style.textAlign === "center"){
-                    textX = x + el.offsetWidth / 2;
-                }
-
-                if(style.textAlign === "right"){
-                    textX = x + el.offsetWidth - 5;
-                }
-
-                tempCtx.fillText(
-                    line,
-                    textX,
-                    y + fontSize + 5 + (index * (fontSize + 6))
-                );
-            });
-        }
-
-        if(el.classList.contains("draggable-image")){
-            await new Promise(resolve => {
-                const img = new Image();
-
-                img.onload = function(){
-                    tempCtx.drawImage(img, x, y, el.offsetWidth, el.offsetHeight);
-                    resolve();
-                };
-
-                img.src = el.src;
-            });
-        }
-
-        if(el.classList.contains("rectangle-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.strokeRect(x, y, el.offsetWidth, el.offsetHeight);
-        }
-
-        if(el.classList.contains("circle-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.beginPath();
-            tempCtx.ellipse(
-                x + el.offsetWidth / 2,
-                y + el.offsetHeight / 2,
-                el.offsetWidth / 2,
-                el.offsetHeight / 2,
-                0,
-                0,
-                Math.PI * 2
-            );
-            tempCtx.stroke();
-        }
-
-        if(el.classList.contains("line-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.beginPath();
-            tempCtx.moveTo(x, y);
-            tempCtx.lineTo(x + el.offsetWidth, y);
-            tempCtx.stroke();
-        }
-
-        if(el.classList.contains("arrow-shape")){
-            tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.fillStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-
-            tempCtx.beginPath();
-            tempCtx.moveTo(x, y);
-            tempCtx.lineTo(x + el.offsetWidth, y);
-            tempCtx.stroke();
-
-            tempCtx.beginPath();
-            tempCtx.moveTo(x + el.offsetWidth, y);
-            tempCtx.lineTo(x + el.offsetWidth - 15, y - 8);
-            tempCtx.lineTo(x + el.offsetWidth - 15, y + 8);
-            tempCtx.closePath();
-            tempCtx.fill();
-        }
-    }
-
-    const imageData = tempCanvas.toDataURL("image/png");
-
-    const pdf = await PDFLib.PDFDocument.create();
-    const page = pdf.addPage([canvas.width, canvas.height]);
-
-    const pngImage = await pdf.embedPng(imageData);
-
-    page.drawImage(pngImage, {
-        x: 0,
-        y: 0,
-        width: canvas.width,
-        height: canvas.height
-    });
-
-    const pdfBytes = await pdf.save();
-
-    const blob = new Blob([pdfBytes], {
-        type: "application/pdf"
-    });
-
-    const link = document.createElement("a");
-
-    link.href = URL.createObjectURL(blob);
-    link.download = "edited-pdf.pdf";
-    link.click();
-
-    setInfo("Edited PDF downloaded successfully.");
-});
+            <label>Text Background</label>
+            <input type="color" id="textBgColor" value="#ffffff" />
+
+            <div class="text-toolbar">
+                <button id="boldBtn" type="button">B</button>
+                <button id="italicBtn" type="button"><i>I</i></button>
+                <button id="underlineBtn" type="button"><u>U</u></button>
+                <button id="supBtn" type="button">X²</button>
+                <button id="subBtn" type="button">X₂</button>
+            </div>
+
+            <label>Text Align</label>
+            <select id="textAlign">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+            </select>
+
+            <label class="check-row">
+                <input type="checkbox" id="transparentBg" />
+                Transparent Background
+            </label>
+        </div>
+
+        <hr>
+
+        <div class="option-group">
+            <h4>Draw / Highlight</h4>
+
+            <label>Draw Color</label>
+            <input type="color" id="drawColor" value="#ff0000" />
+
+            <label>Brush Size</label>
+            <input type="range" id="brushSize" min="1" max="25" value="3" />
+        </div>
+
+        <hr>
+
+        <div class="option-group">
+            <h4>Image / Signature</h4>
+
+            <label>Image Size</label>
+            <input type="range" id="imageSize" min="50" max="500" value="150" />
+        </div>
+
+        <hr>
+
+        <div class="option-group">
+            <h4>Shapes</h4>
+
+            <label>Shape Color</label>
+            <input type="color" id="shapeColor" value="#ff0000" />
+
+            <label>Border / Line Size</label>
+            <input type="range" id="shapeBorderSize" min="1" max="12" value="4" />
+
+            <label>Shape Size</label>
+            <input type="range" id="shapeSize" min="40" max="400" value="150" />
+        </div>
+
+        <hr>
+
+        <div class="option-group">
+            <h4>Page Number</h4>
+
+            <label>Number Color</label>
+            <input type="color" id="pageNumberColor" value="#000000" />
+
+            <label>Number Size</label>
+            <input type="number" id="pageNumberSize" value="18" />
+        </div>
+
+        <hr>
+
+        <div class="option-group">
+            <h4>Watermark</h4>
+
+            <label>Watermark Text</label>
+            <input type="text" id="watermarkText" value="PDFSmart Tools" />
+
+            <label>Watermark Color</label>
+            <input type="color" id="watermarkColor" value="#808080" />
+
+            <label>Watermark Size</label>
+            <input type="number" id="watermarkSize" value="60" />
+
+            <label>Opacity</label>
+            <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+
+            <label>Rotation</label>
+            <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
+        </div>
+
+        <button id="undoBtn" class="green-btn">
+            Undo
+        </button>
+    </aside>
+
+</section>
+
+<div class="ocr-output-box" id="ocrOutputBox" style="display:none;">
+    <h3>OCR / Translate Output</h3>
+    <textarea id="ocrText" placeholder="OCR text will appear here..."></textarea>
+</div>
+
+<div id="contextMenu" class="context-menu">
+    <button id="ctxDelete">Delete</button>
+    <button id="ctxDuplicate">Duplicate</button>
+    <button id="ctxBringFront">Bring Front</button>
+    <button id="ctxSendBack">Send Back</button>
+    <button id="ctxIncrease">Increase Size</button>
+    <button id="ctxDecrease">Decrease Size</button>
+</div>
+
+<input type="file" id="imageUpload" accept="image/*" hidden>
+
+<script src="edit-pdf.js"></script>
+
+</body>
+</html>
