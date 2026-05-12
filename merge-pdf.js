@@ -5,113 +5,97 @@ const statusText = document.getElementById("statusText");
 
 let selectedFiles = [];
 
-/* SHOW FILES */
-
 pdfFilesInput.addEventListener("change", function(e){
-
     selectedFiles = Array.from(e.target.files);
+    renderFileList();
+});
 
+function renderFileList(){
     fileList.innerHTML = "";
 
-    if(selectedFiles.length === 0){
-        return;
-    }
-
-    selectedFiles.forEach((file,index)=>{
-
+    selectedFiles.forEach((file, index) => {
         const li = document.createElement("li");
 
-        const fileName = document.createElement("div");
-        fileName.className = "file-name";
-        fileName.innerText = `${index + 1}. ${file.name}`;
+        li.innerHTML = `
+            <div>
+                <div class="file-name">${index + 1}. ${file.name}</div>
+                <div class="file-size">${(file.size / (1024 * 1024)).toFixed(2)} MB</div>
+            </div>
 
-        const fileSize = document.createElement("div");
-        fileSize.className = "file-size";
-
-        const sizeMB =
-            (file.size / (1024 * 1024)).toFixed(2);
-
-        fileSize.innerText =
-            `${sizeMB} MB`;
-
-        li.appendChild(fileName);
-        li.appendChild(fileSize);
+            <div class="file-actions">
+                <button onclick="moveFileUp(${index})">↑</button>
+                <button onclick="moveFileDown(${index})">↓</button>
+                <button onclick="removeFile(${index})">Remove</button>
+            </div>
+        `;
 
         fileList.appendChild(li);
     });
 
-    statusText.innerText =
-        `${selectedFiles.length} PDF files selected`;
-});
+    statusText.innerText = `${selectedFiles.length} PDF files selected`;
+}
 
-/* MERGE PDF */
+function moveFileUp(index){
+    if(index === 0) return;
+
+    [selectedFiles[index - 1], selectedFiles[index]] =
+    [selectedFiles[index], selectedFiles[index - 1]];
+
+    renderFileList();
+}
+
+function moveFileDown(index){
+    if(index === selectedFiles.length - 1) return;
+
+    [selectedFiles[index + 1], selectedFiles[index]] =
+    [selectedFiles[index], selectedFiles[index + 1]];
+
+    renderFileList();
+}
+
+function removeFile(index){
+    selectedFiles.splice(index, 1);
+    renderFileList();
+}
 
 mergeBtn.addEventListener("click", async function(){
-
     if(selectedFiles.length < 2){
-
         alert("Please select at least 2 PDF files.");
-
         return;
     }
 
     try{
+        statusText.innerText = "Merging PDFs... Please wait.";
 
-        statusText.innerText =
-            "Merging PDFs... Please wait.";
-
-        const mergedPdf =
-            await PDFLib.PDFDocument.create();
+        const mergedPdf = await PDFLib.PDFDocument.create();
 
         for(const file of selectedFiles){
+            const fileBytes = await file.arrayBuffer();
+            const pdf = await PDFLib.PDFDocument.load(fileBytes);
 
-            const fileBytes =
-                await file.arrayBuffer();
-
-            const pdf =
-                await PDFLib.PDFDocument.load(fileBytes);
-
-            const copiedPages =
-                await mergedPdf.copyPages(
-                    pdf,
-                    pdf.getPageIndices()
-                );
-
-            copiedPages.forEach((page)=>{
-                mergedPdf.addPage(page);
-            });
-        }
-
-        const mergedPdfBytes =
-            await mergedPdf.save();
-
-        const blob =
-            new Blob(
-                [mergedPdfBytes],
-                {type:"application/pdf"}
+            const copiedPages = await mergedPdf.copyPages(
+                pdf,
+                pdf.getPageIndices()
             );
 
-        const link =
-            document.createElement("a");
+            copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
 
-        link.href =
-            URL.createObjectURL(blob);
+        const mergedPdfBytes = await mergedPdf.save();
 
-        link.download =
-            "merged-pdf.pdf";
+        const blob = new Blob([mergedPdfBytes], {
+            type: "application/pdf"
+        });
 
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "merged-pdf.pdf";
         link.click();
 
-        statusText.innerText =
-            "PDF merged successfully.";
-
+        statusText.innerText = "PDF merged successfully.";
     }
-
     catch(error){
-
         console.error(error);
-
-        statusText.innerText =
-            "Error while merging PDF.";
+        statusText.innerText = "Error while merging PDF.";
     }
 });
