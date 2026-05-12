@@ -743,3 +743,4 @@ downloadBtn.addEventListener("click", async function(){
     link.download = "edited-pdf.pdf";
     link.click();
 });
+ 
