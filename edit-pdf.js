@@ -104,6 +104,7 @@ function makeDraggable(el){
     el.addEventListener("mousedown", function(e){
         if(e.button !== 0) return;
         if(e.target.classList.contains("resize-handle")) return;
+        if(e.detail === 2) return;
 
         e.stopPropagation();
         selectElement(el);
@@ -210,6 +211,9 @@ function addEditableText(){
 
     textBox.innerText = "Type here";
     textBox.contentEditable = true;
+    textBox.addEventListener("dblclick", function(){
+    textBox.focus();
+});
     textBox.className = "editable-text";
 
     textBox.style.left = "120px";
