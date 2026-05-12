@@ -1,3 +1,6 @@
+const uploadOnly = document.getElementById("uploadOnly");
+const editorLayout = document.getElementById("editorLayout");
+
 const pdfUpload = document.getElementById("pdfUpload");
 const imageUpload = document.getElementById("imageUpload");
 const downloadBtn = document.getElementById("downloadBtn");
@@ -13,9 +16,8 @@ const brushSize = document.getElementById("brushSize");
 const undoBtn = document.getElementById("undoBtn");
 const imageSize = document.getElementById("imageSize");
 
-const eraserWidth = document.getElementById("eraserWidth");
-const eraserHeight = document.getElementById("eraserHeight");
-const eraserColor = document.getElementById("eraserColor");
+const boxWidth = document.getElementById("boxWidth");
+const boxHeight = document.getElementById("boxHeight");
 
 const shapeColor = document.getElementById("shapeColor");
 const shapeBorderSize = document.getElementById("shapeBorderSize");
@@ -30,9 +32,6 @@ const italicBtn = document.getElementById("italicBtn");
 const underlineBtn = document.getElementById("underlineBtn");
 const supBtn = document.getElementById("supBtn");
 const subBtn = document.getElementById("subBtn");
-
-const editBoxWidth = document.getElementById("editBoxWidth");
-const editBoxHeight = document.getElementById("editBoxHeight");
 
 const ocrOutputBox = document.getElementById("ocrOutputBox");
 const ocrText = document.getElementById("ocrText");
@@ -54,6 +53,8 @@ let highlightMode = false;
 
 let undoStack = [];
 
+/* BASIC */
+
 function setInfo(text){
     toolInfo.innerText = text;
 }
@@ -68,6 +69,14 @@ function hideContextMenu(){
     contextMenu.style.display = "none";
 }
 
+function clearSelection(){
+    document.querySelectorAll(
+        ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
+    ).forEach(item => item.classList.remove("selected-element"));
+
+    selectedElement = null;
+}
+
 function selectElement(el){
     document.querySelectorAll(
         ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
@@ -77,6 +86,21 @@ function selectElement(el){
 
     if(selectedElement){
         selectedElement.classList.add("selected-element");
+        syncBoxControls();
+    }
+}
+
+function syncBoxControls(){
+    if(!selectedElement) return;
+
+    if(
+        selectedElement.classList.contains("editable-text") ||
+        selectedElement.classList.contains("edit-text-box") ||
+        selectedElement.classList.contains("white-eraser") ||
+        selectedElement.classList.contains("shape-element")
+    ){
+        boxWidth.value = selectedElement.offsetWidth;
+        boxHeight.value = selectedElement.offsetHeight;
     }
 }
 
@@ -136,9 +160,12 @@ pdfUpload.addEventListener("change", async function(e){
 
         pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
 
-        renderPage(currentPage);
+        await renderPage(currentPage);
 
-        setInfo("PDF uploaded successfully.");
+        uploadOnly.classList.add("hidden");
+        editorLayout.classList.remove("hidden");
+
+        setInfo("PDF uploaded. Now select any editing tool.");
     };
 
     fileReader.readAsArrayBuffer(file);
@@ -178,6 +205,8 @@ function addEditableText(){
     textBox.style.fontFamily = fontFamily.value;
     textBox.style.color = document.getElementById("textColor").value;
     textBox.style.textAlign = textAlign.value;
+    textBox.style.width = boxWidth.value + "px";
+    textBox.style.minHeight = "30px";
 
     textBox.style.background = transparentBg.checked
         ? "transparent"
@@ -202,8 +231,8 @@ function addEditTextBox(){
 
     box.style.left = "140px";
     box.style.top = "140px";
-    box.style.width = editBoxWidth.value + "px";
-    box.style.height = editBoxHeight.value + "px";
+    box.style.width = boxWidth.value + "px";
+    box.style.height = boxHeight.value + "px";
     box.style.fontSize = document.getElementById("textFontSize").value + "px";
     box.style.fontFamily = fontFamily.value;
     box.style.color = document.getElementById("textColor").value;
@@ -218,10 +247,17 @@ function addEditTextBox(){
     selectElement(box);
     box.focus();
 
-    setInfo("Edit Text Box added. Type directly inside the box.");
+    setInfo("Edit Text Box added. Adjust width/height from right panel.");
 }
 
 /* TEXT STYLE */
+
+function applyTextCommand(command){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
+        selectedElement.focus();
+        document.execCommand(command);
+    }
+}
 
 boldBtn.addEventListener("click", function(){
     if(selectedElement && selectedElement.classList.contains("editable-text")){
@@ -245,24 +281,12 @@ underlineBtn.addEventListener("click", function(){
 });
 
 supBtn.addEventListener("click", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.focus();
-        document.execCommand("superscript");
-    }
+    applyTextCommand("superscript");
 });
 
 subBtn.addEventListener("click", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.focus();
-        document.execCommand("subscript");
-    }
+    applyTextCommand("subscript");
 });
-
-/* EDIT TEXT MODE */
-
-function editTextMode(){
-    setInfo("Use White Eraser to cover old PDF text. Then Add Text or Edit Text Box to write new text.");
-}
 
 /* WHITE ERASER */
 
@@ -272,15 +296,15 @@ function addWhiteEraser(){
     eraser.className = "white-eraser";
     eraser.style.left = "150px";
     eraser.style.top = "150px";
-    eraser.style.width = eraserWidth.value + "px";
-    eraser.style.height = eraserHeight.value + "px";
-    eraser.style.background = eraserColor.value;
+    eraser.style.width = boxWidth.value + "px";
+    eraser.style.height = boxHeight.value + "px";
+    eraser.style.background = "#ffffff";
 
     previewBox.appendChild(eraser);
     makeDraggable(eraser);
     selectElement(eraser);
 
-    setInfo("White Eraser added. Drag it over old text.");
+    setInfo("White Eraser added. Drag it over old text and adjust width/height.");
 }
 
 /* IMAGE / SIGNATURE */
@@ -580,14 +604,27 @@ transparentBg.addEventListener("change", function(){
     }
 });
 
-editBoxWidth.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("edit-text-box")){
+boxWidth.addEventListener("input", function(){
+    if(!selectedElement) return;
+
+    if(
+        selectedElement.classList.contains("editable-text") ||
+        selectedElement.classList.contains("edit-text-box") ||
+        selectedElement.classList.contains("white-eraser") ||
+        selectedElement.classList.contains("shape-element")
+    ){
         selectedElement.style.width = this.value + "px";
     }
 });
 
-editBoxHeight.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("edit-text-box")){
+boxHeight.addEventListener("input", function(){
+    if(!selectedElement) return;
+
+    if(
+        selectedElement.classList.contains("edit-text-box") ||
+        selectedElement.classList.contains("white-eraser") ||
+        selectedElement.classList.contains("shape-element")
+    ){
         selectedElement.style.height = this.value + "px";
     }
 });
@@ -595,24 +632,6 @@ editBoxHeight.addEventListener("input", function(){
 imageSize.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("draggable-image")){
         selectedElement.style.width = this.value + "px";
-    }
-});
-
-eraserWidth.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.width = this.value + "px";
-    }
-});
-
-eraserHeight.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.height = this.value + "px";
-    }
-});
-
-eraserColor.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("white-eraser")){
-        selectedElement.style.background = this.value;
     }
 });
 
@@ -638,7 +657,7 @@ shapeSize.addEventListener("input", function(){
 
 document.getElementById("addTextBtn").addEventListener("click", addEditableText);
 document.getElementById("editTextBoxBtn").addEventListener("click", addEditTextBox);
-document.getElementById("editTextBtn").addEventListener("click", editTextMode);
+
 document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
 
 document.getElementById("drawBtn").addEventListener("click", function(){
@@ -751,7 +770,9 @@ document.getElementById("ctxSendBack").addEventListener("click", function(){
 
 document.getElementById("ctxIncrease").addEventListener("click", function(){
     if(selectedElement){
-        selectedElement.style.transform = "scale(1.15)";
+        selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
+        selectedElement.style.height = (selectedElement.offsetHeight + 10) + "px";
+        syncBoxControls();
     }
 
     hideContextMenu();
@@ -759,7 +780,9 @@ document.getElementById("ctxIncrease").addEventListener("click", function(){
 
 document.getElementById("ctxDecrease").addEventListener("click", function(){
     if(selectedElement){
-        selectedElement.style.transform = "scale(0.9)";
+        selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
+        selectedElement.style.height = Math.max(10, selectedElement.offsetHeight - 10) + "px";
+        syncBoxControls();
     }
 
     hideContextMenu();
@@ -784,6 +807,8 @@ downloadBtn.addEventListener("click", async function(){
         alert("Please upload PDF first.");
         return;
     }
+
+    hideContextMenu();
 
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
