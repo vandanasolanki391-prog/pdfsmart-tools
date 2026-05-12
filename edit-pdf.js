@@ -16,9 +16,6 @@ const brushSize = document.getElementById("brushSize");
 const undoBtn = document.getElementById("undoBtn");
 const imageSize = document.getElementById("imageSize");
 
-const boxWidth = document.getElementById("boxWidth");
-const boxHeight = document.getElementById("boxHeight");
-
 const shapeColor = document.getElementById("shapeColor");
 const shapeBorderSize = document.getElementById("shapeBorderSize");
 const shapeSize = document.getElementById("shapeSize");
@@ -35,7 +32,6 @@ const subBtn = document.getElementById("subBtn");
 
 const ocrOutputBox = document.getElementById("ocrOutputBox");
 const ocrText = document.getElementById("ocrText");
-
 const contextMenu = document.getElementById("contextMenu");
 
 let pdfDoc = null;
@@ -44,16 +40,21 @@ let rotation = 0;
 
 let selectedElement = null;
 let dragElement = null;
+let resizeElement = null;
+
 let offsetX = 0;
 let offsetY = 0;
+
+let startX = 0;
+let startY = 0;
+let startWidth = 0;
+let startHeight = 0;
 
 let isDrawing = false;
 let drawMode = false;
 let highlightMode = false;
 
 let undoStack = [];
-
-/* BASIC */
 
 function setInfo(text){
     toolInfo.innerText = text;
@@ -69,52 +70,57 @@ function hideContextMenu(){
     contextMenu.style.display = "none";
 }
 
-function clearSelection(){
-    document.querySelectorAll(
-        ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
-    ).forEach(item => item.classList.remove("selected-element"));
-
-    selectedElement = null;
+function removeResizeHandles(){
+    document.querySelectorAll(".resize-handle").forEach(h => h.remove());
 }
 
-functionupdateSelection(el){
+function addResizeHandle(el){
+    removeResizeHandles();
+
+    const handle = document.createElement("div");
+    handle.className = "resize-handle";
+    el.appendChild(handle);
+
+    handle.addEventListener("mousedown", function(e){
+        e.stopPropagation();
+
+        resizeElement = el;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = el.offsetWidth;
+        startHeight = el.offsetHeight;
+
+        document.body.style.userSelect = "none";
+    });
+}
+
+function selectElement(el){
     document.querySelectorAll(
         ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
     ).forEach(item => item.classList.remove("selected-element"));
+
+    removeResizeHandles();
 
     selectedElement = el;
 
     if(selectedElement){
         selectedElement.classList.add("selected-element");
-        syncBoxControls();
-    }
-}
-
-function syncBoxControls(){
-    if(!selectedElement) return;
-
-    if(
-        selectedElement.classList.contains("editable-text") ||
-        selectedElement.classList.contains("edit-text-box") ||
-        selectedElement.classList.contains("white-eraser") ||
-        selectedElement.classList.contains("shape-element")
-    ){
-        boxWidth.value = selectedElement.offsetWidth;
-        boxHeight.value = selectedElement.offsetHeight;
+        addResizeHandle(selectedElement);
     }
 }
 
 function makeDraggable(el){
     el.addEventListener("click", function(e){
         e.stopPropagation();
-        updateSelection(el);
+        selectElement(el);
     });
 
     el.addEventListener("mousedown", function(e){
         if(e.button !== 0) return;
+        if(e.target.classList.contains("resize-handle")) return;
 
         e.stopPropagation();
-        updateSelection(el);
+        selectElement(el);
 
         dragElement = el;
         offsetX = e.clientX - el.offsetLeft;
@@ -123,7 +129,7 @@ function makeDraggable(el){
 
     el.addEventListener("contextmenu", function(e){
         e.preventDefault();
-        updateSelection(el);
+        selectElement(el);
 
         contextMenu.style.left = e.pageX + "px";
         contextMenu.style.top = e.pageY + "px";
@@ -136,10 +142,33 @@ document.addEventListener("mousemove", function(e){
         dragElement.style.left = (e.clientX - offsetX) + "px";
         dragElement.style.top = (e.clientY - offsetY) + "px";
     }
+
+    if(resizeElement){
+        let newWidth = startWidth + (e.clientX - startX);
+        let newHeight = startHeight + (e.clientY - startY);
+
+        if(newWidth < 30) newWidth = 30;
+        if(newHeight < 20) newHeight = 20;
+
+        resizeElement.style.width = newWidth + "px";
+
+        if(
+            !resizeElement.classList.contains("line-shape") &&
+            !resizeElement.classList.contains("arrow-shape")
+        ){
+            resizeElement.style.height = newHeight + "px";
+        }
+
+        if(resizeElement.classList.contains("circle-shape")){
+            resizeElement.style.height = newWidth + "px";
+        }
+    }
 });
 
 document.addEventListener("mouseup", function(){
     dragElement = null;
+    resizeElement = null;
+    document.body.style.userSelect = "auto";
 });
 
 document.addEventListener("click", function(){
@@ -171,8 +200,6 @@ pdfUpload.addEventListener("change", async function(e){
     fileReader.readAsArrayBuffer(file);
 });
 
-/* RENDER PDF */
-
 async function renderPage(pageNumber){
     const page = await pdfDoc.getPage(pageNumber);
 
@@ -190,7 +217,7 @@ async function renderPage(pageNumber){
     }).promise;
 }
 
-/* ADD TEXT */
+/* TEXT */
 
 function addEditableText(){
     const textBox = document.createElement("div");
@@ -201,12 +228,12 @@ function addEditableText(){
 
     textBox.style.left = "120px";
     textBox.style.top = "120px";
+    textBox.style.width = "160px";
+    textBox.style.minHeight = "35px";
     textBox.style.fontSize = document.getElementById("textFontSize").value + "px";
     textBox.style.fontFamily = fontFamily.value;
     textBox.style.color = document.getElementById("textColor").value;
     textBox.style.textAlign = textAlign.value;
-    textBox.style.width = boxWidth.value + "px";
-    textBox.style.minHeight = "30px";
 
     textBox.style.background = transparentBg.checked
         ? "transparent"
@@ -214,13 +241,11 @@ function addEditableText(){
 
     previewBox.appendChild(textBox);
     makeDraggable(textBox);
-  updateSelection(textBox);
+    selectElement(textBox);
     textBox.focus();
 
-    setInfo("Text added. Type and drag anywhere.");
+    setInfo("Text added. Drag or resize by red corner.");
 }
-
-/* EDIT TEXT BOX */
 
 function addEditTextBox(){
     const box = document.createElement("div");
@@ -231,8 +256,8 @@ function addEditTextBox(){
 
     box.style.left = "140px";
     box.style.top = "140px";
-    box.style.width = boxWidth.value + "px";
-    box.style.height = boxHeight.value + "px";
+    box.style.width = "180px";
+    box.style.height = "60px";
     box.style.fontSize = document.getElementById("textFontSize").value + "px";
     box.style.fontFamily = fontFamily.value;
     box.style.color = document.getElementById("textColor").value;
@@ -244,13 +269,11 @@ function addEditTextBox(){
 
     previewBox.appendChild(box);
     makeDraggable(box);
-    updateSelection(box);
+    selectElement(box);
     box.focus();
 
-    setInfo("Edit Text Box added. Adjust width/height from right panel.");
+    setInfo("Edit Text Box added. Resize by red corner.");
 }
-
-/* TEXT STYLE */
 
 function applyTextCommand(command){
     if(selectedElement && selectedElement.classList.contains("editable-text")){
@@ -288,7 +311,7 @@ subBtn.addEventListener("click", function(){
     applyTextCommand("subscript");
 });
 
-/* WHITE ERASER */
+/* ERASER */
 
 function addWhiteEraser(){
     const eraser = document.createElement("div");
@@ -296,18 +319,18 @@ function addWhiteEraser(){
     eraser.className = "white-eraser";
     eraser.style.left = "150px";
     eraser.style.top = "150px";
-    eraser.style.width = boxWidth.value + "px";
-    eraser.style.height = boxHeight.value + "px";
+    eraser.style.width = "180px";
+    eraser.style.height = "60px";
     eraser.style.background = "#ffffff";
 
     previewBox.appendChild(eraser);
     makeDraggable(eraser);
-    updateSelection(eraser);
+    selectElement(eraser);
 
-    setInfo("White Eraser added. Drag it over old text and adjust width/height.");
+    setInfo("White Eraser added. Resize by red corner.");
 }
 
-/* IMAGE / SIGNATURE */
+/* IMAGE */
 
 function addImageToPDF(file){
     const reader = new FileReader();
@@ -323,7 +346,7 @@ function addImageToPDF(file){
 
         previewBox.appendChild(img);
         makeDraggable(img);
-       updateSelection(img);
+        selectElement(img);
 
         setInfo("Image/Signature added.");
     };
@@ -395,12 +418,12 @@ function addShape(type){
 
     previewBox.appendChild(shape);
     makeDraggable(shape);
-    supdateSelection(shape);
+    selectElement(shape);
 
     setInfo(type + " added.");
 }
 
-/* DRAW + HIGHLIGHT */
+/* DRAW */
 
 canvas.addEventListener("mousedown", function(e){
     if(drawMode || highlightMode){
@@ -476,42 +499,14 @@ function addPageNumber(){
 
     saveUndo();
 
-    const position = document.getElementById("pageNumberPosition").value;
-    const format = document.getElementById("pageNumberFormat").value;
-    const startNumber = parseInt(document.getElementById("pageStartNumber").value);
     const color = document.getElementById("pageNumberColor").value;
     const size = document.getElementById("pageNumberSize").value;
-
-    const current = startNumber + currentPage - 1;
-    const total = pdfDoc ? pdfDoc.numPages : 1;
-
-    let text = "";
-
-    if(format === "number") text = current;
-    else if(format === "page-number") text = "Page " + current;
-    else if(format === "number-of-total") text = current + " of " + total;
-    else text = "Page " + current + " of " + total;
-
-    let x = canvas.width / 2;
-    let y = canvas.height - 25;
-
-    if(position === "bottom-right") x = canvas.width - 80;
-    if(position === "bottom-left") x = 80;
-    if(position === "top-center") y = 35;
-    if(position === "top-right"){
-        x = canvas.width - 80;
-        y = 35;
-    }
-    if(position === "top-left"){
-        x = 80;
-        y = 35;
-    }
 
     ctx.save();
     ctx.font = size + "px Arial";
     ctx.fillStyle = color;
     ctx.textAlign = "center";
-    ctx.fillText(text, x, y);
+    ctx.fillText("Page " + currentPage, canvas.width / 2, canvas.height - 25);
     ctx.restore();
 
     setInfo("Page number added.");
@@ -529,11 +524,7 @@ async function runOCR(){
     ocrText.value = "Scanning text... Please wait.";
 
     try{
-        const result = await Tesseract.recognize(
-            canvas.toDataURL(),
-            "eng"
-        );
-
+        const result = await Tesseract.recognize(canvas.toDataURL(), "eng");
         ocrText.value = result.data.text;
         setInfo("OCR completed.");
     }
@@ -542,8 +533,6 @@ async function runOCR(){
         ocrText.value = "OCR failed.";
     }
 }
-
-/* BASIC TRANSLATE */
 
 function translateText(){
     if(!ocrText.value || ocrText.value.includes("Scanning")){
@@ -604,31 +593,6 @@ transparentBg.addEventListener("change", function(){
     }
 });
 
-boxWidth.addEventListener("input", function(){
-    if(!selectedElement) return;
-
-    if(
-        selectedElement.classList.contains("editable-text") ||
-        selectedElement.classList.contains("edit-text-box") ||
-        selectedElement.classList.contains("white-eraser") ||
-        selectedElement.classList.contains("shape-element")
-    ){
-        selectedElement.style.width = this.value + "px";
-    }
-});
-
-boxHeight.addEventListener("input", function(){
-    if(!selectedElement) return;
-
-    if(
-        selectedElement.classList.contains("edit-text-box") ||
-        selectedElement.classList.contains("white-eraser") ||
-        selectedElement.classList.contains("shape-element")
-    ){
-        selectedElement.style.height = this.value + "px";
-    }
-});
-
 imageSize.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("draggable-image")){
         selectedElement.style.width = this.value + "px";
@@ -657,7 +621,6 @@ shapeSize.addEventListener("input", function(){
 
 document.getElementById("addTextBtn").addEventListener("click", addEditableText);
 document.getElementById("editTextBoxBtn").addEventListener("click", addEditTextBox);
-
 document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
 
 document.getElementById("drawBtn").addEventListener("click", function(){
@@ -710,12 +673,10 @@ document.getElementById("rotateBtn").addEventListener("click", function(){
 
     rotation = (rotation + 90) % 360;
     renderPage(currentPage);
-    setInfo("Page rotated.");
 });
 
 document.getElementById("deletePageBtn").addEventListener("click", function(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    setInfo("Page cleared.");
 });
 
 document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
@@ -733,7 +694,6 @@ document.getElementById("ctxDelete").addEventListener("click", function(){
         selectedElement.remove();
         selectedElement = null;
     }
-
     hideContextMenu();
 });
 
@@ -746,7 +706,7 @@ document.getElementById("ctxDuplicate").addEventListener("click", function(){
 
         previewBox.appendChild(clone);
         makeDraggable(clone);
-        updateSelection(clone);
+        selectElement(clone);
     }
 
     hideContextMenu();
@@ -772,7 +732,6 @@ document.getElementById("ctxIncrease").addEventListener("click", function(){
     if(selectedElement){
         selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
         selectedElement.style.height = (selectedElement.offsetHeight + 10) + "px";
-        syncBoxControls();
     }
 
     hideContextMenu();
@@ -782,7 +741,6 @@ document.getElementById("ctxDecrease").addEventListener("click", function(){
     if(selectedElement){
         selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
         selectedElement.style.height = Math.max(10, selectedElement.offsetHeight - 10) + "px";
-        syncBoxControls();
     }
 
     hideContextMenu();
@@ -800,7 +758,7 @@ undoBtn.addEventListener("click", function(){
     }
 });
 
-/* DOWNLOAD WITH EDITS */
+/* DOWNLOAD */
 
 downloadBtn.addEventListener("click", async function(){
     if(!canvas.width){
@@ -809,6 +767,7 @@ downloadBtn.addEventListener("click", async function(){
     }
 
     hideContextMenu();
+    removeResizeHandles();
 
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
@@ -953,139 +912,6 @@ downloadBtn.addEventListener("click", async function(){
     link.href = URL.createObjectURL(blob);
     link.download = "edited-pdf.pdf";
     link.click();
-    /* =========================
-   RESIZE HANDLE SYSTEM
-========================= */
-
-let resizeElement = null;
-let startX = 0;
-let startY = 0;
-let startWidth = 0;
-let startHeight = 0;
-
-/* CREATE RESIZE HANDLE */
-
-function addResizeHandle(el){
-
-    removeResizeHandle(el);
-
-    const handle = document.createElement("div");
-    handle.className = "resize-handle";
-
-    el.appendChild(handle);
-
-    handle.addEventListener("mousedown", function(e){
-
-        e.stopPropagation();
-
-        resizeElement = el;
-
-        startX = e.clientX;
-        startY = e.clientY;
-
-        startWidth = parseInt(
-            window.getComputedStyle(el).width,
-            10
-        );
-
-        startHeight = parseInt(
-            window.getComputedStyle(el).height,
-            10
-        );
-
-        document.body.style.userSelect = "none";
-    });
-}
-
-/* REMOVE OLD HANDLE */
-
-function removeResizeHandle(el){
-
-    const oldHandle =
-        el.querySelector(".resize-handle");
-
-    if(oldHandle){
-        oldHandle.remove();
-    }
-}
-
-function updateSelection(el){
-
-    document.querySelectorAll(
-        ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
-    ).forEach(item => {
-
-        item.classList.remove("selected-element");
-
-        removeResizeHandle(item);
-    });
-
-    selectedElement = el;
-
-    if(selectedElement){
-
-        selectedElement.classList.add("selected-element");
-
-        addResizeHandle(selectedElement);
-    }
-}
-/* RESIZE MOVE */
-
-document.addEventListener("mousemove", function(e){
-
-    if(resizeElement){
-
-        const width =
-            startWidth + (e.clientX - startX);
-
-        const height =
-            startHeight + (e.clientY - startY);
-
-        if(width > 20){
-            resizeElement.style.width =
-                width + "px";
-        }
-
-        if(height > 10){
-
-            if(
-                !resizeElement.classList.contains("line-shape") &&
-                !resizeElement.classList.contains("arrow-shape")
-            ){
-                resizeElement.style.height =
-                    height + "px";
-            }
-        }
-
-        /* CIRCLE PERFECT */
-
-        if(
-            resizeElement.classList.contains("circle-shape")
-        ){
-            resizeElement.style.height =
-                resizeElement.style.width;
-        }
-
-        /* LINE */
-
-        if(
-            resizeElement.classList.contains("line-shape") ||
-            resizeElement.classList.contains("arrow-shape")
-        ){
-            resizeElement.style.height =
-                shapeBorderSize.value + "px";
-        }
-    }
-});
-
-/* STOP RESIZE */
-
-document.addEventListener("mouseup", function(){
-
-    resizeElement = null;
-
-    document.body.style.userSelect = "auto";
-});
 
     setInfo("Edited PDF downloaded successfully.");
 });
