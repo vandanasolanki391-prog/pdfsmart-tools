@@ -94,20 +94,6 @@ function addResizeHandle(el){
     });
 }
 
-function selectElement(el){
-    document.querySelectorAll(
-        ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
-    ).forEach(item => item.classList.remove("selected-element"));
-
-    removeResizeHandles();
-
-    selectedElement = el;
-
-    if(selectedElement){
-        selectedElement.classList.add("selected-element");
-        addResizeHandle(selectedElement);
-    }
-}
 
 function makeDraggable(el){
     el.addEventListener("click", function(e){
