@@ -1,47 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Compress PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="compress-pdf.css">
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <h1>Compress PDF Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="pdfInput" accept="application/pdf">
-  <br><br>
+<section class="compress-layout">
 
-  <button onclick="compressPDF()">Compress PDF</button>
+    <div class="compress-card">
 
-  <br><br>
+        <h1>Compress PDF</h1>
+        <p>Reduce PDF file size with simple compression options.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+        <label for="pdfFile" class="upload-area">
+            <div class="upload-icon">📤</div>
+            <h2>Choose PDF File</h2>
+            <p>Select one PDF file to compress</p>
+        </label>
 
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+        <input type="file" id="pdfFile" accept="application/pdf">
 
-  <script>
-    async function compressPDF() {
-      const file = document.getElementById('pdfInput').files[0];
+        <div class="file-info" id="fileInfo">
+            No PDF selected
+        </div>
 
-      if (!file) {
-        alert("Please select a PDF file");
-        return;
-      }
+        <div class="options-box">
+            <h3>Compression Level</h3>
 
-      const bytes = await file.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+            <label class="radio-card">
+                <input type="radio" name="compressLevel" value="low" checked>
+                <div>
+                    <strong>Low Compression</strong>
+                    <span>Better quality, smaller reduction</span>
+                </div>
+            </label>
 
-      const compressedBytes = await pdfDoc.save({
-        useObjectStreams: true
-      });
+            <label class="radio-card">
+                <input type="radio" name="compressLevel" value="medium">
+                <div>
+                    <strong>Medium Compression</strong>
+                    <span>Balanced quality and size</span>
+                </div>
+            </label>
 
-      const blob = new Blob([compressedBytes], { type: "application/pdf" });
-      const link = document.createElement("a");
+            <label class="radio-card">
+                <input type="radio" name="compressLevel" value="high">
+                <div>
+                    <strong>High Compression</strong>
+                    <span>Maximum reduction where possible</span>
+                </div>
+            </label>
+        </div>
 
-      link.href = URL.createObjectURL(blob);
-      link.download = "compressed.pdf";
-      link.click();
-    }
-  </script>
+        <button id="compressBtn" class="compress-btn">
+            Compress & Download PDF
+        </button>
+
+        <div id="statusText" class="status-text"></div>
+
+    </div>
+
+</section>
+
+<script src="compress-pdf.js"></script>
 
 </body>
 </html>
