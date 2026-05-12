@@ -62,26 +62,8 @@ function saveUndo(){
 function hideContextMenu(){ contextMenu.style.display = "none"; }
 
 function removeResizeHandles(){
-    document.querySelectorAll(".resize-handle").forEach(h => h.remove());
 }
 
-function addResizeHandle(el){
-    removeResizeHandles();
-
-    const handle = document.createElement("div");
-    handle.className = "resize-handle";
-    el.appendChild(handle);
-
-    handle.addEventListener("mousedown", function(e){
-        e.stopPropagation();
-        resizeElement = el;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = el.offsetWidth;
-        startHeight = el.offsetHeight;
-        document.body.style.userSelect = "none";
-    });
-}
 
 function selectElement(el){
     document.querySelectorAll(".editable-text,.edit-text-box,.draggable-image,.shape-element,.white-eraser")
