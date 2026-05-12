@@ -1,51 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Merge PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="merge-pdf.css">
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <h1>Merge PDF Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="pdfInput" accept="application/pdf" multiple>
-  <br><br>
+<section class="merge-layout">
 
-  <button onclick="mergePDF()">Merge PDF</button>
+    <div class="merge-card">
 
-  <br><br>
+        <h1>Merge PDF</h1>
+        <p>Select multiple PDF files and merge them into one PDF.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+        <label for="pdfFiles" class="upload-area">
+            <div class="upload-icon">📤</div>
+            <h2>Choose PDF Files</h2>
+            <p>You can select multiple PDF files</p>
+        </label>
 
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+        <input type="file" id="pdfFiles" accept="application/pdf" multiple>
 
-  <script>
-    async function mergePDF() {
-      const files = document.getElementById('pdfInput').files;
+        <div class="file-list-box">
+            <h3>Selected Files</h3>
+            <ul id="fileList"></ul>
+        </div>
 
-      if (files.length < 2) {
-        alert("Please select at least 2 PDF files");
-        return;
-      }
+        <button id="mergeBtn" class="merge-btn">
+            Merge & Download PDF
+        </button>
 
-      const mergedPdf = await PDFLib.PDFDocument.create();
+        <div id="statusText" class="status-text"></div>
 
-      for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(bytes);
-        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    </div>
 
-        pages.forEach((page) => mergedPdf.addPage(page));
-      }
+</section>
 
-      const mergedBytes = await mergedPdf.save();
-      const blob = new Blob([mergedBytes], { type: "application/pdf" });
-      const link = document.createElement("a");
-
-      link.href = URL.createObjectURL(blob);
-      link.download = "merged.pdf";
-      link.click();
-    }
-  </script>
+<script src="merge-pdf.js"></script>
 
 </body>
 </html>
