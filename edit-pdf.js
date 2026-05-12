@@ -1,231 +1,745 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit PDF - PDFSmart Tools</title>
+const uploadOnly = document.getElementById("uploadOnly");
+const editorLayout = document.getElementById("editorLayout");
+const pdfUpload = document.getElementById("pdfUpload");
+const imageUpload = document.getElementById("imageUpload");
+const downloadBtn = document.getElementById("downloadBtn");
 
-    <link rel="stylesheet" href="edit-pdf.css" />
+const canvas = document.getElementById("pdfCanvas");
+const ctx = canvas.getContext("2d");
+const previewBox = document.getElementById("pdfPreview");
+const toolInfo = document.getElementById("toolInfo");
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-    <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
-</head>
+const drawColor = document.getElementById("drawColor");
+const brushSize = document.getElementById("brushSize");
+const undoBtn = document.getElementById("undoBtn");
+const imageSize = document.getElementById("imageSize");
 
-<body>
+const shapeColor = document.getElementById("shapeColor");
+const shapeBorderSize = document.getElementById("shapeBorderSize");
+const shapeSize = document.getElementById("shapeSize");
 
-<header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
-</header>
+const fontFamily = document.getElementById("fontFamily");
+const textAlign = document.getElementById("textAlign");
+const transparentBg = document.getElementById("transparentBg");
 
-<section class="upload-only" id="uploadOnly">
-    <div class="upload-card">
-        <h1>Edit PDF Tool</h1>
-        <p>Upload your PDF and edit using text, eraser, shapes, watermark, OCR and more.</p>
+const boldBtn = document.getElementById("boldBtn");
+const italicBtn = document.getElementById("italicBtn");
+const underlineBtn = document.getElementById("underlineBtn");
+const supBtn = document.getElementById("supBtn");
+const subBtn = document.getElementById("subBtn");
 
-        <label for="pdfUpload" class="main-upload-btn">
-            📤 Choose PDF File
-        </label>
+const ocrOutputBox = document.getElementById("ocrOutputBox");
+const ocrText = document.getElementById("ocrText");
+const contextMenu = document.getElementById("contextMenu");
 
-        <input type="file" id="pdfUpload" accept="application/pdf" />
-    </div>
-</section>
+let pdfDoc = null;
+let currentPage = 1;
+let rotation = 0;
+let selectedElement = null;
+let dragElement = null;
+let resizeElement = null;
 
-<section class="editor-layout hidden" id="editorLayout">
+let offsetX = 0;
+let offsetY = 0;
+let startX = 0;
+let startY = 0;
+let startWidth = 0;
+let startHeight = 0;
 
-    <aside class="sidebar">
-        <h3>PDF Tools</h3>
+let isDrawing = false;
+let drawMode = false;
+let highlightMode = false;
+let undoStack = [];
 
-        <button id="addTextBtn">Add Text</button>
-        <button id="editTextBoxBtn">Edit Text Box</button>
-        <button id="whiteEraserBtn">White Eraser</button>
+function setInfo(text){ toolInfo.innerText = text; }
 
-        <button id="drawBtn">Draw</button>
-        <button id="highlightBtn">Highlight</button>
+function saveUndo(){
+    if(canvas.width && canvas.height){
+        undoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+    }
+}
 
-        <button id="shapesBtn">Shapes ▾</button>
+function hideContextMenu(){ contextMenu.style.display = "none"; }
 
-        <div class="shape-panel" id="shapePanel">
-            <button id="rectangleBtn">▭ Rectangle</button>
-            <button id="circleBtn">◯ Circle</button>
-            <button id="lineBtn">／ Line</button>
-            <button id="arrowBtn">➜ Arrow</button>
-        </div>
+function removeResizeHandles(){
+    document.querySelectorAll(".resize-handle").forEach(h => h.remove());
+}
 
-        <button id="addImageBtn">Add Image</button>
-        <button id="signatureBtn">Signature</button>
+function addResizeHandle(el){
+    removeResizeHandles();
 
-        <button id="watermarkBtn">Watermark</button>
-        <button id="rotateBtn">Rotate Page</button>
-        <button id="deletePageBtn">Delete Page</button>
-        <button id="pageNumberBtn">Page Number</button>
+    const handle = document.createElement("div");
+    handle.className = "resize-handle";
+    el.appendChild(handle);
 
-        <button id="ocrBtn">OCR Scan</button>
-        <button id="translateBtn">Translate PDF</button>
-    </aside>
+    handle.addEventListener("mousedown", function(e){
+        e.stopPropagation();
+        resizeElement = el;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = el.offsetWidth;
+        startHeight = el.offsetHeight;
+        document.body.style.userSelect = "none";
+    });
+}
 
-    <main class="main-area">
+function selectElement(el){
+    document.querySelectorAll(".editable-text,.edit-text-box,.draggable-image,.shape-element,.white-eraser")
+    .forEach(item => item.classList.remove("selected-element"));
 
-        <div class="tool-info" id="toolInfo">
-            PDF uploaded. Select any tool from the left side.
-        </div>
+    selectedElement = el;
 
-        <div class="preview-box">
-            <div class="preview-header">
-                <span>PDF Preview</span>
+    if(selectedElement){
+        selectedElement.classList.add("selected-element");
+        addResizeHandle(selectedElement);
+    }
+}
 
-                <button class="download-btn" id="downloadBtn">
-                    Download PDF
-                </button>
-            </div>
+function makeDraggable(el, handleEl = null){
+    const dragHandle = handleEl || el;
 
-            <div class="pdf-preview" id="pdfPreview">
-                <canvas id="pdfCanvas"></canvas>
-            </div>
-        </div>
+    el.addEventListener("click", function(e){
+        e.stopPropagation();
+        selectElement(el);
+    });
 
-    </main>
+    dragHandle.addEventListener("mousedown", function(e){
+        if(e.button !== 0) return;
+        if(e.target.classList.contains("resize-handle")) return;
 
-    <aside class="properties">
-        <h3>Formatting Options</h3>
+        e.stopPropagation();
+        selectElement(el);
 
-        <div class="option-group">
-            <h4>Text</h4>
+        dragElement = el;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+    });
 
-            <label>Font Family</label>
-            <select id="fontFamily">
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Calibri">Calibri</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Courier New">Courier New</option>
-            </select>
+    el.addEventListener("contextmenu", function(e){
+        e.preventDefault();
+        selectElement(el);
+        contextMenu.style.left = e.pageX + "px";
+        contextMenu.style.top = e.pageY + "px";
+        contextMenu.style.display = "block";
+    });
+}
 
-            <label>Font Size</label>
-            <input type="number" id="textFontSize" value="20" />
+document.addEventListener("mousemove", function(e){
+    if(dragElement){
+        dragElement.style.left = (e.clientX - offsetX) + "px";
+        dragElement.style.top = (e.clientY - offsetY) + "px";
+    }
 
-            <label>Text Color</label>
-            <input type="color" id="textColor" value="#000000" />
+    if(resizeElement){
+        let w = startWidth + (e.clientX - startX);
+        let h = startHeight + (e.clientY - startY);
 
-            <label>Text Background</label>
-            <input type="color" id="textBgColor" value="#ffffff" />
+        if(w < 30) w = 30;
+        if(h < 20) h = 20;
 
-            <div class="text-toolbar">
-                <button id="boldBtn" type="button">B</button>
-                <button id="italicBtn" type="button"><i>I</i></button>
-                <button id="underlineBtn" type="button"><u>U</u></button>
-                <button id="supBtn" type="button">X²</button>
-                <button id="subBtn" type="button">X₂</button>
-            </div>
+        resizeElement.style.width = w + "px";
 
-            <label>Text Align</label>
-            <select id="textAlign">
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-            </select>
+        if(!resizeElement.classList.contains("line-shape") && !resizeElement.classList.contains("arrow-shape")){
+            resizeElement.style.height = h + "px";
+        }
 
-            <label class="check-row">
-                <input type="checkbox" id="transparentBg" />
-                Transparent Background
-            </label>
-        </div>
+        if(resizeElement.classList.contains("circle-shape")){
+            resizeElement.style.height = w + "px";
+        }
+    }
+});
 
-        <hr>
+document.addEventListener("mouseup", function(){
+    dragElement = null;
+    resizeElement = null;
+    document.body.style.userSelect = "auto";
+});
 
-        <div class="option-group">
-            <h4>Draw / Highlight</h4>
+document.addEventListener("click", hideContextMenu);
 
-            <label>Draw Color</label>
-            <input type="color" id="drawColor" value="#ff0000" />
+/* PDF LOAD */
 
-            <label>Brush Size</label>
-            <input type="range" id="brushSize" min="1" max="25" value="3" />
-        </div>
+pdfUpload.addEventListener("change", async function(e){
+    const file = e.target.files[0];
+    if(!file) return;
 
-        <hr>
+    const fileReader = new FileReader();
 
-        <div class="option-group">
-            <h4>Image / Signature</h4>
+    fileReader.onload = async function(){
+        const typedarray = new Uint8Array(this.result);
+        pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+        await renderPage(currentPage);
 
-            <label>Image Size</label>
-            <input type="range" id="imageSize" min="50" max="500" value="150" />
-        </div>
+        uploadOnly.classList.add("hidden");
+        editorLayout.classList.remove("hidden");
 
-        <hr>
+        setInfo("PDF uploaded. Now select any editing tool.");
+    };
 
-        <div class="option-group">
-            <h4>Shapes</h4>
+    fileReader.readAsArrayBuffer(file);
+});
 
-            <label>Shape Color</label>
-            <input type="color" id="shapeColor" value="#ff0000" />
+async function renderPage(pageNumber){
+    const page = await pdfDoc.getPage(pageNumber);
+    const viewport = page.getViewport({scale:1.5, rotation:rotation});
 
-            <label>Border / Line Size</label>
-            <input type="range" id="shapeBorderSize" min="1" max="12" value="4" />
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
-            <label>Shape Size</label>
-            <input type="range" id="shapeSize" min="40" max="400" value="150" />
-        </div>
+    await page.render({canvasContext:ctx, viewport:viewport}).promise;
+}
 
-        <hr>
+/* TEXT BOX CREATOR */
 
-        <div class="option-group">
-            <h4>Page Number</h4>
+function createTextBox(text, isLargeBox){
+    const box = document.createElement("div");
+    box.className = isLargeBox ? "edit-text-box editable-text" : "editable-text";
 
-            <label>Number Color</label>
-            <input type="color" id="pageNumberColor" value="#000000" />
+    box.style.left = isLargeBox ? "140px" : "120px";
+    box.style.top = isLargeBox ? "140px" : "120px";
+    box.style.width = isLargeBox ? "190px" : "160px";
+    box.style.minHeight = isLargeBox ? "65px" : "42px";
+    box.style.background = transparentBg.checked ? "transparent" : document.getElementById("textBgColor").value;
 
-            <label>Number Size</label>
-            <input type="number" id="pageNumberSize" value="18" />
-        </div>
+    const handle = document.createElement("div");
+    handle.className = "move-handle";
+    handle.innerText = "↕ Move";
 
-        <hr>
+    const content = document.createElement("div");
+    content.className = "text-content";
+    content.contentEditable = true;
+    content.innerText = text;
+    content.style.fontSize = document.getElementById("textFontSize").value + "px";
+    content.style.fontFamily = fontFamily.value;
+    content.style.color = document.getElementById("textColor").value;
+    content.style.textAlign = textAlign.value;
 
-        <div class="option-group">
-            <h4>Watermark</h4>
+    box.appendChild(handle);
+    box.appendChild(content);
 
-            <label>Watermark Text</label>
-            <input type="text" id="watermarkText" value="PDFSmart Tools" />
+    previewBox.appendChild(box);
+    makeDraggable(box, handle);
+    selectElement(box);
+    content.focus();
 
-            <label>Watermark Color</label>
-            <input type="color" id="watermarkColor" value="#808080" />
+    setInfo("Text box added. Type inside, drag from Move bar, resize from red dot.");
+}
 
-            <label>Watermark Size</label>
-            <input type="number" id="watermarkSize" value="60" />
+function addEditableText(){ createTextBox("Type here", false); }
+function addEditTextBox(){ createTextBox("Edit text here", true); }
 
-            <label>Opacity</label>
-            <input type="range" id="watermarkOpacity" min="10" max="100" value="18" />
+/* TEXT STYLE */
 
-            <label>Rotation</label>
-            <input type="range" id="watermarkRotation" min="-90" max="90" value="-30" />
-        </div>
+function getSelectedTextContent(){
+    if(!selectedElement) return null;
+    return selectedElement.querySelector(".text-content");
+}
 
-        <button id="undoBtn" class="green-btn">
-            Undo
-        </button>
-    </aside>
+boldBtn.addEventListener("click", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.fontWeight = c.style.fontWeight === "bold" ? "normal" : "bold";
+});
 
-</section>
+italicBtn.addEventListener("click", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.fontStyle = c.style.fontStyle === "italic" ? "normal" : "italic";
+});
 
-<div class="ocr-output-box" id="ocrOutputBox" style="display:none;">
-    <h3>OCR / Translate Output</h3>
-    <textarea id="ocrText" placeholder="OCR text will appear here..."></textarea>
-</div>
+underlineBtn.addEventListener("click", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.textDecoration = c.style.textDecoration === "underline" ? "none" : "underline";
+});
 
-<div id="contextMenu" class="context-menu">
-    <button id="ctxDelete">Delete</button>
-    <button id="ctxDuplicate">Duplicate</button>
-    <button id="ctxBringFront">Bring Front</button>
-    <button id="ctxSendBack">Send Back</button>
-    <button id="ctxIncrease">Increase Size</button>
-    <button id="ctxDecrease">Decrease Size</button>
-</div>
+supBtn.addEventListener("click", function(){
+    const c = getSelectedTextContent();
+    if(c){ c.focus(); document.execCommand("superscript"); }
+});
 
-<input type="file" id="imageUpload" accept="image/*" hidden>
+subBtn.addEventListener("click", function(){
+    const c = getSelectedTextContent();
+    if(c){ c.focus(); document.execCommand("subscript"); }
+});
 
-<script src="edit-pdf.js"></script>
+/* ERASER */
 
-</body>
-</html>
+function addWhiteEraser(){
+    const eraser = document.createElement("div");
+    eraser.className = "white-eraser";
+    eraser.style.left = "150px";
+    eraser.style.top = "150px";
+    eraser.style.width = "180px";
+    eraser.style.height = "60px";
+    eraser.style.background = "#ffffff";
+
+    previewBox.appendChild(eraser);
+    makeDraggable(eraser);
+    selectElement(eraser);
+}
+
+/* IMAGE */
+
+function addImageToPDF(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "draggable-image";
+        img.style.left = "150px";
+        img.style.top = "150px";
+        img.style.width = imageSize.value + "px";
+
+        previewBox.appendChild(img);
+        makeDraggable(img);
+        selectElement(img);
+    };
+    reader.readAsDataURL(file);
+}
+
+imageUpload.addEventListener("change", function(){
+    const file = this.files[0];
+    if(file) addImageToPDF(file);
+    imageUpload.value = "";
+});
+
+/* SHAPES */
+
+function applyShapeStyle(shape,type){
+    const color = shapeColor.value;
+    const border = shapeBorderSize.value + "px";
+    const size = parseInt(shapeSize.value);
+
+    if(type === "rectangle"){
+        shape.style.width = size + "px";
+        shape.style.height = Math.round(size * .65) + "px";
+        shape.style.border = border + " solid " + color;
+        shape.style.background = "transparent";
+    }
+
+    if(type === "circle"){
+        shape.style.width = size + "px";
+        shape.style.height = size + "px";
+        shape.style.border = border + " solid " + color;
+        shape.style.borderRadius = "50%";
+        shape.style.background = "transparent";
+    }
+
+    if(type === "line"){
+        shape.style.width = size + "px";
+        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.background = color;
+    }
+
+    if(type === "arrow"){
+        shape.style.width = size + "px";
+        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.background = color;
+        shape.style.setProperty("--arrow-color", color);
+    }
+}
+
+function addShape(type){
+    const shape = document.createElement("div");
+    shape.classList.add("shape-element");
+    shape.dataset.shapeType = type;
+
+    if(type === "rectangle") shape.classList.add("rectangle-shape");
+    if(type === "circle") shape.classList.add("circle-shape");
+    if(type === "line") shape.classList.add("line-shape");
+    if(type === "arrow") shape.classList.add("arrow-shape");
+
+    shape.style.left = "180px";
+    shape.style.top = "180px";
+
+    applyShapeStyle(shape,type);
+
+    previewBox.appendChild(shape);
+    makeDraggable(shape);
+    selectElement(shape);
+}
+
+/* DRAW */
+
+canvas.addEventListener("mousedown", function(e){
+    if(drawMode || highlightMode){
+        saveUndo();
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX,e.offsetY);
+    }
+});
+
+canvas.addEventListener("mousemove", function(e){
+    if(isDrawing && drawMode){
+        ctx.lineWidth = brushSize.value;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = drawColor.value;
+        ctx.globalAlpha = 1;
+        ctx.lineTo(e.offsetX,e.offsetY);
+        ctx.stroke();
+    }
+
+    if(isDrawing && highlightMode){
+        ctx.lineWidth = 18;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "yellow";
+        ctx.globalAlpha = .35;
+        ctx.lineTo(e.offsetX,e.offsetY);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+    }
+});
+
+canvas.addEventListener("mouseup", function(){
+    isDrawing = false;
+    ctx.globalAlpha = 1;
+});
+
+/* WATERMARK PAGE OCR */
+
+function addWatermark(){
+    if(!canvas.width){ alert("Please upload PDF first."); return; }
+
+    saveUndo();
+
+    const text = document.getElementById("watermarkText").value;
+    const color = document.getElementById("watermarkColor").value;
+    const size = document.getElementById("watermarkSize").value;
+    const opacity = document.getElementById("watermarkOpacity").value / 100;
+    const rotate = document.getElementById("watermarkRotation").value;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.font = size + "px Arial";
+    ctx.fillStyle = color;
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(rotate * Math.PI / 180);
+    ctx.textAlign = "center";
+    ctx.fillText(text,0,0);
+    ctx.restore();
+}
+
+function addPageNumber(){
+    const color = document.getElementById("pageNumberColor").value;
+    const size = document.getElementById("pageNumberSize").value;
+
+    ctx.save();
+    ctx.font = size + "px Arial";
+    ctx.fillStyle = color;
+    ctx.textAlign = "center";
+    ctx.fillText("Page " + currentPage, canvas.width / 2, canvas.height - 25);
+    ctx.restore();
+}
+
+async function runOCR(){
+    ocrOutputBox.style.display = "block";
+    ocrText.value = "Scanning text... Please wait.";
+
+    try{
+        const result = await Tesseract.recognize(canvas.toDataURL(),"eng");
+        ocrText.value = result.data.text;
+    }catch(error){
+        ocrText.value = "OCR failed.";
+    }
+}
+
+function translateText(){
+    if(!ocrText.value || ocrText.value.includes("Scanning")){
+        alert("Please run OCR first.");
+        return;
+    }
+
+    ocrText.value = ocrText.value
+        .replace(/Medical/gi,"મેડિકલ")
+        .replace(/Hospital/gi,"હોસ્પિટલ")
+        .replace(/Tender/gi,"ટેન્ડર")
+        .replace(/Page/gi,"પેજ")
+        .replace(/Date/gi,"તારીખ");
+}
+
+/* PROPERTY CONTROLS */
+
+document.getElementById("textFontSize").addEventListener("input", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.fontSize = this.value + "px";
+});
+
+document.getElementById("textColor").addEventListener("input", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.color = this.value;
+});
+
+document.getElementById("textBgColor").addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
+        selectedElement.style.background = this.value;
+    }
+});
+
+fontFamily.addEventListener("change", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.fontFamily = this.value;
+});
+
+textAlign.addEventListener("change", function(){
+    const c = getSelectedTextContent();
+    if(c) c.style.textAlign = this.value;
+});
+
+transparentBg.addEventListener("change", function(){
+    if(selectedElement && selectedElement.classList.contains("editable-text")){
+        selectedElement.style.background = this.checked ? "transparent" : document.getElementById("textBgColor").value;
+    }
+});
+
+imageSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("draggable-image")){
+        selectedElement.style.width = this.value + "px";
+    }
+});
+
+shapeColor.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+    }
+});
+shapeBorderSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+    }
+});
+shapeSize.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("shape-element")){
+        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+    }
+});
+
+/* BUTTONS */
+
+document.getElementById("addTextBtn").addEventListener("click", addEditableText);
+document.getElementById("editTextBoxBtn").addEventListener("click", addEditTextBox);
+document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
+
+document.getElementById("drawBtn").addEventListener("click", function(){
+    drawMode = !drawMode;
+    highlightMode = false;
+});
+
+document.getElementById("highlightBtn").addEventListener("click", function(){
+    highlightMode = !highlightMode;
+    drawMode = false;
+});
+
+document.getElementById("shapesBtn").addEventListener("click", function(){
+    document.getElementById("shapePanel").classList.toggle("show");
+});
+
+document.getElementById("rectangleBtn").addEventListener("click", function(){ addShape("rectangle"); });
+document.getElementById("circleBtn").addEventListener("click", function(){ addShape("circle"); });
+document.getElementById("lineBtn").addEventListener("click", function(){ addShape("line"); });
+document.getElementById("arrowBtn").addEventListener("click", function(){ addShape("arrow"); });
+
+document.getElementById("addImageBtn").addEventListener("click", function(){ imageUpload.click(); });
+document.getElementById("signatureBtn").addEventListener("click", function(){ imageUpload.click(); });
+
+document.getElementById("watermarkBtn").addEventListener("click", addWatermark);
+document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
+document.getElementById("ocrBtn").addEventListener("click", runOCR);
+
+document.getElementById("translateBtn").addEventListener("click", function(){
+    ocrOutputBox.style.display = "block";
+    translateText();
+});
+
+document.getElementById("rotateBtn").addEventListener("click", function(){
+    rotation = (rotation + 90) % 360;
+    renderPage(currentPage);
+});
+
+document.getElementById("deletePageBtn").addEventListener("click", function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+});
+
+/* CONTEXT MENU */
+
+document.getElementById("ctxDelete").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.remove();
+        selectedElement = null;
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxDuplicate").addEventListener("click", function(){
+    if(selectedElement){
+        const clone = selectedElement.cloneNode(true);
+        clone.style.left = (selectedElement.offsetLeft + 20) + "px";
+        clone.style.top = (selectedElement.offsetTop + 20) + "px";
+        previewBox.appendChild(clone);
+        const handle = clone.querySelector(".move-handle");
+        makeDraggable(clone, handle);
+        selectElement(clone);
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxBringFront").addEventListener("click", function(){
+    if(selectedElement) selectedElement.style.zIndex = "5000";
+    hideContextMenu();
+});
+
+document.getElementById("ctxSendBack").addEventListener("click", function(){
+    if(selectedElement) selectedElement.style.zIndex = "900";
+    hideContextMenu();
+});
+
+document.getElementById("ctxIncrease").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
+        selectedElement.style.height = (selectedElement.offsetHeight + 10) + "px";
+    }
+    hideContextMenu();
+});
+
+document.getElementById("ctxDecrease").addEventListener("click", function(){
+    if(selectedElement){
+        selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
+        selectedElement.style.height = Math.max(10, selectedElement.offsetHeight - 10) + "px";
+    }
+    hideContextMenu();
+});
+
+/* UNDO */
+
+undoBtn.addEventListener("click", function(){
+    if(undoStack.length > 0){
+        const lastState = undoStack.pop();
+        ctx.putImageData(lastState,0,0);
+    }else{
+        alert("Nothing to undo.");
+    }
+});
+
+/* DOWNLOAD */
+
+downloadBtn.addEventListener("click", async function(){
+    if(!canvas.width){
+        alert("Please upload PDF first.");
+        return;
+    }
+
+    hideContextMenu();
+    removeResizeHandles();
+
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+
+    tempCtx.drawImage(canvas,0,0);
+
+    const elements = previewBox.querySelectorAll(".white-eraser,.editable-text,.edit-text-box,.draggable-image,.shape-element");
+
+    for(const el of elements){
+        const x = el.offsetLeft - canvas.offsetLeft;
+        const y = el.offsetTop - canvas.offsetTop;
+
+        if(el.classList.contains("white-eraser")){
+            tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
+            tempCtx.fillRect(x,y,el.offsetWidth,el.offsetHeight);
+        }
+
+        if(el.classList.contains("editable-text")){
+            const content = el.querySelector(".text-content");
+            const style = content ? window.getComputedStyle(content) : window.getComputedStyle(el);
+            const bg = window.getComputedStyle(el).backgroundColor;
+
+            if(bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent"){
+                tempCtx.fillStyle = bg;
+                tempCtx.fillRect(x,y,el.offsetWidth,el.offsetHeight);
+            }
+
+            tempCtx.font = `${style.fontWeight} ${style.fontStyle} ${style.fontSize} ${style.fontFamily}`;
+            tempCtx.fillStyle = style.color;
+            tempCtx.textAlign = style.textAlign || "left";
+
+            const text = content ? content.innerText : el.innerText;
+            const lines = text.split("\n");
+            const fontSize = parseInt(style.fontSize);
+
+            lines.forEach((line,index)=>{
+                let textX = x + 8;
+
+                if(style.textAlign === "center") textX = x + el.offsetWidth / 2;
+                if(style.textAlign === "right") textX = x + el.offsetWidth - 8;
+
+                tempCtx.fillText(line,textX,y + 25 + (index * (fontSize + 6)));
+            });
+        }
+
+        if(el.classList.contains("draggable-image")){
+            await new Promise(resolve=>{
+                const img = new Image();
+                img.onload = function(){
+                    tempCtx.drawImage(img,x,y,el.offsetWidth,el.offsetHeight);
+                    resolve();
+                };
+                img.src = el.src;
+            });
+        }
+
+        if(el.classList.contains("rectangle-shape")){
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.strokeRect(x,y,el.offsetWidth,el.offsetHeight);
+        }
+
+        if(el.classList.contains("circle-shape")){
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.beginPath();
+            tempCtx.ellipse(x+el.offsetWidth/2,y+el.offsetHeight/2,el.offsetWidth/2,el.offsetHeight/2,0,0,Math.PI*2);
+            tempCtx.stroke();
+        }
+
+        if(el.classList.contains("line-shape")){
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.beginPath();
+            tempCtx.moveTo(x,y);
+            tempCtx.lineTo(x+el.offsetWidth,y);
+            tempCtx.stroke();
+        }
+
+        if(el.classList.contains("arrow-shape")){
+            tempCtx.strokeStyle = shapeColor.value;
+            tempCtx.fillStyle = shapeColor.value;
+            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+
+            tempCtx.beginPath();
+            tempCtx.moveTo(x,y);
+            tempCtx.lineTo(x+el.offsetWidth,y);
+            tempCtx.stroke();
+
+            tempCtx.beginPath();
+            tempCtx.moveTo(x+el.offsetWidth,y);
+            tempCtx.lineTo(x+el.offsetWidth-15,y-8);
+            tempCtx.lineTo(x+el.offsetWidth-15,y+8);
+            tempCtx.closePath();
+            tempCtx.fill();
+        }
+    }
+
+    const imageData = tempCanvas.toDataURL("image/png");
+    const pdf = await PDFLib.PDFDocument.create();
+    const page = pdf.addPage([canvas.width,canvas.height]);
+    const pngImage = await pdf.embedPng(imageData);
+
+    page.drawImage(pngImage,{x:0,y:0,width:canvas.width,height:canvas.height});
+
+    const pdfBytes = await pdf.save();
+    const blob = new Blob([pdfBytes],{type:"application/pdf"});
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+    link.download = "edited-pdf.pdf";
+    link.click();
+});
