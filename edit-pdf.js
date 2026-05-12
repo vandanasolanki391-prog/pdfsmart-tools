@@ -77,7 +77,7 @@ function clearSelection(){
     selectedElement = null;
 }
 
-function selectElement(el){
+functionupdateSelection(el){
     document.querySelectorAll(
         ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
     ).forEach(item => item.classList.remove("selected-element"));
@@ -107,14 +107,14 @@ function syncBoxControls(){
 function makeDraggable(el){
     el.addEventListener("click", function(e){
         e.stopPropagation();
-        selectElement(el);
+        updateSelection(el);
     });
 
     el.addEventListener("mousedown", function(e){
         if(e.button !== 0) return;
 
         e.stopPropagation();
-        selectElement(el);
+        updateSelection(el);
 
         dragElement = el;
         offsetX = e.clientX - el.offsetLeft;
@@ -123,7 +123,7 @@ function makeDraggable(el){
 
     el.addEventListener("contextmenu", function(e){
         e.preventDefault();
-        selectElement(el);
+        updateSelection(el);
 
         contextMenu.style.left = e.pageX + "px";
         contextMenu.style.top = e.pageY + "px";
@@ -214,7 +214,7 @@ function addEditableText(){
 
     previewBox.appendChild(textBox);
     makeDraggable(textBox);
-    selectElement(textBox);
+  updateSelection(textBox);
     textBox.focus();
 
     setInfo("Text added. Type and drag anywhere.");
@@ -244,7 +244,7 @@ function addEditTextBox(){
 
     previewBox.appendChild(box);
     makeDraggable(box);
-    selectElement(box);
+    updateSelection(box);
     box.focus();
 
     setInfo("Edit Text Box added. Adjust width/height from right panel.");
@@ -302,7 +302,7 @@ function addWhiteEraser(){
 
     previewBox.appendChild(eraser);
     makeDraggable(eraser);
-    selectElement(eraser);
+    updateSelection(eraser);
 
     setInfo("White Eraser added. Drag it over old text and adjust width/height.");
 }
@@ -323,7 +323,7 @@ function addImageToPDF(file){
 
         previewBox.appendChild(img);
         makeDraggable(img);
-        selectElement(img);
+       updateSelection(img);
 
         setInfo("Image/Signature added.");
     };
@@ -395,7 +395,7 @@ function addShape(type){
 
     previewBox.appendChild(shape);
     makeDraggable(shape);
-    selectElement(shape);
+    supdateSelection(shape);
 
     setInfo(type + " added.");
 }
@@ -746,7 +746,7 @@ document.getElementById("ctxDuplicate").addEventListener("click", function(){
 
         previewBox.appendChild(clone);
         makeDraggable(clone);
-        selectElement(clone);
+        updateSelection(clone);
     }
 
     hideContextMenu();
@@ -1009,11 +1009,7 @@ function removeResizeHandle(el){
     }
 }
 
-/* UPDATE SELECT FUNCTION */
-
-const oldSelectElement = selectElement;
-
-selectElement = function(el){
+function updateSelection(el){
 
     document.querySelectorAll(
         ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
@@ -1032,8 +1028,7 @@ selectElement = function(el){
 
         addResizeHandle(selectedElement);
     }
-};
-
+}
 /* RESIZE MOVE */
 
 document.addEventListener("mousemove", function(e){
