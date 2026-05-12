@@ -1,53 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>JPG to PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="jpg-to-pdf.css">
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <h1>JPG to PDF Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="imageInput" accept="image/*" multiple>
-  <br><br>
+<section class="converter-layout">
 
-  <button onclick="convertToPDF()">Convert to PDF</button>
+    <div class="converter-card">
 
-  <br><br>
+        <h1>JPG to PDF</h1>
+        <p>Convert JPG, JPEG or PNG images into a single PDF file.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+        <label for="imageFiles" class="upload-area">
+            <div class="upload-icon">🖼️</div>
+            <h2>Choose Images</h2>
+            <p>Select multiple JPG / PNG files</p>
+        </label>
 
-  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-  <script>
-    async function convertToPDF() {
-      const files = document.getElementById('imageInput').files;
+        <input 
+            type="file" 
+            id="imageFiles" 
+            accept="image/jpeg,image/jpg,image/png" 
+            multiple
+        >
 
-      if (files.length === 0) {
-        alert("Please select JPG images first");
-        return;
-      }
+        <div class="options-box">
 
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
+            <h3>PDF Settings</h3>
 
-      for (let i = 0; i < files.length; i++) {
-        const imgData = await readFileAsDataURL(files[i]);
+            <label>Page Size</label>
+            <select id="pageSize">
+                <option value="a4">A4 Page</option>
+                <option value="fit">Fit to Image</option>
+            </select>
 
-        if (i > 0) pdf.addPage();
+            <label>Orientation</label>
+            <select id="orientation">
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+            </select>
 
-        pdf.addImage(imgData, 'JPEG', 10, 10, 190, 0);
-      }
+            <label>Margin</label>
+            <select id="marginSize">
+                <option value="20">Small Margin</option>
+                <option value="40" selected>Normal Margin</option>
+                <option value="70">Large Margin</option>
+                <option value="0">No Margin</option>
+            </select>
 
-      pdf.save("converted.pdf");
-    }
+        </div>
 
-    function readFileAsDataURL(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    }
-  </script>
+        <div class="file-list-box">
+            <h3>Selected Images</h3>
+            <div id="imageList" class="image-list"></div>
+        </div>
+
+        <button id="convertBtn" class="convert-btn">
+            Convert & Download PDF
+        </button>
+
+        <div id="statusText" class="status-text"></div>
+
+    </div>
+
+</section>
+
+<script src="jpg-to-pdf.js"></script>
 
 </body>
 </html>
