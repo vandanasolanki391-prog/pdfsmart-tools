@@ -953,6 +953,144 @@ downloadBtn.addEventListener("click", async function(){
     link.href = URL.createObjectURL(blob);
     link.download = "edited-pdf.pdf";
     link.click();
+    /* =========================
+   RESIZE HANDLE SYSTEM
+========================= */
+
+let resizeElement = null;
+let startX = 0;
+let startY = 0;
+let startWidth = 0;
+let startHeight = 0;
+
+/* CREATE RESIZE HANDLE */
+
+function addResizeHandle(el){
+
+    removeResizeHandle(el);
+
+    const handle = document.createElement("div");
+    handle.className = "resize-handle";
+
+    el.appendChild(handle);
+
+    handle.addEventListener("mousedown", function(e){
+
+        e.stopPropagation();
+
+        resizeElement = el;
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        startWidth = parseInt(
+            window.getComputedStyle(el).width,
+            10
+        );
+
+        startHeight = parseInt(
+            window.getComputedStyle(el).height,
+            10
+        );
+
+        document.body.style.userSelect = "none";
+    });
+}
+
+/* REMOVE OLD HANDLE */
+
+function removeResizeHandle(el){
+
+    const oldHandle =
+        el.querySelector(".resize-handle");
+
+    if(oldHandle){
+        oldHandle.remove();
+    }
+}
+
+/* UPDATE SELECT FUNCTION */
+
+const oldSelectElement = selectElement;
+
+selectElement = function(el){
+
+    document.querySelectorAll(
+        ".editable-text, .edit-text-box, .draggable-image, .shape-element, .white-eraser"
+    ).forEach(item => {
+
+        item.classList.remove("selected-element");
+
+        removeResizeHandle(item);
+    });
+
+    selectedElement = el;
+
+    if(selectedElement){
+
+        selectedElement.classList.add("selected-element");
+
+        addResizeHandle(selectedElement);
+    }
+};
+
+/* RESIZE MOVE */
+
+document.addEventListener("mousemove", function(e){
+
+    if(resizeElement){
+
+        const width =
+            startWidth + (e.clientX - startX);
+
+        const height =
+            startHeight + (e.clientY - startY);
+
+        if(width > 20){
+            resizeElement.style.width =
+                width + "px";
+        }
+
+        if(height > 10){
+
+            if(
+                !resizeElement.classList.contains("line-shape") &&
+                !resizeElement.classList.contains("arrow-shape")
+            ){
+                resizeElement.style.height =
+                    height + "px";
+            }
+        }
+
+        /* CIRCLE PERFECT */
+
+        if(
+            resizeElement.classList.contains("circle-shape")
+        ){
+            resizeElement.style.height =
+                resizeElement.style.width;
+        }
+
+        /* LINE */
+
+        if(
+            resizeElement.classList.contains("line-shape") ||
+            resizeElement.classList.contains("arrow-shape")
+        ){
+            resizeElement.style.height =
+                shapeBorderSize.value + "px";
+        }
+    }
+});
+
+/* STOP RESIZE */
+
+document.addEventListener("mouseup", function(){
+
+    resizeElement = null;
+
+    document.body.style.userSelect = "auto";
+});
 
     setInfo("Edited PDF downloaded successfully.");
 });
