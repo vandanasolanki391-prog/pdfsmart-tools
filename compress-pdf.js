@@ -11,68 +11,38 @@ const statusText = document.getElementById("statusText");
 
 let selectedFile = null;
 let originalSize = 0;
-let totalPages = 0;
 
 pdfFileInput.addEventListener("change", async function(e){
-
     selectedFile = e.target.files[0];
 
-    if(!selectedFile){
-        fileInfo.innerText = "No PDF selected";
-        return;
-    }
+    if(!selectedFile) return;
 
-    try{
-        originalSize = selectedFile.size;
+    originalSize = selectedFile.size;
 
-        const bytes = await selectedFile.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(bytes);
+    uploadSection.style.display = "none";
+    workSection.style.display = "block";
 
-        totalPages = pdf.getPageCount();
+    fileInfo.innerText = `${selectedFile.name} | Size: ${formatSize(originalSize)}`;
+    statusText.innerText = "PDF selected successfully.";
 
-        fileInfo.innerText =
-            `${selectedFile.name} | Pages: ${totalPages} | Size: ${formatSize(originalSize)}`;
-
-        uploadSection.style.display = "none";
-        workSection.style.display = "block";
-
-        statusText.innerText = "PDF loaded successfully.";
-
-        await renderFirstPagePreview(selectedFile);
-
-    }
-    catch(error){
-        console.error(error);
-        fileInfo.innerText = "Invalid PDF file.";
-        statusText.innerText = "Please select a valid PDF.";
-    }
+    await renderFirstPagePreview(selectedFile);
 });
 
 function formatSize(bytes){
     return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-function getCompressionLevel(){
-    const selected =
-        document.querySelector('input[name="compressLevel"]:checked');
-
-    return selected ? selected.value : "medium";
-}
-
 async function renderFirstPagePreview(file){
     try{
         const bytes = await file.arrayBuffer();
 
-        const loadingTask = pdfjsLib.getDocument({
-            data: bytes
-        });
-
-        const pdf = await loadingTask.promise;
+        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
         const page = await pdf.getPage(1);
 
-        const viewport = page.getViewport({
-            scale: 0.7
-        });
+        fileInfo.innerText =
+            `${file.name} | Pages: ${pdf.numPages} | Size: ${formatSize(originalSize)}`;
+
+        const viewport = page.getViewport({ scale: 0.7 });
 
         previewCanvas.width = viewport.width;
         previewCanvas.height = viewport.height;
@@ -83,12 +53,17 @@ async function renderFirstPagePreview(file){
         }).promise;
     }
     catch(error){
-        console.error("Preview error:", error);
+        console.error(error);
+        statusText.innerText = "Preview failed, but you can still try compression.";
     }
 }
 
-compressBtn.addEventListener("click", async function(){
+function getCompressionLevel(){
+    const selected = document.querySelector('input[name="compressLevel"]:checked');
+    return selected ? selected.value : "medium";
+}
 
+compressBtn.addEventListener("click", async function(){
     if(!selectedFile){
         alert("Please select a PDF file first.");
         return;
@@ -96,8 +71,6 @@ compressBtn.addEventListener("click", async function(){
 
     try{
         statusText.innerText = "Compressing PDF... Please wait.";
-
-        const compressionLevel = getCompressionLevel();
 
         const fileBytes = await selectedFile.arrayBuffer();
 
@@ -108,22 +81,8 @@ compressBtn.addEventListener("click", async function(){
         pdfDoc.setProducer("PDFSmart Tools");
         pdfDoc.setCreator("PDFSmart Tools");
 
-        let useObjectStreams = true;
-
-        if(compressionLevel === "low"){
-            useObjectStreams = false;
-        }
-
-        if(compressionLevel === "medium"){
-            useObjectStreams = true;
-        }
-
-        if(compressionLevel === "high"){
-            useObjectStreams = true;
-        }
-
         const compressedBytes = await pdfDoc.save({
-            useObjectStreams: useObjectStreams,
+            useObjectStreams: true,
             addDefaultPage: false
         });
 
@@ -138,19 +97,14 @@ compressBtn.addEventListener("click", async function(){
         link.download = "compressed-pdf.pdf";
         link.click();
 
-        const reduction =
-            (((originalSize - newSize) / originalSize) * 100).toFixed(1);
+        const reduction = (((originalSize - newSize) / originalSize) * 100).toFixed(1);
 
         statusText.innerText =
             `Compressed successfully. New Size: ${formatSize(newSize)} | Reduction: ${reduction}%`;
-
     }
     catch(error){
         console.error(error);
-
-        statusText.innerText =
-            "Compression failed. This PDF may be encrypted or unsupported.";
-
-        alert("Compression failed. Please try another PDF.");
+        statusText.innerText = "Compression failed. Please try another PDF.";
+        alert("Compression failed. This PDF may be encrypted or unsupported.");
     }
 });
