@@ -1,69 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PDF to JPG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to JPG - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="pdf-to-jpg.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
 <body>
 
-  <h1>PDF to JPG Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="pdfInput" accept="application/pdf">
-  <br><br>
+<section class="converter-layout">
 
-  <button onclick="convertPDFtoJPG()">Convert to JPG</button>
+    <div class="converter-card">
 
-  <br><br>
+        <div id="uploadSection" class="upload-section">
+            <h1>PDF to JPG</h1>
+            <p>Select PDF file and convert pages into JPG images.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
 
-  <canvas id="canvas" style="display:none;"></canvas>
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
 
-  <!-- PDF.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <div id="workSection" class="work-section" style="display:none;">
 
-  <script>
-    async function convertPDFtoJPG() {
-      const file = document.getElementById('pdfInput').files[0];
+            <div class="work-header">
+                <div>
+                    <h1>PDF to JPG</h1>
+                    <p>Preview first page and convert PDF pages into JPG images.</p>
+                </div>
 
-      if (!file) {
-        alert("Please select a PDF file");
-        return;
-      }
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
 
-      const fileReader = new FileReader();
+            <div class="preview-options-grid">
 
-      fileReader.onload = async function() {
-        const typedarray = new Uint8Array(this.result);
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
 
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
 
-          const viewport = page.getViewport({ scale: 2 });
-          const canvas = document.getElementById('canvas');
-          const context = canvas.getContext('2d');
+                <div class="options-box">
+                    <h3>Convert Options</h3>
 
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
+                    <label>Pages</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: all or 1-3, 5"
+                        value="all"
+                    >
 
-          await page.render({
-            canvasContext: context,
-            viewport: viewport
-          }).promise;
+                    <small>
+                        Use <b>all</b> for all pages, or enter pages like 1-3, 5.
+                    </small>
 
-          const image = canvas.toDataURL("image/jpeg");
+                    <label>Image Quality</label>
+                    <select id="imageQuality">
+                        <option value="0.7">Normal Quality</option>
+                        <option value="0.9" selected>High Quality</option>
+                        <option value="1">Maximum Quality</option>
+                    </select>
 
-          const link = document.createElement("a");
-          link.href = image;
-          link.download = `page-${i}.jpg`;
-          link.click();
-        }
-      };
+                    <label>Scale</label>
+                    <select id="imageScale">
+                        <option value="1">Small</option>
+                        <option value="1.5" selected>Normal</option>
+                        <option value="2">Large</option>
+                    </select>
 
-      fileReader.readAsArrayBuffer(file);
-    }
-  </script>
+                    <button id="convertBtn" class="convert-btn">
+                        Convert & Download JPG
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="pdf-to-jpg.js?v=20"></script>
 
 </body>
 </html>
