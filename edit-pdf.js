@@ -1,26 +1,21 @@
-const uploadOnly = document.getElementById("uploadOnly");
-const editorLayout = document.getElementById("editorLayout");
+const uploadScreen = document.getElementById("uploadScreen");
+const editorScreen = document.getElementById("editorScreen");
+
 const pdfUpload = document.getElementById("pdfUpload");
 const imageUpload = document.getElementById("imageUpload");
+
+const pdfCanvas = document.getElementById("pdfCanvas");
+const ctx = pdfCanvas.getContext("2d");
+const pdfStage = document.getElementById("pdfStage");
+
+const statusBar = document.getElementById("statusBar");
 const downloadBtn = document.getElementById("downloadBtn");
-
-const canvas = document.getElementById("pdfCanvas");
-const ctx = canvas.getContext("2d");
-const previewBox = document.getElementById("pdfPreview");
-const toolInfo = document.getElementById("toolInfo");
-
-const drawColor = document.getElementById("drawColor");
-const brushSize = document.getElementById("brushSize");
 const undoBtn = document.getElementById("undoBtn");
-const imageSize = document.getElementById("imageSize");
-
-const shapeColor = document.getElementById("shapeColor");
-const shapeBorderSize = document.getElementById("shapeBorderSize");
-const shapeSize = document.getElementById("shapeSize");
 
 const fontFamily = document.getElementById("fontFamily");
-const textAlign = document.getElementById("textAlign");
-const transparentBg = document.getElementById("transparentBg");
+const fontSize = document.getElementById("fontSize");
+const textColor = document.getElementById("textColor");
+const textBg = document.getElementById("textBg");
 
 const boldBtn = document.getElementById("boldBtn");
 const italicBtn = document.getElementById("italicBtn");
@@ -28,105 +23,143 @@ const underlineBtn = document.getElementById("underlineBtn");
 const supBtn = document.getElementById("supBtn");
 const subBtn = document.getElementById("subBtn");
 
-const ocrOutputBox = document.getElementById("ocrOutputBox");
-const ocrText = document.getElementById("ocrText");
-const contextMenu = document.getElementById("contextMenu");
+const drawColor = document.getElementById("drawColor");
+const brushSize = document.getElementById("brushSize");
+
+const imageSize = document.getElementById("imageSize");
+
+const shapeColor = document.getElementById("shapeColor");
+const shapeBorder = document.getElementById("shapeBorder");
+const shapeSize = document.getElementById("shapeSize");
 
 let pdfDoc = null;
 let currentPage = 1;
 let rotation = 0;
+
 let selectedElement = null;
 let dragElement = null;
 let resizeElement = null;
 
 let offsetX = 0;
 let offsetY = 0;
+
 let startX = 0;
 let startY = 0;
 let startWidth = 0;
 let startHeight = 0;
 
-let isDrawing = false;
 let drawMode = false;
 let highlightMode = false;
+let isDrawing = false;
+
 let undoStack = [];
 
-function setInfo(text){ toolInfo.innerText = text; }
+/* BASIC */
+
+function setStatus(text){
+    statusBar.innerText = text;
+}
 
 function saveUndo(){
-    if(canvas.width && canvas.height){
-        undoStack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+    if(pdfCanvas.width && pdfCanvas.height){
+        undoStack.push(
+            ctx.getImageData(0, 0, pdfCanvas.width, pdfCanvas.height)
+        );
     }
 }
 
-function hideContextMenu(){ contextMenu.style.display = "none"; }
-
 function removeResizeHandles(){
+    document.querySelectorAll(".resize-handle").forEach(handle => {
+        handle.remove();
+    });
 }
 
-
 function selectElement(el){
-    document.querySelectorAll(".editable-text,.edit-text-box,.draggable-image,.shape-element,.white-eraser")
-    .forEach(item => item.classList.remove("selected-element"));
+    document.querySelectorAll(
+        ".edit-box, .shape-element, .image-element, .eraser-box"
+    ).forEach(item => item.classList.remove("selected"));
+
+    removeResizeHandles();
 
     selectedElement = el;
 
     if(selectedElement){
-        selectedElement.classList.add("selected-element");
+        selectedElement.classList.add("selected");
         addResizeHandle(selectedElement);
     }
 }
 
-function makeDraggable(el, handleEl = null){
-    const dragHandle = handleEl || el;
+function addResizeHandle(el){
+    const handle = document.createElement("div");
+    handle.className = "resize-handle";
+
+    el.appendChild(handle);
+
+    handle.addEventListener("mousedown", function(e){
+        e.stopPropagation();
+
+        resizeElement = el;
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        startWidth = el.offsetWidth;
+        startHeight = el.offsetHeight;
+
+        document.body.style.userSelect = "none";
+    });
+}
+
+function makeMovable(el, moveHandle = null){
+    const handle = moveHandle || el;
 
     el.addEventListener("click", function(e){
         e.stopPropagation();
         selectElement(el);
     });
 
-    dragHandle.addEventListener("mousedown", function(e){
+    handle.addEventListener("mousedown", function(e){
         if(e.button !== 0) return;
         if(e.target.classList.contains("resize-handle")) return;
 
         e.stopPropagation();
+
         selectElement(el);
 
         dragElement = el;
+
         offsetX = e.clientX - el.offsetLeft;
         offsetY = e.clientY - el.offsetTop;
     });
-
-    el.addEventListener("contextmenu", function(e){
-        e.preventDefault();
-        selectElement(el);
-        contextMenu.style.left = e.pageX + "px";
-        contextMenu.style.top = e.pageY + "px";
-        contextMenu.style.display = "block";
-    });
 }
 
+/* GLOBAL MOVE + RESIZE */
+
 document.addEventListener("mousemove", function(e){
+
     if(dragElement){
         dragElement.style.left = (e.clientX - offsetX) + "px";
         dragElement.style.top = (e.clientY - offsetY) + "px";
     }
 
     if(resizeElement){
-        let w = startWidth + (e.clientX - startX);
-        let h = startHeight + (e.clientY - startY);
+        let newWidth = startWidth + (e.clientX - startX);
+        let newHeight = startHeight + (e.clientY - startY);
 
-        if(w < 30) w = 30;
-        if(h < 20) h = 20;
+        if(newWidth < 30) newWidth = 30;
+        if(newHeight < 20) newHeight = 20;
 
-        resizeElement.style.width = w + "px";
+        resizeElement.style.width = newWidth + "px";
 
-        if(!resizeElement.classList.contains("line-shape") && !resizeElement.classList.contains("arrow-shape")){
-            resizeElement.style.height = h + "px";
+        if(
+            !resizeElement.classList.contains("line") &&
+            !resizeElement.classList.contains("arrow")
+        ){
+            resizeElement.style.height = newHeight + "px";
         }
 
-        if(resizeElement.classList.contains("circle-shape")){
-            resizeElement.style.height = w + "px";
+        if(resizeElement.classList.contains("circle")){
+            resizeElement.style.height = newWidth + "px";
         }
     }
 });
@@ -137,162 +170,154 @@ document.addEventListener("mouseup", function(){
     document.body.style.userSelect = "auto";
 });
 
-document.addEventListener("click", hideContextMenu);
-
 /* PDF LOAD */
 
 pdfUpload.addEventListener("change", async function(e){
     const file = e.target.files[0];
+
     if(!file) return;
 
-    const fileReader = new FileReader();
+    const reader = new FileReader();
 
-    fileReader.onload = async function(){
-        const typedarray = new Uint8Array(this.result);
-        pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+    reader.onload = async function(){
+        const typedArray = new Uint8Array(this.result);
+
+        pdfDoc = await pdfjsLib.getDocument(typedArray).promise;
+
         await renderPage(currentPage);
 
-        uploadOnly.classList.add("hidden");
-        editorLayout.classList.remove("hidden");
+        uploadScreen.classList.add("hidden");
+        editorScreen.classList.remove("hidden");
 
-        setInfo("PDF uploaded. Now select any editing tool.");
+        setStatus("PDF uploaded. Select any tool from left side.");
     };
 
-    fileReader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(file);
 });
 
 async function renderPage(pageNumber){
     const page = await pdfDoc.getPage(pageNumber);
-    const viewport = page.getViewport({scale:1.5, rotation:rotation});
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    const viewport = page.getViewport({
+        scale: 1.5,
+        rotation: rotation
+    });
 
-    await page.render({canvasContext:ctx, viewport:viewport}).promise;
+    pdfCanvas.width = viewport.width;
+    pdfCanvas.height = viewport.height;
+
+    await page.render({
+        canvasContext: ctx,
+        viewport: viewport
+    }).promise;
 }
 
-/* TEXT BOX CREATOR */
+/* TEXT BOX */
 
-function createTextBox(text, isLargeBox){
+function createTextBox(text, large = false){
     const box = document.createElement("div");
-    box.className = isLargeBox ? "edit-text-box editable-text" : "editable-text";
+    box.className = "edit-box";
 
-    box.style.left = isLargeBox ? "140px" : "120px";
-    box.style.top = isLargeBox ? "140px" : "120px";
-    box.style.width = isLargeBox ? "190px" : "160px";
-    box.style.minHeight = isLargeBox ? "65px" : "42px";
-    box.style.background = transparentBg.checked ? "transparent" : document.getElementById("textBgColor").value;
+    box.style.left = large ? "160px" : "120px";
+    box.style.top = large ? "160px" : "120px";
+    box.style.width = large ? "220px" : "170px";
+    box.style.height = large ? "90px" : "70px";
+    box.style.background = textBg.value;
 
-    const handle = document.createElement("div");
-    handle.className = "move-handle";
-    handle.innerText = "↕ Move";
+    const moveBar = document.createElement("div");
+    moveBar.className = "move-bar";
+    moveBar.innerText = "↕ Move";
 
-    const content = document.createElement("div");
-    content.className = "text-content";
-    content.contentEditable = true;
-    content.innerText = text;
-    content.style.fontSize = document.getElementById("textFontSize").value + "px";
-    content.style.fontFamily = fontFamily.value;
-    content.style.color = document.getElementById("textColor").value;
-    content.style.textAlign = textAlign.value;
+    const textArea = document.createElement("div");
+    textArea.className = "text-editor";
+    textArea.contentEditable = true;
+    textArea.innerText = text;
+    textArea.style.fontFamily = fontFamily.value;
+    textArea.style.fontSize = fontSize.value + "px";
+    textArea.style.color = textColor.value;
 
-    box.appendChild(handle);
-    box.appendChild(content);
+    box.appendChild(moveBar);
+    box.appendChild(textArea);
 
-    previewBox.appendChild(box);
-    makeDraggable(box, handle);
+    pdfStage.appendChild(box);
+
+    makeMovable(box, moveBar);
     selectElement(box);
-    content.focus();
 
-    setInfo("Text box added. Type inside, drag from Move bar, resize from red dot.");
+    textArea.focus();
+
+    setStatus("Text box added. Type inside, move from blue bar, resize from red dot.");
 }
 
-function addEditableText(){ createTextBox("Type here", false); }
-function addEditTextBox(){ createTextBox("Edit text here", true); }
-
-/* TEXT STYLE */
-
-function getSelectedTextContent(){
+function getTextEditor(){
     if(!selectedElement) return null;
-    return selectedElement.querySelector(".text-content");
+    return selectedElement.querySelector(".text-editor");
 }
-
-boldBtn.addEventListener("click", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.fontWeight = c.style.fontWeight === "bold" ? "normal" : "bold";
-});
-
-italicBtn.addEventListener("click", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.fontStyle = c.style.fontStyle === "italic" ? "normal" : "italic";
-});
-
-underlineBtn.addEventListener("click", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.textDecoration = c.style.textDecoration === "underline" ? "none" : "underline";
-});
-
-supBtn.addEventListener("click", function(){
-    const c = getSelectedTextContent();
-    if(c){ c.focus(); document.execCommand("superscript"); }
-});
-
-subBtn.addEventListener("click", function(){
-    const c = getSelectedTextContent();
-    if(c){ c.focus(); document.execCommand("subscript"); }
-});
 
 /* ERASER */
 
-function addWhiteEraser(){
+function addEraser(){
     const eraser = document.createElement("div");
-    eraser.className = "white-eraser";
+
+    eraser.className = "eraser-box";
     eraser.style.left = "150px";
     eraser.style.top = "150px";
     eraser.style.width = "180px";
     eraser.style.height = "60px";
-    eraser.style.background = "#ffffff";
 
-    previewBox.appendChild(eraser);
-    makeDraggable(eraser);
+    pdfStage.appendChild(eraser);
+
+    makeMovable(eraser);
     selectElement(eraser);
+
+    setStatus("White eraser added. Move it and resize from red dot.");
 }
 
 /* IMAGE */
 
-function addImageToPDF(file){
+function addImage(file){
     const reader = new FileReader();
+
     reader.onload = function(e){
         const img = document.createElement("img");
+
         img.src = e.target.result;
-        img.className = "draggable-image";
+        img.className = "image-element";
         img.style.left = "150px";
         img.style.top = "150px";
         img.style.width = imageSize.value + "px";
 
-        previewBox.appendChild(img);
-        makeDraggable(img);
+        pdfStage.appendChild(img);
+
+        makeMovable(img);
         selectElement(img);
+
+        setStatus("Image added. Move and resize from red dot.");
     };
+
     reader.readAsDataURL(file);
 }
 
 imageUpload.addEventListener("change", function(){
     const file = this.files[0];
-    if(file) addImageToPDF(file);
+
+    if(file){
+        addImage(file);
+    }
+
     imageUpload.value = "";
 });
 
 /* SHAPES */
 
-function applyShapeStyle(shape,type){
+function applyShapeStyle(shape, type){
     const color = shapeColor.value;
-    const border = shapeBorderSize.value + "px";
+    const border = shapeBorder.value + "px";
     const size = parseInt(shapeSize.value);
 
     if(type === "rectangle"){
         shape.style.width = size + "px";
-        shape.style.height = Math.round(size * .65) + "px";
+        shape.style.height = Math.round(size * 0.65) + "px";
         shape.style.border = border + " solid " + color;
         shape.style.background = "transparent";
     }
@@ -307,13 +332,13 @@ function applyShapeStyle(shape,type){
 
     if(type === "line"){
         shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.height = shapeBorder.value + "px";
         shape.style.background = color;
     }
 
     if(type === "arrow"){
         shape.style.width = size + "px";
-        shape.style.height = shapeBorderSize.value + "px";
+        shape.style.height = shapeBorder.value + "px";
         shape.style.background = color;
         shape.style.setProperty("--arrow-color", color);
     }
@@ -321,42 +346,44 @@ function applyShapeStyle(shape,type){
 
 function addShape(type){
     const shape = document.createElement("div");
-    shape.classList.add("shape-element");
-    shape.dataset.shapeType = type;
 
-    if(type === "rectangle") shape.classList.add("rectangle-shape");
-    if(type === "circle") shape.classList.add("circle-shape");
-    if(type === "line") shape.classList.add("line-shape");
-    if(type === "arrow") shape.classList.add("arrow-shape");
+    shape.className = "shape-element " + type;
+    shape.dataset.shape = type;
 
     shape.style.left = "180px";
     shape.style.top = "180px";
 
-    applyShapeStyle(shape,type);
+    applyShapeStyle(shape, type);
 
-    previewBox.appendChild(shape);
-    makeDraggable(shape);
+    pdfStage.appendChild(shape);
+
+    makeMovable(shape);
     selectElement(shape);
+
+    setStatus(type + " shape added.");
 }
 
-/* DRAW */
+/* DRAW / HIGHLIGHT */
 
-canvas.addEventListener("mousedown", function(e){
+pdfCanvas.addEventListener("mousedown", function(e){
     if(drawMode || highlightMode){
         saveUndo();
+
         isDrawing = true;
+
         ctx.beginPath();
-        ctx.moveTo(e.offsetX,e.offsetY);
+        ctx.moveTo(e.offsetX, e.offsetY);
     }
 });
 
-canvas.addEventListener("mousemove", function(e){
+pdfCanvas.addEventListener("mousemove", function(e){
     if(isDrawing && drawMode){
         ctx.lineWidth = brushSize.value;
         ctx.lineCap = "round";
         ctx.strokeStyle = drawColor.value;
         ctx.globalAlpha = 1;
-        ctx.lineTo(e.offsetX,e.offsetY);
+
+        ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
     }
 
@@ -364,22 +391,27 @@ canvas.addEventListener("mousemove", function(e){
         ctx.lineWidth = 18;
         ctx.lineCap = "round";
         ctx.strokeStyle = "yellow";
-        ctx.globalAlpha = .35;
-        ctx.lineTo(e.offsetX,e.offsetY);
+        ctx.globalAlpha = 0.35;
+
+        ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
+
         ctx.globalAlpha = 1;
     }
 });
 
-canvas.addEventListener("mouseup", function(){
+pdfCanvas.addEventListener("mouseup", function(){
     isDrawing = false;
     ctx.globalAlpha = 1;
 });
 
-/* WATERMARK PAGE OCR */
+/* WATERMARK */
 
 function addWatermark(){
-    if(!canvas.width){ alert("Please upload PDF first."); return; }
+    if(!pdfCanvas.width){
+        alert("Please upload PDF first.");
+        return;
+    }
 
     saveUndo();
 
@@ -387,206 +419,207 @@ function addWatermark(){
     const color = document.getElementById("watermarkColor").value;
     const size = document.getElementById("watermarkSize").value;
     const opacity = document.getElementById("watermarkOpacity").value / 100;
-    const rotate = document.getElementById("watermarkRotation").value;
 
     ctx.save();
+
     ctx.globalAlpha = opacity;
     ctx.font = size + "px Arial";
     ctx.fillStyle = color;
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(rotate * Math.PI / 180);
+
+    ctx.translate(pdfCanvas.width / 2, pdfCanvas.height / 2);
+    ctx.rotate(-30 * Math.PI / 180);
     ctx.textAlign = "center";
-    ctx.fillText(text,0,0);
+
+    ctx.fillText(text, 0, 0);
+
     ctx.restore();
+
+    setStatus("Watermark added.");
 }
+
+/* PAGE NUMBER */
 
 function addPageNumber(){
-    const color = document.getElementById("pageNumberColor").value;
-    const size = document.getElementById("pageNumberSize").value;
-
-    ctx.save();
-    ctx.font = size + "px Arial";
-    ctx.fillStyle = color;
-    ctx.textAlign = "center";
-    ctx.fillText("Page " + currentPage, canvas.width / 2, canvas.height - 25);
-    ctx.restore();
-}
-
-async function runOCR(){
-    ocrOutputBox.style.display = "block";
-    ocrText.value = "Scanning text... Please wait.";
-
-    try{
-        const result = await Tesseract.recognize(canvas.toDataURL(),"eng");
-        ocrText.value = result.data.text;
-    }catch(error){
-        ocrText.value = "OCR failed.";
-    }
-}
-
-function translateText(){
-    if(!ocrText.value || ocrText.value.includes("Scanning")){
-        alert("Please run OCR first.");
+    if(!pdfCanvas.width){
+        alert("Please upload PDF first.");
         return;
     }
 
-    ocrText.value = ocrText.value
-        .replace(/Medical/gi,"મેડિકલ")
-        .replace(/Hospital/gi,"હોસ્પિટલ")
-        .replace(/Tender/gi,"ટેન્ડર")
-        .replace(/Page/gi,"પેજ")
-        .replace(/Date/gi,"તારીખ");
+    saveUndo();
+
+    ctx.save();
+    ctx.font = "18px Arial";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.fillText("Page " + currentPage, pdfCanvas.width / 2, pdfCanvas.height - 25);
+    ctx.restore();
+
+    setStatus("Page number added.");
 }
 
-/* PROPERTY CONTROLS */
+/* TEXT FORMAT CONTROLS */
 
-document.getElementById("textFontSize").addEventListener("input", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.fontSize = this.value + "px";
-});
-
-document.getElementById("textColor").addEventListener("input", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.color = this.value;
-});
-
-document.getElementById("textBgColor").addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.background = this.value;
+fontSize.addEventListener("input", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.fontSize = this.value + "px";
     }
 });
 
 fontFamily.addEventListener("change", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.fontFamily = this.value;
-});
-
-textAlign.addEventListener("change", function(){
-    const c = getSelectedTextContent();
-    if(c) c.style.textAlign = this.value;
-});
-
-transparentBg.addEventListener("change", function(){
-    if(selectedElement && selectedElement.classList.contains("editable-text")){
-        selectedElement.style.background = this.checked ? "transparent" : document.getElementById("textBgColor").value;
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.fontFamily = this.value;
     }
 });
 
+textColor.addEventListener("input", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.color = this.value;
+    }
+});
+
+textBg.addEventListener("input", function(){
+    if(selectedElement && selectedElement.classList.contains("edit-box")){
+        selectedElement.style.background = this.value;
+    }
+});
+
+boldBtn.addEventListener("click", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.fontWeight =
+            editor.style.fontWeight === "bold" ? "normal" : "bold";
+    }
+});
+
+italicBtn.addEventListener("click", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.fontStyle =
+            editor.style.fontStyle === "italic" ? "normal" : "italic";
+    }
+});
+
+underlineBtn.addEventListener("click", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.style.textDecoration =
+            editor.style.textDecoration === "underline" ? "none" : "underline";
+    }
+});
+
+supBtn.addEventListener("click", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.focus();
+        document.execCommand("superscript");
+    }
+});
+
+subBtn.addEventListener("click", function(){
+    const editor = getTextEditor();
+    if(editor){
+        editor.focus();
+        document.execCommand("subscript");
+    }
+});
+
+/* IMAGE / SHAPE CONTROLS */
+
 imageSize.addEventListener("input", function(){
-    if(selectedElement && selectedElement.classList.contains("draggable-image")){
+    if(selectedElement && selectedElement.classList.contains("image-element")){
         selectedElement.style.width = this.value + "px";
     }
 });
 
 shapeColor.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+        applyShapeStyle(selectedElement, selectedElement.dataset.shape);
     }
 });
-shapeBorderSize.addEventListener("input", function(){
+
+shapeBorder.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+        applyShapeStyle(selectedElement, selectedElement.dataset.shape);
     }
 });
+
 shapeSize.addEventListener("input", function(){
     if(selectedElement && selectedElement.classList.contains("shape-element")){
-        applyShapeStyle(selectedElement, selectedElement.dataset.shapeType);
+        applyShapeStyle(selectedElement, selectedElement.dataset.shape);
     }
 });
 
 /* BUTTONS */
 
-document.getElementById("addTextBtn").addEventListener("click", addEditableText);
-document.getElementById("editTextBoxBtn").addEventListener("click", addEditTextBox);
-document.getElementById("whiteEraserBtn").addEventListener("click", addWhiteEraser);
+document.getElementById("addTextBtn").addEventListener("click", function(){
+    createTextBox("Type here", false);
+});
+
+document.getElementById("editBoxBtn").addEventListener("click", function(){
+    createTextBox("Edit text here", true);
+});
+
+document.getElementById("eraserBtn").addEventListener("click", addEraser);
 
 document.getElementById("drawBtn").addEventListener("click", function(){
     drawMode = !drawMode;
     highlightMode = false;
+    setStatus(drawMode ? "Draw enabled." : "Draw disabled.");
 });
 
 document.getElementById("highlightBtn").addEventListener("click", function(){
     highlightMode = !highlightMode;
     drawMode = false;
+    setStatus(highlightMode ? "Highlight enabled." : "Highlight disabled.");
 });
 
 document.getElementById("shapesBtn").addEventListener("click", function(){
-    document.getElementById("shapePanel").classList.toggle("show");
+    document.getElementById("shapeMenu").classList.toggle("show");
 });
 
-document.getElementById("rectangleBtn").addEventListener("click", function(){ addShape("rectangle"); });
-document.getElementById("circleBtn").addEventListener("click", function(){ addShape("circle"); });
-document.getElementById("lineBtn").addEventListener("click", function(){ addShape("line"); });
-document.getElementById("arrowBtn").addEventListener("click", function(){ addShape("arrow"); });
+document.getElementById("rectBtn").addEventListener("click", function(){
+    addShape("rectangle");
+});
 
-document.getElementById("addImageBtn").addEventListener("click", function(){ imageUpload.click(); });
-document.getElementById("signatureBtn").addEventListener("click", function(){ imageUpload.click(); });
+document.getElementById("circleBtn").addEventListener("click", function(){
+    addShape("circle");
+});
+
+document.getElementById("lineBtn").addEventListener("click", function(){
+    addShape("line");
+});
+
+document.getElementById("arrowBtn").addEventListener("click", function(){
+    addShape("arrow");
+});
+
+document.getElementById("imageBtn").addEventListener("click", function(){
+    imageUpload.click();
+});
+
+document.getElementById("signatureBtn").addEventListener("click", function(){
+    imageUpload.click();
+});
 
 document.getElementById("watermarkBtn").addEventListener("click", addWatermark);
 document.getElementById("pageNumberBtn").addEventListener("click", addPageNumber);
-document.getElementById("ocrBtn").addEventListener("click", runOCR);
-
-document.getElementById("translateBtn").addEventListener("click", function(){
-    ocrOutputBox.style.display = "block";
-    translateText();
-});
 
 document.getElementById("rotateBtn").addEventListener("click", function(){
+    if(!pdfDoc){
+        alert("Please upload PDF first.");
+        return;
+    }
+
     rotation = (rotation + 90) % 360;
     renderPage(currentPage);
 });
 
-document.getElementById("deletePageBtn").addEventListener("click", function(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-});
-
-/* CONTEXT MENU */
-
-document.getElementById("ctxDelete").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.remove();
-        selectedElement = null;
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxDuplicate").addEventListener("click", function(){
-    if(selectedElement){
-        const clone = selectedElement.cloneNode(true);
-        clone.style.left = (selectedElement.offsetLeft + 20) + "px";
-        clone.style.top = (selectedElement.offsetTop + 20) + "px";
-        previewBox.appendChild(clone);
-        const handle = clone.querySelector(".move-handle");
-        makeDraggable(clone, handle);
-        selectElement(clone);
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxBringFront").addEventListener("click", function(){
-    if(selectedElement) selectedElement.style.zIndex = "5000";
-    hideContextMenu();
-});
-
-document.getElementById("ctxSendBack").addEventListener("click", function(){
-    if(selectedElement) selectedElement.style.zIndex = "900";
-    hideContextMenu();
-});
-
-document.getElementById("ctxIncrease").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.width = (selectedElement.offsetWidth + 20) + "px";
-        selectedElement.style.height = (selectedElement.offsetHeight + 10) + "px";
-    }
-    hideContextMenu();
-});
-
-document.getElementById("ctxDecrease").addEventListener("click", function(){
-    if(selectedElement){
-        selectedElement.style.width = Math.max(20, selectedElement.offsetWidth - 20) + "px";
-        selectedElement.style.height = Math.max(10, selectedElement.offsetHeight - 10) + "px";
-    }
-    hideContextMenu();
+document.getElementById("clearPageBtn").addEventListener("click", function(){
+    saveUndo();
+    ctx.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
 });
 
 /* UNDO */
@@ -594,8 +627,9 @@ document.getElementById("ctxDecrease").addEventListener("click", function(){
 undoBtn.addEventListener("click", function(){
     if(undoStack.length > 0){
         const lastState = undoStack.pop();
-        ctx.putImageData(lastState,0,0);
-    }else{
+        ctx.putImageData(lastState, 0, 0);
+    }
+    else{
         alert("Nothing to undo.");
     }
 });
@@ -603,126 +637,146 @@ undoBtn.addEventListener("click", function(){
 /* DOWNLOAD */
 
 downloadBtn.addEventListener("click", async function(){
-    if(!canvas.width){
+    if(!pdfCanvas.width){
         alert("Please upload PDF first.");
         return;
     }
 
-    hideContextMenu();
     removeResizeHandles();
 
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
 
-    tempCtx.drawImage(canvas,0,0);
+    tempCanvas.width = pdfCanvas.width;
+    tempCanvas.height = pdfCanvas.height;
 
-    const elements = previewBox.querySelectorAll(".white-eraser,.editable-text,.edit-text-box,.draggable-image,.shape-element");
+    tempCtx.drawImage(pdfCanvas, 0, 0);
+
+    const elements = pdfStage.querySelectorAll(
+        ".edit-box, .eraser-box, .image-element, .shape-element"
+    );
 
     for(const el of elements){
-        const x = el.offsetLeft - canvas.offsetLeft;
-        const y = el.offsetTop - canvas.offsetTop;
+        const x = el.offsetLeft - pdfCanvas.offsetLeft;
+        const y = el.offsetTop - pdfCanvas.offsetTop;
 
-        if(el.classList.contains("white-eraser")){
-            tempCtx.fillStyle = window.getComputedStyle(el).backgroundColor;
-            tempCtx.fillRect(x,y,el.offsetWidth,el.offsetHeight);
+        if(el.classList.contains("eraser-box")){
+            tempCtx.fillStyle = "white";
+            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
         }
 
-        if(el.classList.contains("editable-text")){
-            const content = el.querySelector(".text-content");
-            const style = content ? window.getComputedStyle(content) : window.getComputedStyle(el);
-            const bg = window.getComputedStyle(el).backgroundColor;
+        if(el.classList.contains("edit-box")){
+            const editor = el.querySelector(".text-editor");
+            const editorStyle = window.getComputedStyle(editor);
+            const boxStyle = window.getComputedStyle(el);
 
-            if(bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent"){
-                tempCtx.fillStyle = bg;
-                tempCtx.fillRect(x,y,el.offsetWidth,el.offsetHeight);
-            }
+            tempCtx.fillStyle = boxStyle.backgroundColor;
+            tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
 
-            tempCtx.font = `${style.fontWeight} ${style.fontStyle} ${style.fontSize} ${style.fontFamily}`;
-            tempCtx.fillStyle = style.color;
-            tempCtx.textAlign = style.textAlign || "left";
+            tempCtx.font =
+                `${editorStyle.fontWeight} ${editorStyle.fontStyle} ${editorStyle.fontSize} ${editorStyle.fontFamily}`;
 
-            const text = content ? content.innerText : el.innerText;
-            const lines = text.split("\n");
-            const fontSize = parseInt(style.fontSize);
+            tempCtx.fillStyle = editorStyle.color;
 
-            lines.forEach((line,index)=>{
-                let textX = x + 8;
+            const lines = editor.innerText.split("\n");
+            const fontPx = parseInt(editorStyle.fontSize);
 
-                if(style.textAlign === "center") textX = x + el.offsetWidth / 2;
-                if(style.textAlign === "right") textX = x + el.offsetWidth - 8;
-
-                tempCtx.fillText(line,textX,y + 25 + (index * (fontSize + 6)));
+            lines.forEach((line, index) => {
+                tempCtx.fillText(
+                    line,
+                    x + 10,
+                    y + 30 + index * (fontPx + 6)
+                );
             });
         }
 
-        if(el.classList.contains("draggable-image")){
-            await new Promise(resolve=>{
+        if(el.classList.contains("image-element")){
+            await new Promise(resolve => {
                 const img = new Image();
+
                 img.onload = function(){
-                    tempCtx.drawImage(img,x,y,el.offsetWidth,el.offsetHeight);
+                    tempCtx.drawImage(img, x, y, el.offsetWidth, el.offsetHeight);
                     resolve();
                 };
+
                 img.src = el.src;
             });
         }
 
-        if(el.classList.contains("rectangle-shape")){
+        if(el.classList.contains("rectangle")){
             tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
-            tempCtx.strokeRect(x,y,el.offsetWidth,el.offsetHeight);
+            tempCtx.lineWidth = parseInt(shapeBorder.value);
+            tempCtx.strokeRect(x, y, el.offsetWidth, el.offsetHeight);
         }
 
-        if(el.classList.contains("circle-shape")){
+        if(el.classList.contains("circle")){
             tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.lineWidth = parseInt(shapeBorder.value);
             tempCtx.beginPath();
-            tempCtx.ellipse(x+el.offsetWidth/2,y+el.offsetHeight/2,el.offsetWidth/2,el.offsetHeight/2,0,0,Math.PI*2);
+            tempCtx.ellipse(
+                x + el.offsetWidth / 2,
+                y + el.offsetHeight / 2,
+                el.offsetWidth / 2,
+                el.offsetHeight / 2,
+                0,
+                0,
+                Math.PI * 2
+            );
             tempCtx.stroke();
         }
 
-        if(el.classList.contains("line-shape")){
+        if(el.classList.contains("line")){
             tempCtx.strokeStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.lineWidth = parseInt(shapeBorder.value);
             tempCtx.beginPath();
-            tempCtx.moveTo(x,y);
-            tempCtx.lineTo(x+el.offsetWidth,y);
+            tempCtx.moveTo(x, y);
+            tempCtx.lineTo(x + el.offsetWidth, y);
             tempCtx.stroke();
         }
 
-        if(el.classList.contains("arrow-shape")){
+        if(el.classList.contains("arrow")){
             tempCtx.strokeStyle = shapeColor.value;
             tempCtx.fillStyle = shapeColor.value;
-            tempCtx.lineWidth = parseInt(shapeBorderSize.value);
+            tempCtx.lineWidth = parseInt(shapeBorder.value);
 
             tempCtx.beginPath();
-            tempCtx.moveTo(x,y);
-            tempCtx.lineTo(x+el.offsetWidth,y);
+            tempCtx.moveTo(x, y);
+            tempCtx.lineTo(x + el.offsetWidth, y);
             tempCtx.stroke();
 
             tempCtx.beginPath();
-            tempCtx.moveTo(x+el.offsetWidth,y);
-            tempCtx.lineTo(x+el.offsetWidth-15,y-8);
-            tempCtx.lineTo(x+el.offsetWidth-15,y+8);
+            tempCtx.moveTo(x + el.offsetWidth, y);
+            tempCtx.lineTo(x + el.offsetWidth - 15, y - 8);
+            tempCtx.lineTo(x + el.offsetWidth - 15, y + 8);
             tempCtx.closePath();
             tempCtx.fill();
         }
     }
 
     const imageData = tempCanvas.toDataURL("image/png");
+
     const pdf = await PDFLib.PDFDocument.create();
-    const page = pdf.addPage([canvas.width,canvas.height]);
+    const page = pdf.addPage([pdfCanvas.width, pdfCanvas.height]);
+
     const pngImage = await pdf.embedPng(imageData);
 
-    page.drawImage(pngImage,{x:0,y:0,width:canvas.width,height:canvas.height});
+    page.drawImage(pngImage, {
+        x: 0,
+        y: 0,
+        width: pdfCanvas.width,
+        height: pdfCanvas.height
+    });
 
     const pdfBytes = await pdf.save();
-    const blob = new Blob([pdfBytes],{type:"application/pdf"});
-    const link = document.createElement("a");
 
+    const blob = new Blob([pdfBytes], {
+        type: "application/pdf"
+    });
+
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "edited-pdf.pdf";
     link.click();
+
+    setStatus("Edited PDF downloaded successfully.");
 });
- 
