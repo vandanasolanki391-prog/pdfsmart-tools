@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merge PDF - PDFSmart Tools</title>
 
-    <link rel="stylesheet" href="merge-pdf.css">
+    <link rel="stylesheet" href="merge-pdf.css?v=20">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
@@ -20,33 +21,57 @@
 
     <div class="merge-card">
 
-        <h1>Merge PDF</h1>
-        <p>Select multiple PDF files and merge them into one PDF.</p>
+        <div class="upload-section" id="uploadSection">
+            <h1>Merge PDF</h1>
+            <p>Select multiple PDF files and merge them into one PDF.</p>
 
-        <label for="pdfFiles" class="upload-area">
-            <div class="upload-icon">📤</div>
-            <h2>Choose PDF Files</h2>
-            <p>You can select multiple PDF files</p>
-        </label>
+            <label for="pdfFiles" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF Files</h2>
+                <p>You can select multiple PDF files</p>
+            </label>
 
-        <input type="file" id="pdfFiles" accept="application/pdf" multiple>
-
-        <div class="file-list-box">
-            <h3>Selected Files</h3>
-            <ul id="fileList"></ul>
+            <input type="file" id="pdfFiles" accept="application/pdf" multiple>
         </div>
 
-        <button id="mergeBtn" class="merge-btn">
-            Merge & Download PDF
-        </button>
+        <div class="work-section" id="workSection" style="display:none;">
 
-        <div id="statusText" class="status-text"></div>
+            <div class="work-header">
+                <div>
+                    <h1>Merge PDF</h1>
+                    <p>Drag files to change order, then merge them.</p>
+                </div>
+
+                <label for="pdfFiles" class="add-more-btn">
+                    + Add More PDFs
+                </label>
+            </div>
+
+            <div class="sort-box">
+                <button id="oldToNewBtn">Old to New</button>
+                <button id="newToOldBtn">New to Old</button>
+                <button id="azBtn">A to Z</button>
+                <button id="zaBtn">Z to A</button>
+            </div>
+
+            <div class="file-list-box">
+                <h3>Selected Files</h3>
+                <div id="fileList" class="file-list"></div>
+            </div>
+
+            <button id="mergeBtn" class="merge-btn">
+                Merge & Download PDF
+            </button>
+
+            <div id="statusText" class="status-text"></div>
+
+        </div>
 
     </div>
 
 </section>
 
-<script src="merge-pdf.js"></script>
+<script src="merge-pdf.js?v=20"></script>
 
 </body>
 </html>
