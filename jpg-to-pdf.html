@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JPG to PDF - PDFSmart Tools</title>
 
-    <link rel="stylesheet" href="jpg-to-pdf.css">
+    <link rel="stylesheet" href="jpg-to-pdf.css?v=20">
 
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
@@ -20,64 +20,79 @@
 
     <div class="converter-card">
 
-        <h1>JPG to PDF</h1>
-        <p>Convert JPG, JPEG or PNG images into a single PDF file.</p>
+        <div id="uploadSection" class="upload-section">
+            <h1>JPG to PDF</h1>
+            <p>Select JPG / PNG images and convert them into one PDF.</p>
 
-        <label for="imageFiles" class="upload-area">
-            <div class="upload-icon">🖼️</div>
-            <h2>Choose Images</h2>
-            <p>Select multiple JPG / PNG files</p>
-        </label>
+            <label for="imageFiles" class="upload-area">
+                <div class="upload-icon">🖼️</div>
+                <h2>Choose Images</h2>
+                <p>Select multiple JPG / PNG files</p>
+            </label>
 
-        <input 
-            type="file" 
-            id="imageFiles" 
-            accept="image/jpeg,image/jpg,image/png" 
-            multiple
-        >
-
-        <div class="options-box">
-
-            <h3>PDF Settings</h3>
-
-            <label>Page Size</label>
-            <select id="pageSize">
-                <option value="a4">A4 Page</option>
-                <option value="fit">Fit to Image</option>
-            </select>
-
-            <label>Orientation</label>
-            <select id="orientation">
-                <option value="portrait">Portrait</option>
-                <option value="landscape">Landscape</option>
-            </select>
-
-            <label>Margin</label>
-            <select id="marginSize">
-                <option value="20">Small Margin</option>
-                <option value="40" selected>Normal Margin</option>
-                <option value="70">Large Margin</option>
-                <option value="0">No Margin</option>
-            </select>
-
+            <input 
+                type="file" 
+                id="imageFiles" 
+                accept="image/jpeg,image/jpg,image/png" 
+                multiple
+            >
         </div>
 
-        <div class="file-list-box">
-            <h3>Selected Images</h3>
-            <div id="imageList" class="image-list"></div>
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>JPG to PDF</h1>
+                    <p>Drag images to change order, then convert into PDF.</p>
+                </div>
+
+                <label for="imageFiles" class="add-more-btn">
+                    + Add More Images
+                </label>
+            </div>
+
+            <div class="options-box">
+                <h3>PDF Settings</h3>
+
+                <label>Page Size</label>
+                <select id="pageSize">
+                    <option value="a4">A4 Page</option>
+                    <option value="fit">Fit to Image</option>
+                </select>
+
+                <label>Orientation</label>
+                <select id="orientation">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+
+                <label>Margin</label>
+                <select id="marginSize">
+                    <option value="20">Small Margin</option>
+                    <option value="40" selected>Normal Margin</option>
+                    <option value="70">Large Margin</option>
+                    <option value="0">No Margin</option>
+                </select>
+            </div>
+
+            <div class="image-list-box">
+                <h3>Selected Images</h3>
+                <div id="imageList" class="image-list"></div>
+            </div>
+
+            <button id="convertBtn" class="convert-btn">
+                Convert & Download PDF
+            </button>
+
+            <div id="statusText" class="status-text"></div>
+
         </div>
-
-        <button id="convertBtn" class="convert-btn">
-            Convert & Download PDF
-        </button>
-
-        <div id="statusText" class="status-text"></div>
 
     </div>
 
 </section>
 
-<script src="jpg-to-pdf.js"></script>
+<script src="jpg-to-pdf.js?v=20"></script>
 
 </body>
 </html>
