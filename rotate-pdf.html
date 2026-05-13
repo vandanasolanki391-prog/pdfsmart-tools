@@ -1,18 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Rotate PDF</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotate PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="rotate-pdf.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <div class="tool-page">
-    <h1>🔄 Rotate PDF</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-    <p>This feature will be available soon.</p>
+<section class="rotate-layout">
 
-    <button onclick="location.href='index.html'">⬅ Back to Home</button>
-  </div>
+    <div class="rotate-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>Rotate PDF</h1>
+            <p>Select PDF file and rotate all or selected pages.</p>
+
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Rotate PDF</h1>
+                    <p>Preview first page and rotate PDF pages.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
+
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <h3>Rotate Options</h3>
+
+                    <label>Pages</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: all or 1-3, 5"
+                        value="all"
+                    >
+
+                    <small>
+                        Use <b>all</b> for all pages, or enter pages like 1-3, 5.
+                    </small>
+
+                    <label>Rotation Angle</label>
+                    <select id="rotateAngle">
+                        <option value="90">90° Clockwise</option>
+                        <option value="180">180°</option>
+                        <option value="270">270° Clockwise</option>
+                    </select>
+
+                    <button id="rotateBtn" class="rotate-btn">
+                        Rotate & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="rotate-pdf.js?v=20"></script>
 
 </body>
 </html>
