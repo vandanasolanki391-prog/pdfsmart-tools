@@ -34,46 +34,52 @@ pdfFileInput.addEventListener("change", async function(e){
     }
 });
 
-function getPageNumbers(input, mode){
+/* 
+Supports:
+1-5
+1,3,5
+1-5, 6-10, 15
+*/
+function getPageNumbers(input){
     let pages = [];
+    const parts = input.split(",");
 
-    if(mode === "range"){
-        const parts = input.split("-");
+    parts.forEach(part => {
+        part = part.trim();
 
-        if(parts.length !== 2){
-            throw new Error("Please enter range like 1-3");
-        }
+        if(part.includes("-")){
+            const range = part.split("-");
+            const start = parseInt(range[0]);
+            const end = parseInt(range[1]);
 
-        const start = parseInt(parts[0]);
-        const end = parseInt(parts[1]);
-
-        if(isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end){
-            throw new Error("Invalid page range.");
-        }
-
-        for(let i = start; i <= end; i++){
-            pages.push(i - 1);
-        }
-    }
-
-    if(mode === "specific"){
-        pages = input
-            .split(",")
-            .map(num => parseInt(num.trim()))
-            .filter(num => !isNaN(num));
-
-        if(pages.length === 0){
-            throw new Error("Please enter pages like 1,3,5");
-        }
-
-        pages.forEach(page => {
-            if(page < 1 || page > totalPages){
-                throw new Error("Invalid page number: " + page);
+            if(
+                isNaN(start) ||
+                isNaN(end) ||
+                start < 1 ||
+                end > totalPages ||
+                start > end
+            ){
+                throw new Error("Invalid range: " + part);
             }
-        });
 
-        pages = pages.map(page => page - 1);
-    }
+            for(let i = start; i <= end; i++){
+                pages.push(i - 1);
+            }
+        }
+        else{
+            const page = parseInt(part);
+
+            if(
+                isNaN(page) ||
+                page < 1 ||
+                page > totalPages
+            ){
+                throw new Error("Invalid page number: " + part);
+            }
+
+            pages.push(page - 1);
+        }
+    });
 
     return pages;
 }
@@ -85,29 +91,28 @@ splitBtn.addEventListener("click", async function(){
     }
 
     if(!pageInput.value.trim()){
-        alert("Please enter page range or specific pages.");
+        alert("Please enter page range or page numbers.");
         return;
     }
 
     try{
-        statusText.innerText = "Splitting PDF... Please wait.";
+        statusText.innerText = "Creating split PDF... Please wait.";
 
         const fileBytes = await selectedFile.arrayBuffer();
         const sourcePdf = await PDFLib.PDFDocument.load(fileBytes);
 
         const newPdf = await PDFLib.PDFDocument.create();
 
-        const pageNumbers = getPageNumbers(
-            pageInput.value.trim(),
-            splitMode.value
-        );
+        const pageNumbers = getPageNumbers(pageInput.value.trim());
 
         const copiedPages = await newPdf.copyPages(
             sourcePdf,
             pageNumbers
         );
 
-        copiedPages.forEach(page => newPdf.addPage(page));
+        copiedPages.forEach(page => {
+            newPdf.addPage(page);
+        });
 
         const pdfBytes = await newPdf.save();
 
@@ -117,10 +122,11 @@ splitBtn.addEventListener("click", async function(){
 
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "split-pdf.pdf";
+        link.download = "split-selected-pages.pdf";
         link.click();
 
-        statusText.innerText = "PDF split successfully.";
+        statusText.innerText =
+            "Split PDF created successfully.";
     }
     catch(error){
         console.error(error);
