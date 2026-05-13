@@ -1,4 +1,7 @@
 const imageFilesInput = document.getElementById("imageFiles");
+const uploadSection = document.getElementById("uploadSection");
+const workSection = document.getElementById("workSection");
+
 const imageList = document.getElementById("imageList");
 const convertBtn = document.getElementById("convertBtn");
 const statusText = document.getElementById("statusText");
@@ -8,56 +11,116 @@ const orientationSelect = document.getElementById("orientation");
 const marginSizeSelect = document.getElementById("marginSize");
 
 let selectedImages = [];
+let dragIndex = null;
 
 /* SELECT IMAGES */
 
 imageFilesInput.addEventListener("change", function(e){
-    selectedImages = Array.from(e.target.files);
+
+    const newImages = Array.from(e.target.files);
+
+    selectedImages = selectedImages.concat(newImages);
+
+    if(selectedImages.length > 0){
+        uploadSection.style.display = "none";
+        workSection.style.display = "block";
+    }
+
     renderImageList();
+
+    imageFilesInput.value = "";
 });
 
 /* RENDER IMAGE LIST */
 
 function renderImageList(){
+
     imageList.innerHTML = "";
 
     if(selectedImages.length === 0){
+        uploadSection.style.display = "block";
+        workSection.style.display = "none";
         statusText.innerText = "";
         return;
     }
 
     selectedImages.forEach((file, index) => {
+
         const imageUrl = URL.createObjectURL(file);
 
-        const card = document.createElement("div");
-        card.className = "image-card";
+        const item = document.createElement("div");
+        item.className = "image-item";
+        item.draggable = true;
+        item.dataset.index = index;
 
-        card.innerHTML = `
-            <img src="${imageUrl}" alt="Image Preview">
+        item.innerHTML = `
+            <div class="image-left">
+                <div class="image-preview">
+                    <img src="${imageUrl}" alt="Preview">
+                </div>
 
-            <div class="image-name">
-                ${index + 1}. ${file.name}
-            </div>
-
-            <div class="image-size">
-                ${(file.size / (1024 * 1024)).toFixed(2)} MB
+                <div class="image-info">
+                    <h4>${index + 1}. ${file.name}</h4>
+                    <p>${formatSize(file.size)}</p>
+                </div>
             </div>
 
             <div class="image-actions">
-                <button onclick="moveImageUp(${index})">↑</button>
-                <button onclick="moveImageDown(${index})">↓</button>
-                <button onclick="removeImage(${index})">Remove</button>
+                <button class="action-btn" onclick="moveImageUp(${index})">↑</button>
+                <button class="action-btn" onclick="moveImageDown(${index})">↓</button>
+                <button class="remove-btn" onclick="removeImage(${index})">Remove</button>
             </div>
         `;
 
-        imageList.appendChild(card);
+        imageList.appendChild(item);
+        addDragEvents(item);
     });
 
     statusText.innerText =
         `${selectedImages.length} image(s) selected`;
 }
 
-/* ORDER CONTROLS */
+/* FORMAT SIZE */
+
+function formatSize(bytes){
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+/* DRAG DROP */
+
+function addDragEvents(item){
+
+    item.addEventListener("dragstart", function(){
+        dragIndex = Number(item.dataset.index);
+        item.classList.add("dragging");
+    });
+
+    item.addEventListener("dragend", function(){
+        item.classList.remove("dragging");
+        dragIndex = null;
+    });
+
+    item.addEventListener("dragover", function(e){
+        e.preventDefault();
+    });
+
+    item.addEventListener("drop", function(e){
+        e.preventDefault();
+
+        const dropIndex = Number(item.dataset.index);
+
+        if(dragIndex === null || dragIndex === dropIndex){
+            return;
+        }
+
+        const draggedImage = selectedImages.splice(dragIndex, 1)[0];
+        selectedImages.splice(dropIndex, 0, draggedImage);
+
+        renderImageList();
+    });
+}
+
+/* MOVE BUTTONS */
 
 function moveImageUp(index){
     if(index === 0) return;
@@ -107,9 +170,10 @@ function loadImage(file){
     });
 }
 
-/* CONVERT */
+/* CONVERT TO PDF */
 
 convertBtn.addEventListener("click", async function(){
+
     if(selectedImages.length === 0){
         alert("Please select at least one image.");
         return;
@@ -127,6 +191,7 @@ convertBtn.addEventListener("click", async function(){
         const margin = parseInt(marginSizeSelect.value);
 
         for(const file of selectedImages){
+
             const loaded = await loadImage(file);
 
             let embeddedImage;
