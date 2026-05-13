@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Split PDF - PDFSmart Tools</title>
 
-    <link rel="stylesheet" href="split-pdf.css">
+    <link rel="stylesheet" href="split-pdf.css?v=20">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
@@ -20,55 +21,74 @@
 
     <div class="split-card">
 
-        <h1>Split PDF</h1>
-        <p>Extract selected pages or page ranges from your PDF.</p>
+        <div id="uploadSection" class="upload-section">
+            <h1>Split PDF</h1>
+            <p>Select PDF file and extract required pages into one PDF.</p>
 
-        <label for="pdfFile" class="upload-area">
-            <div class="upload-icon">📤</div>
-            <h2>Choose PDF File</h2>
-            <p>Select one PDF file to split</p>
-        </label>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
 
-        <input type="file" id="pdfFile" accept="application/pdf">
-
-        <div class="file-info" id="fileInfo">
-            No PDF selected
+            <input type="file" id="pdfFile" accept="application/pdf">
         </div>
 
-        <div class="options-box">
+        <div id="workSection" class="work-section" style="display:none;">
 
-            <h3>Split Options</h3>
+            <div class="work-header">
+                <div>
+                    <h1>Split PDF</h1>
+                    <p>Enter page ranges or page numbers and download one PDF.</p>
+                </div>
 
-            <label>Select Mode</label>
-            <select id="splitMode">
-                <option value="range">Page Range</option>
-                <option value="specific">Specific Pages</option>
-            </select>
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
 
-            <label>Pages</label>
-            <input 
-                type="text" 
-                id="pageInput" 
-                placeholder="Example: 1-3 or 1,3,5"
-            >
+            <div class="preview-options-grid">
 
-            <small>
-                Range example: 1-3 &nbsp; | &nbsp; Specific pages: 1,3,5
-            </small>
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <h3>Split Options</h3>
+
+                    <label>Pages / Ranges</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: 1-5, 6-10, 15"
+                    >
+
+                    <small>
+                        You can enter: 1-5, 6-10, 15 — one PDF will be downloaded.
+                    </small>
+
+                    <button id="splitBtn" class="split-btn">
+                        Split & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
 
         </div>
-
-        <button id="splitBtn" class="split-btn">
-            Split & Download PDF
-        </button>
-
-        <div id="statusText" class="status-text"></div>
 
     </div>
 
 </section>
 
-<script src="split-pdf.js"></script>
+<script src="split-pdf.js?v=20"></script>
 
 </body>
 </html>
