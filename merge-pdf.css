@@ -2,7 +2,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial,sans-serif;
+    font-family:Arial, sans-serif;
 }
 
 body{
@@ -30,52 +30,52 @@ body{
 }
 
 .home-btn{
+    text-decoration:none;
     background:white;
     color:#2563eb;
-    text-decoration:none;
     padding:10px 18px;
-    border-radius:10px;
+    border-radius:12px;
     font-weight:bold;
 }
 
 /* MAIN */
 
 .merge-layout{
-    width:100%;
-    min-height:calc(100vh - 70px);
+    padding:40px 20px;
     display:flex;
     justify-content:center;
-    align-items:flex-start;
-    padding:40px 20px;
 }
 
 .merge-card{
     width:100%;
-    max-width:900px;
-    background:white;
-    padding:35px;
-    border-radius:24px;
-    box-shadow:0 6px 25px rgba(0,0,0,0.08);
-}
-
-.merge-card h1{
-    font-size:38px;
-    margin-bottom:10px;
-    color:#2563eb;
-}
-
-.merge-card p{
-    color:#666;
-    margin-bottom:30px;
+    max-width:1200px;
 }
 
 /* UPLOAD */
 
+.upload-section{
+    background:white;
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.08);
+}
+
+.upload-section h1{
+    font-size:48px;
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+.upload-section p{
+    color:#4b5563;
+    margin-bottom:30px;
+}
+
 .upload-area{
     width:100%;
-    min-height:220px;
+    min-height:260px;
     border:3px dashed #2563eb;
-    border-radius:22px;
+    border-radius:24px;
     background:#eef2ff;
     display:flex;
     flex-direction:column;
@@ -84,7 +84,6 @@ body{
     cursor:pointer;
     transition:0.3s;
     text-align:center;
-    padding:20px;
 }
 
 .upload-area:hover{
@@ -93,77 +92,219 @@ body{
 }
 
 .upload-icon{
-    font-size:60px;
-    margin-bottom:15px;
+    font-size:70px;
+    margin-bottom:10px;
 }
 
 .upload-area h2{
+    font-size:38px;
+    color:#2563eb;
     margin-bottom:10px;
-    color:#1d4ed8;
 }
 
 .upload-area p{
-    margin:0;
-    color:#555;
+    font-size:18px;
+    margin-bottom:0;
 }
 
 #pdfFiles{
     display:none;
 }
 
-/* FILE LIST */
+/* WORK SECTION */
 
-.file-list-box{
-    margin-top:30px;
+.work-section{
+    background:white;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.08);
 }
 
-.file-list-box h3{
-    margin-bottom:15px;
-    color:#7c3aed;
-}
-
-#fileList{
-    list-style:none;
-}
-
-#fileList li{
-    background:#f8fafc;
-    border:1px solid #dbeafe;
-    border-radius:14px;
-    padding:16px 18px;
-    margin-bottom:12px;
+.work-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.work-header h1{
+    font-size:42px;
+    color:#2563eb;
+    margin-bottom:5px;
+}
+
+.work-header p{
+    color:#4b5563;
+}
+
+.add-more-btn{
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    color:white;
+    padding:14px 24px;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+/* SORT */
+
+.sort-box{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.sort-box button{
+    padding:12px 18px;
+    border:none;
+    border-radius:12px;
+    background:#eef2ff;
+    cursor:pointer;
+    font-weight:bold;
     transition:0.3s;
 }
 
-#fileList li:hover{
+.sort-box button:hover{
+    background:#2563eb;
+    color:white;
+}
+
+/* FILE LIST */
+
+.file-list-box h3{
+    margin-bottom:18px;
+    color:#7c3aed;
+    font-size:24px;
+}
+
+.file-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+/* FILE ITEM */
+
+.file-item{
+    background:#f8fafc;
+    border:2px solid #dbeafe;
+    border-radius:20px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    cursor:grab;
+    transition:0.3s;
+}
+
+.file-item:hover{
     transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
 }
 
-.file-name{
-    font-weight:600;
-    color:#111827;
+.file-item.dragging{
+    opacity:0.5;
+    border:2px dashed #2563eb;
 }
 
-.file-size{
+/* LEFT SIDE */
+
+.file-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex:1;
+}
+
+.pdf-preview{
+    width:90px;
+    height:120px;
+    background:white;
+    border-radius:12px;
+    border:1px solid #ddd;
+    overflow:hidden;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.pdf-preview canvas{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.file-info{
+    flex:1;
+}
+
+.file-info h4{
+    font-size:20px;
+    margin-bottom:8px;
+    word-break:break-word;
+}
+
+.file-info p{
     color:#6b7280;
-    font-size:14px;
+    font-size:15px;
 }
 
-/* BUTTON */
+/* RIGHT SIDE */
+
+.file-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.action-btn{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:10px;
+    background:#eef2ff;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.action-btn:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.remove-btn{
+    border:none;
+    background:#ef4444;
+    color:white;
+    padding:11px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.remove-btn:hover{
+    background:#dc2626;
+}
+
+/* MERGE BUTTON */
 
 .merge-btn{
     width:100%;
     margin-top:30px;
     padding:18px;
     border:none;
-    border-radius:16px;
+    border-radius:18px;
     background:linear-gradient(135deg,#2563eb,#7c3aed);
     color:white;
-    font-size:18px;
+    font-size:22px;
     font-weight:bold;
     cursor:pointer;
     transition:0.3s;
@@ -171,60 +312,48 @@ body{
 
 .merge-btn:hover{
     transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(37,99,235,0.35);
+    box-shadow:0 8px 25px rgba(37,99,235,0.3);
 }
 
 /* STATUS */
 
 .status-text{
-    margin-top:20px;
     text-align:center;
-    font-weight:600;
+    margin-top:18px;
     color:#2563eb;
+    font-weight:bold;
+    font-size:18px;
 }
 
 /* MOBILE */
 
-@media(max-width:768px){
+@media(max-width:850px){
 
-    .merge-card{
-        padding:25px;
-    }
-
-    .merge-card h1{
-        font-size:30px;
-    }
-
-    .upload-area{
-        min-height:180px;
-    }
-
-    .upload-icon{
-        font-size:50px;
-    }
-
-    #fileList li{
+    .work-header{
         flex-direction:column;
         align-items:flex-start;
-        gap:8px;
     }
-}
-.file-actions{
-    display:flex;
-    gap:8px;
-}
 
-.file-actions button{
-    border:none;
-    background:#eef2ff;
-    color:#2563eb;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-}
+    .file-item{
+        flex-direction:column;
+        align-items:flex-start;
+    }
 
-.file-actions button:hover{
-    background:#2563eb;
-    color:white;
+    .file-left{
+        width:100%;
+    }
+
+    .file-actions{
+        width:100%;
+        justify-content:flex-end;
+    }
+
+    .upload-section h1,
+    .work-header h1{
+        font-size:34px;
+    }
+
+    .upload-area h2{
+        font-size:28px;
+    }
 }
