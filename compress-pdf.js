@@ -1,12 +1,19 @@
 const pdfFileInput = document.getElementById("pdfFile");
+const uploadSection = document.getElementById("uploadSection");
+const workSection = document.getElementById("workSection");
+
+const previewCanvas = document.getElementById("previewCanvas");
+const previewCtx = previewCanvas.getContext("2d");
+
 const fileInfo = document.getElementById("fileInfo");
 const compressBtn = document.getElementById("compressBtn");
 const statusText = document.getElementById("statusText");
 
 let selectedFile = null;
 let originalSize = 0;
+let totalPages = 0;
 
-pdfFileInput.addEventListener("change", function(e){
+pdfFileInput.addEventListener("change", async function(e){
 
     selectedFile = e.target.files[0];
 
@@ -15,13 +22,30 @@ pdfFileInput.addEventListener("change", function(e){
         return;
     }
 
-    originalSize = selectedFile.size;
+    try{
+        originalSize = selectedFile.size;
 
-    fileInfo.innerText =
-        `${selectedFile.name} | Original Size: ${formatSize(originalSize)}`;
+        const bytes = await selectedFile.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(bytes);
 
-    statusText.innerText =
-        "PDF selected successfully.";
+        totalPages = pdf.getPageCount();
+
+        fileInfo.innerText =
+            `${selectedFile.name} | Pages: ${totalPages} | Size: ${formatSize(originalSize)}`;
+
+        uploadSection.style.display = "none";
+        workSection.style.display = "block";
+
+        statusText.innerText = "PDF loaded successfully.";
+
+        await renderFirstPagePreview(selectedFile);
+
+    }
+    catch(error){
+        console.error(error);
+        fileInfo.innerText = "Invalid PDF file.";
+        statusText.innerText = "Please select a valid PDF.";
+    }
 });
 
 function formatSize(bytes){
@@ -35,6 +59,34 @@ function getCompressionLevel(){
     return selected ? selected.value : "medium";
 }
 
+async function renderFirstPagePreview(file){
+    try{
+        const bytes = await file.arrayBuffer();
+
+        const loadingTask = pdfjsLib.getDocument({
+            data: bytes
+        });
+
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        const viewport = page.getViewport({
+            scale: 0.7
+        });
+
+        previewCanvas.width = viewport.width;
+        previewCanvas.height = viewport.height;
+
+        await page.render({
+            canvasContext: previewCtx,
+            viewport: viewport
+        }).promise;
+    }
+    catch(error){
+        console.error("Preview error:", error);
+    }
+}
+
 compressBtn.addEventListener("click", async function(){
 
     if(!selectedFile){
@@ -43,18 +95,15 @@ compressBtn.addEventListener("click", async function(){
     }
 
     try{
-        statusText.innerText =
-            "Compressing PDF... Please wait.";
+        statusText.innerText = "Compressing PDF... Please wait.";
 
         const compressionLevel = getCompressionLevel();
 
-        const fileBytes =
-            await selectedFile.arrayBuffer();
+        const fileBytes = await selectedFile.arrayBuffer();
 
-        const pdfDoc =
-            await PDFLib.PDFDocument.load(fileBytes, {
-                ignoreEncryption: true
-            });
+        const pdfDoc = await PDFLib.PDFDocument.load(fileBytes, {
+            ignoreEncryption: true
+        });
 
         pdfDoc.setProducer("PDFSmart Tools");
         pdfDoc.setCreator("PDFSmart Tools");
@@ -73,30 +122,20 @@ compressBtn.addEventListener("click", async function(){
             useObjectStreams = true;
         }
 
-        const compressedBytes =
-            await pdfDoc.save({
-                useObjectStreams: useObjectStreams,
-                addDefaultPage: false
-            });
+        const compressedBytes = await pdfDoc.save({
+            useObjectStreams: useObjectStreams,
+            addDefaultPage: false
+        });
 
-        const newSize =
-            compressedBytes.length;
+        const newSize = compressedBytes.length;
 
-        const blob =
-            new Blob(
-                [compressedBytes],
-                {type:"application/pdf"}
-            );
+        const blob = new Blob([compressedBytes], {
+            type: "application/pdf"
+        });
 
-        const link =
-            document.createElement("a");
-
-        link.href =
-            URL.createObjectURL(blob);
-
-        link.download =
-            "compressed-pdf.pdf";
-
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "compressed-pdf.pdf";
         link.click();
 
         const reduction =
@@ -106,9 +145,7 @@ compressBtn.addEventListener("click", async function(){
             `Compressed successfully. New Size: ${formatSize(newSize)} | Reduction: ${reduction}%`;
 
     }
-
     catch(error){
-
         console.error(error);
 
         statusText.innerText =
