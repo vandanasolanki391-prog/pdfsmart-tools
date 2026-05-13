@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compress PDF - PDFSmart Tools</title>
 
-    <link rel="stylesheet" href="compress-pdf.css">
+    <link rel="stylesheet" href="compress-pdf.css?v=20">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
@@ -20,60 +21,87 @@
 
     <div class="compress-card">
 
-        <h1>Compress PDF</h1>
-        <p>Reduce PDF file size with simple compression options.</p>
+        <div id="uploadSection" class="upload-section">
+            <h1>Compress PDF</h1>
+            <p>Select PDF file and reduce file size where possible.</p>
 
-        <label for="pdfFile" class="upload-area">
-            <div class="upload-icon">📤</div>
-            <h2>Choose PDF File</h2>
-            <p>Select one PDF file to compress</p>
-        </label>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
 
-        <input type="file" id="pdfFile" accept="application/pdf">
-
-        <div class="file-info" id="fileInfo">
-            No PDF selected
+            <input type="file" id="pdfFile" accept="application/pdf">
         </div>
 
-        <div class="options-box">
-            <h3>Compression Level</h3>
+        <div id="workSection" class="work-section" style="display:none;">
 
-            <label class="radio-card">
-                <input type="radio" name="compressLevel" value="low" checked>
+            <div class="work-header">
                 <div>
-                    <strong>Low Compression</strong>
-                    <span>Better quality, smaller reduction</span>
+                    <h1>Compress PDF</h1>
+                    <p>Preview your PDF and choose compression level.</p>
                 </div>
-            </label>
 
-            <label class="radio-card">
-                <input type="radio" name="compressLevel" value="medium">
-                <div>
-                    <strong>Medium Compression</strong>
-                    <span>Balanced quality and size</span>
-                </div>
-            </label>
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
 
-            <label class="radio-card">
-                <input type="radio" name="compressLevel" value="high">
-                <div>
-                    <strong>High Compression</strong>
-                    <span>Maximum reduction where possible</span>
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
                 </div>
-            </label>
+
+                <div class="options-box">
+                    <h3>Compression Options</h3>
+
+                    <label class="radio-card">
+                        <input type="radio" name="compressLevel" value="low" checked>
+                        <div>
+                            <strong>Low Compression</strong>
+                            <span>Better quality, smaller reduction</span>
+                        </div>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="compressLevel" value="medium">
+                        <div>
+                            <strong>Medium Compression</strong>
+                            <span>Balanced quality and size</span>
+                        </div>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="compressLevel" value="high">
+                        <div>
+                            <strong>High Compression</strong>
+                            <span>Maximum reduction where possible</span>
+                        </div>
+                    </label>
+
+                    <button id="compressBtn" class="compress-btn">
+                        Compress & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
         </div>
-
-        <button id="compressBtn" class="compress-btn">
-            Compress & Download PDF
-        </button>
-
-        <div id="statusText" class="status-text"></div>
 
     </div>
 
 </section>
 
-<script src="compress-pdf.js"></script>
+<script src="compress-pdf.js?v=20"></script>
 
 </body>
 </html>
