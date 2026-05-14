@@ -1,0 +1,12 @@
+/* UNLOCK PDF EXTRA CSS */
+
+.options-box input{
+    margin-bottom:10px;
+}
+
+.options-box small{
+    display:block;
+    margin-top:10px;
+    line-height:1.5;
+    color:#6b7280;
+}
