@@ -6,7 +6,7 @@
     <title>Organize PDF - PDFSmart Tools</title>
 
     <link rel="stylesheet" href="tools-common.css">
-    <link rel="stylesheet" href="organize-pdf.css?v=20">
+    <link rel="stylesheet" href="organize-pdf.css?v=21">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
@@ -24,15 +24,15 @@
 
         <div id="uploadSection" class="upload-section">
             <h1>Organize PDF</h1>
-            <p>Select PDF file and rearrange or remove pages.</p>
+            <p>Select PDF files and rearrange or remove pages.</p>
 
             <label for="pdfFile" class="upload-area">
                 <div class="upload-icon">🗂️</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one PDF file</p>
+                <h2>Choose PDF Files</h2>
+                <p>Select one or multiple PDF files</p>
             </label>
 
-            <input type="file" id="pdfFile" accept="application/pdf">
+            <input type="file" id="pdfFile" accept="application/pdf" multiple>
         </div>
 
         <div id="workSection" class="work-section" style="display:none;">
@@ -44,14 +44,14 @@
                 </div>
 
                 <label for="pdfFile" class="change-file-btn">
-                    Change PDF
+                    + Add More PDF
                 </label>
             </div>
 
             <div class="options-box">
                 <h3>Pages</h3>
                 <small>
-                    Drag page cards to change order. Use Remove button to delete a page from output PDF.
+                    You can add multiple PDFs. Drag page cards to change order. Use Remove button to delete a page from output PDF.
                 </small>
 
                 <div id="pageGrid" class="page-grid"></div>
@@ -69,7 +69,7 @@
 
 </section>
 
-<script src="organize-pdf.js?v=20"></script>
+<script src="organize-pdf.js?v=21"></script>
 
 </body>
 </html>
