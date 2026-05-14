@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to PPT - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="pdf-to-ppt.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
+
+<section class="tool-layout">
+
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>PDF to PPT</h1>
+            <p>Select PDF file and convert pages into PowerPoint slides.</p>
+
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📽️</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>PDF to PPT</h1>
+                    <p>Preview first page and convert PDF into PowerPoint slides.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
+
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <h3>Convert Options</h3>
+
+                    <label>Pages</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: all or 1-3, 5"
+                        value="all"
+                    >
+
+                    <small>
+                        Each PDF page will become one PPT slide.
+                    </small>
+
+                    <button id="convertBtn" class="main-btn">
+                        Convert & Download PPT
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="pdf-to-ppt.js?v=20"></script>
+
+</body>
+</html>
