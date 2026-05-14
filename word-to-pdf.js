@@ -85,10 +85,10 @@ convertBtn.addEventListener("click", async function(){
     },
 
     html2canvas:{
-        scale:2,
-        useCORS:true,
-        scrollY:0
-    },
+    scale:1,
+    useCORS:true,
+    scrollY:0
+},
 
     jsPDF:{
     unit:"pt",
