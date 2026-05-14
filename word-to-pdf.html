@@ -1,41 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Word to PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="word-to-pdf.css?v=20">
+
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-  <h1>Word to PDF Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <textarea id="wordText" rows="15" cols="60" placeholder="Paste your Word text here..."></textarea>
-  <br><br>
+<section class="tool-layout">
 
-  <button onclick="convertWordToPDF()">Convert to PDF</button>
+    <div class="tool-card">
 
-  <br><br>
+        <div id="uploadSection" class="upload-section">
+            <h1>Word to PDF</h1>
+            <p>Select Word file and convert it into PDF.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+            <label for="wordFile" class="upload-area">
+                <div class="upload-icon">📝</div>
+                <h2>Choose Word File</h2>
+                <p>Select .docx file</p>
+            </label>
 
-  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+            <input type="file" id="wordFile" accept=".docx">
+        </div>
 
-  <script>
-    function convertWordToPDF() {
-      const text = document.getElementById("wordText").value;
+        <div id="workSection" class="work-section" style="display:none;">
 
-      if (text.trim() === "") {
-        alert("Please paste your Word text first");
-        return;
-      }
+            <div class="work-header">
+                <div>
+                    <h1>Word to PDF</h1>
+                    <p>Preview converted Word content and download as PDF.</p>
+                </div>
 
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
+                <label for="wordFile" class="change-file-btn">
+                    Change Word File
+                </label>
+            </div>
 
-      const lines = pdf.splitTextToSize(text, 180);
-      pdf.text(lines, 10, 20);
+            <div class="preview-options-grid">
 
-      pdf.save("word-to-pdf.pdf");
-    }
-  </script>
+                <div class="pdf-preview-box">
+                    <h3>File Info</h3>
+
+                    <div class="file-info" id="fileInfo">
+                        No Word file selected
+                    </div>
+
+                    <small>
+                        This browser tool supports mainly .docx files. Formatting may vary slightly.
+                    </small>
+                </div>
+
+                <div class="options-box">
+                    <h3>Word Preview</h3>
+
+                    <div id="wordPreview" class="word-preview">
+                        Word content preview will appear here...
+                    </div>
+
+                    <button id="convertBtn" class="main-btn">
+                        Convert & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="word-to-pdf.js?v=20"></script>
 
 </body>
 </html>
