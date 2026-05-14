@@ -101,8 +101,7 @@ convertBtn.addEventListener("click", async function(){
     }
 };
 
-        await html2pdf()
-            .set(options)
+        
             const options = {
     margin:[10,10,10,10],
     filename:"word-to-pdf.pdf",
@@ -125,6 +124,8 @@ convertBtn.addEventListener("click", async function(){
         mode:["avoid-all","css","legacy"]
     }
 };
+        await html2pdf()
+            .set(options)
             .from(wordPreview)
             .save();
 
