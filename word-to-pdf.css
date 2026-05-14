@@ -32,3 +32,11 @@
 .word-preview td{
     padding:10px;
 }
+.word-preview{
+    background:white;
+    padding:20px;
+}
+
+.word-preview *{
+    max-width:100%;
+}
