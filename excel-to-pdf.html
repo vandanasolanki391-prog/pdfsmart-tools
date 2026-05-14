@@ -1,18 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Excel to PDF</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="excel-to-pdf.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-  <div class="tool-page">
-    <h1>📈 Excel to PDF</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-    <p>This feature will be available soon.</p>
+<section class="tool-layout">
 
-    <button onclick="location.href='index.html'">⬅ Back to Home</button>
-  </div>
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>Excel to PDF</h1>
+            <p>Select Excel file and convert table data into PDF.</p>
+
+            <label for="excelFile" class="upload-area">
+                <div class="upload-icon">📈</div>
+                <h2>Choose Excel File</h2>
+                <p>Select .xlsx / .xls file</p>
+            </label>
+
+            <input type="file" id="excelFile" accept=".xlsx,.xls">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Excel to PDF</h1>
+                    <p>Preview Excel data and download as PDF.</p>
+                </div>
+
+                <label for="excelFile" class="change-file-btn">
+                    Change Excel File
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>File Info</h3>
+
+                    <div class="file-info" id="fileInfo">
+                        No Excel file selected
+                    </div>
+
+                    <small>
+                        First sheet data will be converted into PDF.
+                    </small>
+                </div>
+
+                <div class="options-box">
+                    <h3>Excel Preview</h3>
+
+                    <div id="excelPreview" class="excel-preview">
+                        Excel preview will appear here...
+                    </div>
+
+                    <button id="convertBtn" class="main-btn">
+                        Convert & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="excel-to-pdf.js?v=20"></script>
 
 </body>
 </html>
