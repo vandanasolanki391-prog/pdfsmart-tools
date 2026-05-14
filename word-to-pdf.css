@@ -67,3 +67,7 @@ const options = {
         orientation:"portrait"
     }
 };
+.word-preview{
+    transform:scale(0.95);
+    transform-origin:top center;
+}
