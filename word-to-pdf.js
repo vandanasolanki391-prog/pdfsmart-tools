@@ -75,55 +75,33 @@ convertBtn.addEventListener("click", async function(){
 
         const options = {
 
-   margin:[0,0,0,0],
+            margin:[10,10,10,10],
 
-    filename:"word-to-pdf.pdf",
+            filename:"word-to-pdf.pdf",
 
-    image:{
-        type:"jpeg",
-        quality:1
-    },
+            image:{
+                type:"jpeg",
+                quality:1
+            },
 
-    html2canvas:{
-    scale:1,
-    useCORS:true,
-    scrollY:0
-},
+            html2canvas:{
+                scale:2,
+                useCORS:true,
+                scrollY:0,
+                backgroundColor:"#ffffff"
+            },
 
-    jsPDF:{
-    unit:"pt",
-    format:"a4",
-    orientation:"portrait"
-},
+            jsPDF:{
+                unit:"mm",
+                format:"a4",
+                orientation:"portrait"
+            },
 
-    pagebreak:{
-        mode:["avoid-all","css","legacy"]
-    }
-};
+            pagebreak:{
+                mode:["avoid-all","css","legacy"]
+            }
+        };
 
-        
-            const options = {
-    margin:[10,10,10,10],
-    filename:"word-to-pdf.pdf",
-    image:{
-        type:"jpeg",
-        quality:1
-    },
-    html2canvas:{
-        scale:2,
-        useCORS:true,
-        scrollY:0,
-        backgroundColor:"#ffffff"
-    },
-    jsPDF:{
-        unit:"mm",
-        format:"a4",
-        orientation:"portrait"
-    },
-    pagebreak:{
-        mode:["avoid-all","css","legacy"]
-    }
-};
         await html2pdf()
             .set(options)
             .from(wordPreview)
@@ -133,6 +111,16 @@ convertBtn.addEventListener("click", async function(){
             "PDF downloaded successfully.";
 
     }
+    catch(error){
+
+        console.error(error);
+
+        alert("Conversion failed.");
+
+        statusText.innerText =
+            "Word to PDF failed.";
+    }
+});
     catch(error){
 
         console.error(error);
