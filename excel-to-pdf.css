@@ -1,0 +1,35 @@
+/* EXCEL TO PDF EXTRA CSS */
+
+.excel-preview{
+    width:100%;
+    min-height:400px;
+    background:white;
+    border:1px solid #dbeafe;
+    border-radius:16px;
+    padding:20px;
+    overflow:auto;
+}
+
+.excel-preview table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+.excel-preview table,
+.excel-preview th,
+.excel-preview td{
+    border:1px solid #cbd5e1;
+}
+
+.excel-preview th{
+    background:#eef2ff;
+    color:#1d4ed8;
+    font-weight:bold;
+}
+
+.excel-preview th,
+.excel-preview td{
+    padding:10px;
+    text-align:left;
+}
