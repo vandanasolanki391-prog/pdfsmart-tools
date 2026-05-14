@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlock PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="unlock-pdf.css?v=20">
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
+
+<section class="tool-layout">
+
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>Unlock PDF</h1>
+            <p>Select PDF file and try to remove simple restrictions.</p>
+
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">🔓</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Unlock PDF</h1>
+                    <p>Browser-only unlock has limited support for encrypted PDFs.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>File Info</h3>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+
+                    <small>
+                        Strong password-protected PDFs cannot be unlocked in browser without correct password/support.
+                    </small>
+                </div>
+
+                <div class="options-box">
+                    <h3>Unlock Options</h3>
+
+                    <label>Password if required</label>
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        placeholder="Enter password if PDF is protected"
+                    >
+
+                    <small>
+                        This tool will try to re-save the PDF without simple restrictions.
+                    </small>
+
+                    <button id="unlockBtn" class="main-btn">
+                        Unlock & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="unlock-pdf.js?v=20"></script>
+
+</body>
+</html>
