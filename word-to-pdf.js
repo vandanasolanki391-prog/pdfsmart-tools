@@ -75,7 +75,7 @@ convertBtn.addEventListener("click", async function(){
 
         const options = {
 
-    margin:[5,5,5,5],
+   margin:[0,0,0,0],
 
     filename:"word-to-pdf.pdf",
 
@@ -91,10 +91,10 @@ convertBtn.addEventListener("click", async function(){
     },
 
     jsPDF:{
-        unit:"mm",
-        format:"a4",
-        orientation:"portrait"
-    },
+    unit:"pt",
+    format:"a4",
+    orientation:"portrait"
+},
 
     pagebreak:{
         mode:["avoid-all","css","legacy"]
