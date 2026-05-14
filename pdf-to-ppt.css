@@ -1,0 +1,10 @@
+/* PDF TO PPT EXTRA CSS */
+
+/* Currently using common styles from tools-common.css */
+
+.options-box small{
+    display:block;
+    margin-top:10px;
+    line-height:1.5;
+    color:#6b7280;
+}
