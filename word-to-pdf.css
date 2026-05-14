@@ -71,3 +71,14 @@ const options = {
     transform:scale(0.95);
     transform-origin:top center;
 }
+.word-preview table{
+    page-break-inside:avoid;
+}
+
+.word-preview tr{
+    page-break-inside:avoid;
+}
+
+.word-preview img{
+    page-break-inside:avoid;
+}
