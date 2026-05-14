@@ -1,41 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>OCR PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="ocr-pdf.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
 </head>
 <body>
 
-  <h1>OCR PDF Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="imageInput" accept="image/*">
-  <br><br>
+<section class="tool-layout">
 
-  <button onclick="runOCR()">Extract Text</button>
+    <div class="tool-card">
 
-  <pre id="output"></pre>
+        <div id="uploadSection" class="upload-section">
+            <h1>OCR PDF</h1>
+            <p>Select scanned PDF and extract readable text.</p>
 
-  <br><br>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one scanned PDF file</p>
+            </label>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+        <div id="workSection" class="work-section" style="display:none;">
 
-  <script>
-    async function runOCR() {
-      const file = document.getElementById("imageInput").files[0];
+            <div class="work-header">
+                <div>
+                    <h1>OCR PDF</h1>
+                    <p>Preview first page and extract text using OCR.</p>
+                </div>
 
-      if (!file) {
-        alert("Please upload an image");
-        return;
-      }
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
 
-      document.getElementById("output").innerText = "Processing...";
+            <div class="preview-options-grid">
 
-      const { data: { text } } = await Tesseract.recognize(file, 'eng');
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
 
-      document.getElementById("output").innerText = text;
-    }
-  </script>
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <h3>OCR Options</h3>
+
+                    <label>Pages</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: all or 1-3, 5"
+                        value="1"
+                    >
+
+                    <small>
+                        OCR may take time. For faster result, scan selected pages only.
+                    </small>
+
+                    <button id="ocrBtn" class="main-btn">
+                        Run OCR
+                    </button>
+
+                    <label>Extracted Text</label>
+                    <textarea 
+                        id="ocrOutput" 
+                        placeholder="OCR text will appear here..."
+                    ></textarea>
+
+                    <button id="copyBtn" class="secondary-btn">
+                        Copy Text
+                    </button>
+
+                    <button id="downloadTextBtn" class="secondary-btn">
+                        Download Text File
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="ocr-pdf.js?v=20"></script>
 
 </body>
 </html>
