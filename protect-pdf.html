@@ -1,20 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tool Name</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="protect-pdf.css?v=20">
+
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <h1>Tool Name</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file">
-  <br><br>
+<section class="tool-layout">
 
-  <button onclick="alert('This feature coming soon')">Process</button>
+    <div class="tool-card">
 
-  <br><br>
+        <div id="uploadSection" class="upload-section">
+           <h1>Protect PDF</h1>
+            <p>Select PDF file and add a password note before download.</p>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">🔒</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Lock PDF</h1>
+                    <p>Browser-only password locking is limited. This tool adds lock information page.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>File Info</h3>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+
+                    <small>
+                        Real password encryption usually needs server-side processing.
+                    </small>
+                </div>
+
+                <div class="options-box">
+                    <h3>Lock Options</h3>
+
+                    <label>Password</label>
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        placeholder="Enter password"
+                    >
+
+                    <label>Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPasswordInput" 
+                        placeholder="Confirm password"
+                    >
+
+                    <small>
+                        This browser version adds a password note page. It does not strongly encrypt the PDF.
+                    </small>
+
+                    <button id="lockBtn" class="main-btn">
+                        Create Locked PDF Note
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="protect-pdf.js?v=20"></script>
 
 </body>
 </html>
