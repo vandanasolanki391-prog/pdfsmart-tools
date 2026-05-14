@@ -1,60 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PDF to Excel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Excel - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="pdf-to-excel.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
-  <h1>PDF to Excel Tool</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-  <input type="file" id="pdfInput" accept="application/pdf">
-  <br><br>
+<section class="tool-layout">
 
-  <button onclick="convertPDFtoExcel()">Convert to Excel Text</button>
+    <div class="tool-card">
 
-  <pre id="output"></pre>
+        <div id="uploadSection" class="upload-section">
+            <h1>PDF to Excel</h1>
+            <p>Select PDF and extract readable text into Excel format.</p>
 
-  <br><br>
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📊</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
 
-  <button onclick="location.href='../index.html'">⬅ Back to Home</button>
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <div id="workSection" class="work-section" style="display:none;">
 
-  <script>
-    async function convertPDFtoExcel() {
-      const file = document.getElementById("pdfInput").files[0];
+            <div class="work-header">
+                <div>
+                    <h1>PDF to Excel</h1>
+                    <p>Preview first page and export extracted text into Excel.</p>
+                </div>
 
-      if (!file) {
-        alert("Please select a PDF file");
-        return;
-      }
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
 
-      const reader = new FileReader();
+            <div class="preview-options-grid">
 
-      reader.onload = async function () {
-        const typedarray = new Uint8Array(this.result);
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
 
-        let fullText = "";
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          const pageText = content.items.map(item => item.str).join("\t");
-          fullText += pageText + "\n";
-        }
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
 
-        const blob = new Blob([fullText], { type: "application/vnd.ms-excel" });
-        const link = document.createElement("a");
+                <div class="options-box">
+                    <h3>Convert Options</h3>
 
-        link.href = URL.createObjectURL(blob);
-        link.download = "pdf-to-excel.xls";
-        link.click();
-      };
+                    <label>Pages</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: all or 1-3, 5"
+                        value="all"
+                    >
 
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
+                    <small>
+                        This browser tool extracts selectable PDF text into rows. For scanned PDF, use OCR first.
+                    </small>
+
+                    <button id="convertBtn" class="main-btn">
+                        Convert & Download Excel
+                    </button>
+
+                    <label>Extracted Text Preview</label>
+                    <textarea 
+                        id="textPreview" 
+                        placeholder="Extracted text will appear here..."
+                    ></textarea>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="pdf-to-excel.js?v=20"></script>
 
 </body>
 </html>
