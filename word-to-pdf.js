@@ -75,25 +75,31 @@ convertBtn.addEventListener("click", async function(){
 
         const options = {
 
-            margin:10,
+    margin:[5,5,5,5],
 
-            filename:"word-to-pdf.pdf",
+    filename:"word-to-pdf.pdf",
 
-            image:{
-                type:"jpeg",
-                quality:1
-            },
+    image:{
+        type:"jpeg",
+        quality:1
+    },
 
-            html2canvas:{
-                scale:2
-            },
+    html2canvas:{
+        scale:2,
+        useCORS:true,
+        scrollY:0
+    },
 
-            jsPDF:{
-                unit:"mm",
-                format:"a4",
-                orientation:"portrait"
-            }
-        };
+    jsPDF:{
+        unit:"mm",
+        format:"a4",
+        orientation:"portrait"
+    },
+
+    pagebreak:{
+        mode:["avoid-all","css","legacy"]
+    }
+};
 
         await html2pdf()
             .set(options)
