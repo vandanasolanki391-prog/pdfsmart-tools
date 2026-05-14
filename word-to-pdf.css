@@ -49,3 +49,21 @@
 .word-preview > *{
     margin-top:0 !important;
 }
+const options = {
+    margin:0,
+    filename:"word-to-pdf.pdf",
+    image:{
+        type:"jpeg",
+        quality:1
+    },
+    html2canvas:{
+        scale:2,
+        useCORS:true,
+        scrollY:0
+    },
+    jsPDF:{
+        unit:"pt",
+        format:"a4",
+        orientation:"portrait"
+    }
+};
