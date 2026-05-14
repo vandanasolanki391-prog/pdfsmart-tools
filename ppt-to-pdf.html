@@ -1,18 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PPT to PDF</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT to PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="ppt-to-pdf.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
-  <div class="tool-page">
-    <h1>📽️ PPT to PDF</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-    <p>This feature will be available soon.</p>
+<section class="tool-layout">
 
-    <button onclick="location.href='index.html'">⬅ Back to Home</button>
-  </div>
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>PPT to PDF</h1>
+            <p>Select PPT/PPTX file and prepare it for PDF conversion.</p>
+
+            <label for="pptFile" class="upload-area">
+                <div class="upload-icon">🎥</div>
+                <h2>Choose PPT File</h2>
+                <p>Select .ppt or .pptx file</p>
+            </label>
+
+            <input type="file" id="pptFile" accept=".ppt,.pptx">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>PPT to PDF</h1>
+                    <p>File selected. Browser-only PPT conversion has limited support.</p>
+                </div>
+
+                <label for="pptFile" class="change-file-btn">
+                    Change PPT File
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>File Info</h3>
+
+                    <div class="file-info" id="fileInfo">
+                        No PPT file selected
+                    </div>
+
+                    <small>
+                        Direct PPT rendering in browser is limited. This tool can create a basic PDF cover/details page.
+                    </small>
+                </div>
+
+                <div class="options-box">
+                    <h3>Convert Options</h3>
+
+                    <label>PDF Title</label>
+                    <input 
+                        type="text" 
+                        id="pdfTitle" 
+                        value="PPT Converted File"
+                    >
+
+                    <label>Description</label>
+                    <textarea 
+                        id="pdfDescription" 
+                        placeholder="Add notes or description for this PDF..."
+                    ></textarea>
+
+                    <button id="convertBtn" class="main-btn">
+                        Create PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="ppt-to-pdf.js?v=20"></script>
 
 </body>
 </html>
