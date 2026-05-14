@@ -1,0 +1,8 @@
+/* PPT TO PDF EXTRA CSS */
+
+.options-box textarea{
+    min-height:180px;
+    resize:vertical;
+    margin-top:10px;
+    line-height:1.5;
+}
