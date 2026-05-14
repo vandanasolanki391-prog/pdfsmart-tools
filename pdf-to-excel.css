@@ -1,0 +1,8 @@
+/* PDF TO EXCEL EXTRA CSS */
+
+.options-box textarea{
+    min-height:260px;
+    resize:vertical;
+    margin-top:10px;
+    line-height:1.5;
+}
