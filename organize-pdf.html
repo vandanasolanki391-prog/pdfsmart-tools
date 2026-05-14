@@ -1,18 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Organize PDF</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organize PDF - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="organize-pdf.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <div class="tool-page">
-    <h1>🧩 Organize PDF</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-    <p>This feature will be available soon.</p>
+<section class="tool-layout">
 
-    <button onclick="location.href='index.html'">⬅ Back to Home</button>
-  </div>
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>Organize PDF</h1>
+            <p>Select PDF file and rearrange or remove pages.</p>
+
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">🗂️</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Organize PDF</h1>
+                    <p>Drag pages to reorder, remove unwanted pages, then download.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="options-box">
+                <h3>Pages</h3>
+                <small>
+                    Drag page cards to change order. Use Remove button to delete a page from output PDF.
+                </small>
+
+                <div id="pageGrid" class="page-grid"></div>
+
+                <button id="downloadBtn" class="main-btn">
+                    Download Organized PDF
+                </button>
+
+                <div id="statusText" class="status-text"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="organize-pdf.js?v=20"></script>
 
 </body>
 </html>
