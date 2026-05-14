@@ -40,3 +40,12 @@
 .word-preview *{
     max-width:100%;
 }
+.word-preview{
+    background:white;
+    padding:0 !important;
+    margin:0 !important;
+}
+
+.word-preview > *{
+    margin-top:0 !important;
+}
