@@ -101,3 +101,25 @@ const options = {
     margin-top:15px;
     margin-bottom:15px;
 }
+.word-preview{
+    width:100%;
+    max-width:794px;
+    background:white;
+    padding:45px !important;
+    margin:0 auto !important;
+    line-height:1.6;
+    font-size:15px;
+    color:#111827;
+}
+
+.word-preview table,
+.word-preview tr,
+.word-preview img,
+.word-preview p{
+    page-break-inside:avoid;
+}
+
+.word-preview table{
+    width:100% !important;
+    border-collapse:collapse;
+}
