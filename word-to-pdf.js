@@ -121,13 +121,3 @@ convertBtn.addEventListener("click", async function(){
             "Word to PDF failed.";
     }
 });
-    catch(error){
-
-        console.error(error);
-
-        alert("Conversion failed.");
-
-        statusText.innerText =
-            "Word to PDF failed.";
-    }
-});
