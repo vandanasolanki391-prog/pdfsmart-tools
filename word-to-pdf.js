@@ -103,6 +103,28 @@ convertBtn.addEventListener("click", async function(){
 
         await html2pdf()
             .set(options)
+            const options = {
+    margin:[10,10,10,10],
+    filename:"word-to-pdf.pdf",
+    image:{
+        type:"jpeg",
+        quality:1
+    },
+    html2canvas:{
+        scale:2,
+        useCORS:true,
+        scrollY:0,
+        backgroundColor:"#ffffff"
+    },
+    jsPDF:{
+        unit:"mm",
+        format:"a4",
+        orientation:"portrait"
+    },
+    pagebreak:{
+        mode:["avoid-all","css","legacy"]
+    }
+};
             .from(wordPreview)
             .save();
 
