@@ -25,3 +25,10 @@
     background:#dbeafe;
     transform:translateY(-2px);
 }
+.source-file{
+    margin-top:6px;
+    font-size:12px;
+    color:#6b7280;
+    text-align:center;
+    word-break:break-word;
+}
