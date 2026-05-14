@@ -82,3 +82,22 @@ const options = {
 .word-preview img{
     page-break-inside:avoid;
 }
+.word-preview{
+    padding:45px !important;
+    line-height:1.6;
+    font-size:15px;
+}
+
+.word-preview p{
+    margin-bottom:10px;
+}
+
+.word-preview table{
+    margin-top:12px;
+    margin-bottom:12px;
+}
+
+.word-preview img{
+    margin-top:15px;
+    margin-bottom:15px;
+}
