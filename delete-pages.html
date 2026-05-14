@@ -1,18 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Delete Pages</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Pages - PDFSmart Tools</title>
+
+    <link rel="stylesheet" href="tools-common.css">
+    <link rel="stylesheet" href="delete-pages.css?v=20">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 
-  <div class="tool-page">
-    <h1>🗑️ Delete Pages</h1>
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
 
-    <p>This feature will be available soon.</p>
+<section class="tool-layout">
 
-    <button onclick="location.href='index.html'">⬅ Back to Home</button>
-  </div>
+    <div class="tool-card">
+
+        <div id="uploadSection" class="upload-section">
+            <h1>Delete Pages</h1>
+            <p>Select PDF file and remove unwanted pages.</p>
+
+            <label for="pdfFile" class="upload-area">
+                <div class="upload-icon">📤</div>
+                <h2>Choose PDF File</h2>
+                <p>Select one PDF file</p>
+            </label>
+
+            <input type="file" id="pdfFile" accept="application/pdf">
+        </div>
+
+        <div id="workSection" class="work-section" style="display:none;">
+
+            <div class="work-header">
+                <div>
+                    <h1>Delete Pages</h1>
+                    <p>Enter page numbers or ranges to delete from PDF.</p>
+                </div>
+
+                <label for="pdfFile" class="change-file-btn">
+                    Change PDF
+                </label>
+            </div>
+
+            <div class="preview-options-grid">
+
+                <div class="pdf-preview-box">
+                    <h3>PDF Preview</h3>
+
+                    <div class="pdf-preview">
+                        <canvas id="previewCanvas"></canvas>
+                    </div>
+
+                    <div class="file-info" id="fileInfo">
+                        No PDF selected
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <h3>Delete Options</h3>
+
+                    <label>Pages to Delete</label>
+                    <input 
+                        type="text" 
+                        id="pageInput" 
+                        placeholder="Example: 2, 4-6"
+                    >
+
+                    <small>
+                        Enter pages like <b>2, 4-6</b>. These pages will be removed from the PDF.
+                    </small>
+
+                    <button id="deleteBtn" class="main-btn">
+                        Delete Pages & Download PDF
+                    </button>
+
+                    <div id="statusText" class="status-text"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="delete-pages.js?v=20"></script>
 
 </body>
 </html>
