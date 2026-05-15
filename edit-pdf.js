@@ -906,5 +906,30 @@ nextPageBtn.addEventListener("click", async function(){
         updatePageInfo();
 
         setStatus("Page " + currentPage + " opened.");
+        document.getElementById("prevPageBtn").onclick = async function(){
+
+    if(!pdfDoc) return;
+
+    if(currentPage > 1){
+        saveCurrentPageElements();
+        currentPage--;
+        await renderPage(currentPage);
+        restorePageElements();
+        updatePageInfo();
+    }
+};
+
+document.getElementById("nextPageBtn").onclick = async function(){
+
+    if(!pdfDoc) return;
+
+    if(currentPage < pdfDoc.numPages){
+        saveCurrentPageElements();
+        currentPage++;
+        await renderPage(currentPage);
+        restorePageElements();
+        updatePageInfo();
+    }
+};
     }
 });
