@@ -340,16 +340,14 @@ function updatePageInfo(){
         pageInfo.innerText =
             "Page " + currentPage + " of " + pdfDoc.numPages;
     }
-}
 
-    pdfCanvas.width = viewport.width;
-    pdfCanvas.height = viewport.height;
+pdfCanvas.width = viewport.width;
+pdfCanvas.height = viewport.height;
 
-    await page.render({
-        canvasContext: ctx,
-        viewport: viewport
-    }).promise;
-}
+await page.render({
+    canvasContext: ctx,
+    viewport: viewport
+}).promise;}
 
 /* TEXT BOX */
 
