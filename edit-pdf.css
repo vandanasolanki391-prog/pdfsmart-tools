@@ -403,3 +403,20 @@ body{
         min-height:450px;
     }
 }
+.delete-btn{
+    position:absolute;
+    top:-12px;
+    right:-12px;
+    width:24px;
+    height:24px;
+    background:red;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    z-index:9999;
+}
