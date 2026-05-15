@@ -282,6 +282,16 @@ async function renderPage(pageNumber){
         scale: 1.5,
         rotation: rotation
     });
+
+    pdfCanvas.width = viewport.width;
+    pdfCanvas.height = viewport.height;
+
+    await page.render({
+        canvasContext: ctx,
+        viewport: viewport
+    }).promise;
+}
+    
     function getEditableElements(){
     return pdfStage.querySelectorAll(
         ".edit-box, .eraser-box, .image-element, .shape-element"
