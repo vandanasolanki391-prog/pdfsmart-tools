@@ -109,7 +109,83 @@ function addResizeHandle(el){
         document.body.style.userSelect = "none";
     });
 }
+/* DELETE USING KEYBOARD */
 
+document.addEventListener("keydown", function(e){
+
+    if(
+        e.key === "Delete" &&
+        selectedElement
+    ){
+        selectedElement.remove();
+
+        selectedElement = null;
+
+        setStatus("Element deleted.");
+    }
+});
+
+
+/* COPY PASTE */
+
+let copiedElement = null;
+
+document.addEventListener("keydown", function(e){
+
+    if(e.ctrlKey && e.key.toLowerCase() === "c"){
+
+        if(selectedElement){
+            copiedElement = selectedElement.cloneNode(true);
+
+            setStatus("Element copied.");
+        }
+    }
+
+    if(e.ctrlKey && e.key.toLowerCase() === "v"){
+
+        if(copiedElement){
+
+            const clone = copiedElement.cloneNode(true);
+
+            clone.style.left =
+                (parseInt(selectedElement?.style.left || 150) + 20) + "px";
+
+            clone.style.top =
+                (parseInt(selectedElement?.style.top || 150) + 20) + "px";
+
+            pdfStage.appendChild(clone);
+
+            const moveBar = clone.querySelector(".move-bar");
+
+            makeMovable(clone, moveBar || clone);
+
+            selectElement(clone);
+
+            setStatus("Element pasted.");
+        }
+    }
+});
+
+
+/* CLICK OUTSIDE = DESELECT */
+
+document.addEventListener("click", function(e){
+
+    if(
+        !e.target.closest(".edit-box") &&
+        !e.target.closest(".shape-element") &&
+        !e.target.closest(".image-element") &&
+        !e.target.closest(".eraser-box")
+    ){
+        removeResizeHandles();
+
+        document.querySelectorAll(
+            ".edit-box, .shape-element, .image-element, .eraser-box"
+        ).forEach(item => item.classList.remove("selected"));
+
+        selectedElement = null;
+    }
+});
 function makeMovable(el, moveHandle = null){
     const handle = moveHandle || el;
 
