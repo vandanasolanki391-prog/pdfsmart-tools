@@ -31,6 +31,11 @@ const imageSize = document.getElementById("imageSize");
 const shapeColor = document.getElementById("shapeColor");
 const shapeBorder = document.getElementById("shapeBorder");
 const shapeSize = document.getElementById("shapeSize");
+const prevPageBtn = document.getElementById("prevPageBtn");
+const nextPageBtn = document.getElementById("nextPageBtn");
+const pageInfo = document.getElementById("pageInfo");
+
+let pageElements = {};
 
 let pdfDoc = null;
 let currentPage = 1;
@@ -278,6 +283,56 @@ async function renderPage(pageNumber){
         scale: 1.5,
         rotation: rotation
     });
+    function getEditableElements(){
+    return pdfStage.querySelectorAll(
+        ".edit-box, .eraser-box, .image-element, .shape-element"
+    );
+}
+
+function saveCurrentPageElements(){
+
+    removeResizeHandles();
+
+    pageElements[currentPage] = Array.from(
+        getEditableElements()
+    ).map(el => {
+        return el.cloneNode(true);
+    });
+}
+
+function clearPageElements(){
+
+    getEditableElements().forEach(el => el.remove());
+}
+
+function restorePageElements(){
+
+    clearPageElements();
+
+    const saved = pageElements[currentPage] || [];
+
+    saved.forEach(savedEl => {
+
+        const clone = savedEl.cloneNode(true);
+
+        pdfStage.appendChild(clone);
+
+        const moveBar = clone.querySelector(".move-bar");
+
+        makeMovable(clone, moveBar || clone);
+    });
+
+    selectedElement = null;
+}
+
+function updatePageInfo(){
+
+    if(pdfDoc){
+
+        pageInfo.innerText =
+            "Page " + currentPage + " of " + pdfDoc.numPages;
+    }
+}
 
     pdfCanvas.width = viewport.width;
     pdfCanvas.height = viewport.height;
