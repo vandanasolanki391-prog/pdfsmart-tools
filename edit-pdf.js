@@ -33,7 +33,6 @@ const shapeBorder = document.getElementById("shapeBorder");
 const shapeSize = document.getElementById("shapeSize");
 
 
-let pageElements = {};
 
 let pdfDoc = null;
 let currentPage = 1;
