@@ -290,6 +290,12 @@ async function renderPage(pageNumber){
         viewport: viewport
     }).promise;
 }
+function updatePageInfo(){
+    if(pdfDoc && pageInfo){
+        pageInfo.innerText =
+            "Page " + currentPage + " of " + pdfDoc.numPages;
+    }
+}
 /* TEXT BOX */
 
 function createTextBox(text, large = false){
