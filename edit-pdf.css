@@ -420,3 +420,92 @@ body{
     font-weight:bold;
     z-index:9999;
 }
+/* MULTI PAGE PDF VIEW */
+
+.pdf-stage{
+    overflow:auto;
+    padding:20px;
+}
+
+.pdf-page-wrap{
+    margin:0 auto 25px auto;
+    width:max-content;
+    position:relative;
+}
+
+.pdf-page-wrap.active-page .canvas-holder{
+    outline:2px dashed #4f46e5;
+}
+
+.page-label{
+    font-weight:700;
+    color:#444;
+    margin:8px 0;
+}
+
+.canvas-holder{
+    position:relative;
+    background:white;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.pdf-page-canvas,
+.draw-canvas,
+.page-overlay{
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+.pdf-page-canvas{
+    z-index:1;
+}
+
+.draw-canvas{
+    z-index:2;
+    pointer-events:auto;
+}
+
+.page-overlay{
+    z-index:3;
+    pointer-events:none;
+}
+
+.edit-box,
+.eraser-box,
+.image-element,
+.shape-element{
+    position:absolute;
+    z-index:10;
+    pointer-events:auto;
+}
+
+.delete-btn{
+    position:absolute;
+    top:-12px;
+    right:-12px;
+    width:24px;
+    height:24px;
+    background:red;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    z-index:9999;
+}
+
+.resize-handle{
+    position:absolute;
+    right:-7px;
+    bottom:-7px;
+    width:14px;
+    height:14px;
+    background:#ef4444;
+    border-radius:50%;
+    cursor:nwse-resize;
+    z-index:9999;
+}
