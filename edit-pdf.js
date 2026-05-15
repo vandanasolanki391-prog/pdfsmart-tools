@@ -266,6 +266,7 @@ pdfUpload.addEventListener("change", async function(e){
         pdfDoc = await pdfjsLib.getDocument(typedArray).promise;
 
         await renderPage(currentPage);
+        updatePageInfo();
 
         uploadScreen.classList.add("hidden");
         editorScreen.classList.remove("hidden");
@@ -910,4 +911,44 @@ downloadBtn.addEventListener("click", async function(){
     link.click();
 
     setStatus("Edited PDF downloaded successfully.");
+});
+prevPageBtn.addEventListener("click", async function(){
+
+    if(!pdfDoc) return;
+
+    if(currentPage > 1){
+
+        saveCurrentPageElements();
+
+        currentPage--;
+
+        await renderPage(currentPage);
+
+        restorePageElements();
+
+        updatePageInfo();
+
+        setStatus("Page " + currentPage + " opened.");
+    }
+});
+
+
+nextPageBtn.addEventListener("click", async function(){
+
+    if(!pdfDoc) return;
+
+    if(currentPage < pdfDoc.numPages){
+
+        saveCurrentPageElements();
+
+        currentPage++;
+
+        await renderPage(currentPage);
+
+        restorePageElements();
+
+        updatePageInfo();
+
+        setStatus("Page " + currentPage + " opened.");
+    }
 });
