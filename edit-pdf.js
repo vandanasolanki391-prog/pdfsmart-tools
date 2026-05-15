@@ -31,9 +31,7 @@ const imageSize = document.getElementById("imageSize");
 const shapeColor = document.getElementById("shapeColor");
 const shapeBorder = document.getElementById("shapeBorder");
 const shapeSize = document.getElementById("shapeSize");
-const prevPageBtn = document.getElementById("prevPageBtn");
-const nextPageBtn = document.getElementById("nextPageBtn");
-const pageInfo = document.getElementById("pageInfo");
+
 
 let pageElements = {};
 
@@ -683,7 +681,11 @@ shapeSize.addEventListener("input", function(){
         applyShapeStyle(selectedElement, selectedElement.dataset.shape);
     }
 });
+const prevPageBtn = document.getElementById("prevPageBtn");
+const nextPageBtn = document.getElementById("nextPageBtn");
+const pageInfo = document.getElementById("pageInfo");
 
+let pageElements = {};
 /* BUTTONS */
 
 document.getElementById("addTextBtn").addEventListener("click", function(){
