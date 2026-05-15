@@ -290,65 +290,6 @@ async function renderPage(pageNumber){
         viewport: viewport
     }).promise;
 }
-    
-    function getEditableElements(){
-    return pdfStage.querySelectorAll(
-        ".edit-box, .eraser-box, .image-element, .shape-element"
-    );
-}
-
-function saveCurrentPageElements(){
-
-    removeResizeHandles();
-
-    pageElements[currentPage] = Array.from(
-        getEditableElements()
-    ).map(el => {
-        return el.cloneNode(true);
-    });
-}
-
-function clearPageElements(){
-
-    getEditableElements().forEach(el => el.remove());
-}
-
-function restorePageElements(){
-
-    clearPageElements();
-
-    const saved = pageElements[currentPage] || [];
-
-    saved.forEach(savedEl => {
-
-        const clone = savedEl.cloneNode(true);
-
-        pdfStage.appendChild(clone);
-
-        const moveBar = clone.querySelector(".move-bar");
-
-        makeMovable(clone, moveBar || clone);
-    });
-
-    selectedElement = null;
-}
-
-function updatePageInfo(){
-
-    if(pdfDoc){
-
-        pageInfo.innerText =
-            "Page " + currentPage + " of " + pdfDoc.numPages;
-    }
-
-pdfCanvas.width = viewport.width;
-pdfCanvas.height = viewport.height;
-
-await page.render({
-    canvasContext: ctx,
-    viewport: viewport
-}).promise;}
-
 /* TEXT BOX */
 
 function createTextBox(text, large = false){
