@@ -182,6 +182,73 @@ function makeMovable(el, moveHandle = null){
         dragElement = el;
 
         const rect = el.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+
+        document.body.style.userSelect = "none";
+    });
+}
+
+document.addEventListener("mousemove", function(e){
+    if(dragElement){
+        const overlay = dragElement.parentElement;
+        const overlayRect = overlay.getBoundingClientRect();
+
+        let left = e.clientX - overlayRect.left - offsetX;
+        let top = e.clientY - overlayRect.top - offsetY;
+
+        if(left < 0) left = 0;
+        if(top < 0) top = 0;
+
+        if(left + dragElement.offsetWidth > overlay.offsetWidth){
+            left = overlay.offsetWidth - dragElement.offsetWidth;
+        }
+
+        if(top + dragElement.offsetHeight > overlay.offsetHeight){
+            top = overlay.offsetHeight - dragElement.offsetHeight;
+        }
+
+        dragElement.style.left = left + "px";
+        dragElement.style.top = top + "px";
+    }
+
+    if(resizeElement){
+        let newWidth = startWidth + (e.clientX - startX);
+        let newHeight = startHeight + (e.clientY - startY);
+
+        if(newWidth < 30) newWidth = 30;
+        if(newHeight < 20) newHeight = 20;
+
+        resizeElement.style.width = newWidth + "px";
+
+        if(
+            !resizeElement.classList.contains("line") &&
+            !resizeElement.classList.contains("arrow")
+        ){
+            resizeElement.style.height = newHeight + "px";
+        }
+
+        if(resizeElement.classList.contains("circle")){
+            resizeElement.style.height = newWidth + "px";
+        }
+    }
+});
+
+document.addEventListener("mouseup", stopDragResize, true);
+window.addEventListener("mouseup", stopDragResize, true);
+document.addEventListener("pointerup", stopDragResize, true);
+window.addEventListener("blur", stopDragResize);
+
+function stopDragResize(){
+    dragElement = null;
+    resizeElement = null;
+    document.body.style.userSelect = "auto";
+}
+        selectElement(el);
+
+        dragElement = el;
+
+        const rect = el.getBoundingClientRect();
 
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
