@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repair PDF - PDFSmart Tools</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">📄 PDFSmart Tools</div>
+    <a href="index.html" class="home-btn">← Back to Home</a>
+</header>
+
+<section class="tool-page">
+    <div class="tool-card">
+        <h1>🛠️ Repair PDF</h1>
+        <p>Upload a PDF and try to clean/rebuild its structure.</p>
+
+        <label for="repairPdfUpload" class="upload-btn">📤 Choose PDF File</label>
+        <input type="file" id="repairPdfUpload" accept="application/pdf" hidden>
+
+        <div id="repairStatus" class="status-box">No file selected.</div>
+
+        <button id="repairBtn" class="main-action-btn">🛠️ Repair PDF</button>
+    </div>
+</section>
+
+<script src="repair-pdf.js"></script>
+
+</body>
+</html>
