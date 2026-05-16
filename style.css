@@ -164,3 +164,78 @@ button:active {
 .recommend-buttons a {
   text-decoration: none;
 }
+/* ===== Repair PDF Premium Style ===== */
+
+.tool-page{
+    min-height:calc(100vh - 80px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f5f7fb;
+    padding:30px;
+}
+
+.tool-card{
+    width:100%;
+    max-width:850px;
+    background:rgba(0,0,0,0.20);
+    padding:40px;
+    border-radius:22px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 30px rgba(0,0,0,0.25);
+    text-align:center;
+}
+
+.tool-card h1{
+    margin-bottom:15px;
+    color:#ffffff;
+    font-size:56px;
+    font-weight:800;
+    text-shadow:0 0 20px rgba(255,255,255,0.4);
+}
+
+.tool-card p{
+    color:#ffffff;
+    margin-bottom:30px;
+    font-size:24px;
+    font-weight:500;
+}
+
+.upload-btn,
+.main-action-btn{
+    display:inline-block;
+    border:none;
+    padding:16px 34px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:#ffffff;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:700;
+    transition:0.3s;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+.upload-btn:hover,
+.main-action-btn:hover{
+    transform:translateY(-3px);
+    background:linear-gradient(135deg,#4338ca,#6d28d9);
+}
+
+.status-box{
+    margin:25px 0;
+    padding:16px;
+    background:rgba(255,255,255,0.12);
+    color:#ffffff;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:600;
+    backdrop-filter:blur(6px);
+}
+
+.logo{
+    font-size:54px;
+    font-weight:900;
+    color:#ffffff;
+    text-shadow:0 0 25px rgba(255,255,255,0.5);
+}
