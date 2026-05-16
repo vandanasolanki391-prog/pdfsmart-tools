@@ -984,8 +984,7 @@ downloadBtn.addEventListener("click", async function(){
 
                 tempCtx.fillStyle = editorStyle.color;
 
-                const lines = editor.innerText.split("
-");
+                const lines = editor.innerText.split("\n");
                 const fontPx = parseInt(editorStyle.fontSize);
 
                 lines.forEach((line, index) => {
