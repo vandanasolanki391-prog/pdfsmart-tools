@@ -979,9 +979,7 @@ downloadBtn.addEventListener("click", async function(){
                 tempCtx.fillStyle = boxStyle.backgroundColor;
                 tempCtx.fillRect(x, y, el.offsetWidth, el.offsetHeight);
 
-                tempCtx.font =
-                    `${editorStyle.fontWeight} ${editorStyle.fontStyle} ${editorStyle.fontSize} ${editorStyle.fontFamily}`;
-
+               tempCtx.font = editorStyle.fontWeight + " " + editorStyle.fontStyle + " " + editorStyle.fontSize + " " + editorStyle.fontFamily;
                 tempCtx.fillStyle = editorStyle.color;
 
                 const lines = editor.innerText.split("\n");
