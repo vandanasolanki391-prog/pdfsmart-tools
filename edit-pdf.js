@@ -175,8 +175,9 @@ function makeMovable(el, moveHandle = null){
         if(e.button !== 0) return;
         if(e.target.classList.contains("resize-handle")) return;
         if(e.target.classList.contains("delete-btn")) return;
-
+        
         e.stopPropagation();
+        e.preventDefault();
         selectElement(el);
 
         dragElement = el;
@@ -243,18 +244,6 @@ function stopDragResize(){
     dragElement = null;
     resizeElement = null;
     document.body.style.userSelect = "auto";
-}
-        selectElement(el);
-
-        dragElement = el;
-
-        const rect = el.getBoundingClientRect();
-
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-
-        document.body.style.userSelect = "none";
-    });
 }
 
 document.addEventListener("mousemove", function(e){
