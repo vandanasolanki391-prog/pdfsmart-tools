@@ -379,14 +379,16 @@ function setupDrawCanvas(canvas, pageWrap){
         ctx.globalAlpha = 1;
     });
 
-    canvas.addEventListener("mouseup", function(){
-        isDrawing = false;
-        activeDrawCanvas = null;
-        activeDrawCtx = null;
-        ctx.globalAlpha = 1;
-    });
-}
+   document.addEventListener("mouseup", stopDragResize);
+   window.addEventListener("mouseup", stopDragResize);
+   document.addEventListener("mouseleave", stopDragResize);
+   window.addEventListener("blur", stopDragResize);
 
+function stopDragResize(){
+    dragElement = null;
+    resizeElement = null;
+    document.body.style.userSelect = "auto";
+}
 /* ADD ELEMENTS */
 
 function appendToSelectedOverlay(el){
