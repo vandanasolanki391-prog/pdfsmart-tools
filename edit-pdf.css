@@ -509,3 +509,13 @@ body{
     cursor:nwse-resize;
     z-index:9999;
 }
+.page-overlay{
+    pointer-events:auto !important;
+}
+
+.image-element,
+.edit-box,
+.eraser-box,
+.shape-element{
+    cursor:move;
+}
