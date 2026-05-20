@@ -31,9 +31,17 @@
                 <p>Select one PDF file</p>
             </label>
 
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
+            <div class="upload-area" data-input="pdfFile">
 
+    <input type="file" id="pdfFile" accept="application/pdf" hidden>
+
+    <div class="upload-content">
+        <div class="upload-icon">📤</div>
+        <h2>Choose PDF File</h2>
+        <p>Drag & Drop PDF here or click to select</p>
+    </div>
+
+</div>
         <div id="workSection" class="work-section" style="display:none;">
 
             <div class="work-header">
@@ -89,6 +97,7 @@
 </section>
 
 <script src="split-pdf.js?v=20"></script>
+<script src="upload-drag.js"></script>
 
 </body>
 </html>
