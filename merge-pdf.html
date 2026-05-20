@@ -21,19 +21,15 @@
 
     <div class="merge-card">
 
-        <div class="upload-section" id="uploadSection">
-            <h1>Merge PDF</h1>
-            <p>Select multiple PDF files and merge them into one PDF.</p>
+        <div class="upload-area" data-input="pdfInput">
+    <input type="file" id="pdfInput" multiple accept=".pdf" hidden>
 
-            <label for="pdfFiles" class="upload-area">
-                <div class="upload-icon">📤</div>
-                <h2>Choose PDF Files</h2>
-                <p>You can select multiple PDF files</p>
-            </label>
-
-            <input type="file" id="pdfFiles" accept="application/pdf" multiple>
-        </div>
-
+    <div class="upload-content">
+        <div class="upload-icon">📤</div>
+        <h2>Choose PDF Files</h2>
+        <p>Drag & Drop PDFs here or click to select</p>
+    </div>
+</div>
         <div class="work-section" id="workSection" style="display:none;">
 
             <div class="work-header">
