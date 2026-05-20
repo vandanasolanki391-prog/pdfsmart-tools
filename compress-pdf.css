@@ -261,3 +261,22 @@ body{
         font-size:28px;
     }
 }
+.upload-content{
+    text-align:center;
+}
+
+.upload-content h2{
+    color:#2457ff;
+    font-size:42px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.upload-content p{
+    color:#555;
+    font-size:18px;
+}
+
+.upload-icon{
+    font-size:60px;
+}
