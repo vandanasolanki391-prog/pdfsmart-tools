@@ -245,3 +245,26 @@ body{
         font-size:28px;
     }
 }
+.split-layout{
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+    padding:40px 20px !important;
+}
+
+.split-card{
+    display:block !important;
+    width:100% !important;
+    max-width:900px !important;
+    background:#fff !important;
+    padding:30px !important;
+    border-radius:18px !important;
+}
+
+.upload-section{
+    display:block !important;
+}
+
+.upload-area{
+    display:block !important;
+}
