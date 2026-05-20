@@ -239,3 +239,34 @@ button:active {
     color:#ffffff;
     text-shadow:0 0 25px rgba(255,255,255,0.5);
 }
+.upload-area{
+    border:3px dashed #4f7cff;
+    border-radius:20px;
+    padding:60px 20px;
+    text-align:center;
+    background:#eef3ff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.upload-area.dragover{
+    background:#dce6ff;
+    border-color:#2457ff;
+    transform:scale(1.01);
+}
+
+.upload-icon{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+.upload-content h2{
+    color:#2457ff;
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.upload-content p{
+    color:#666;
+    font-size:18px;
+}
