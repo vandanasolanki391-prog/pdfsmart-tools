@@ -20,10 +20,15 @@ pdfFilesInput.addEventListener("change", function(e){
 
     selectedFiles = selectedFiles.concat(newFiles);
 
-    if(selectedFiles.length > 0){
-        uploadSection.style.display = "none";
+   if(selectedFiles.length > 0){
+
+    if(workSection){
         workSection.style.display = "block";
     }
+
+}
+
+renderFileList();
 
     renderFileList();
 
