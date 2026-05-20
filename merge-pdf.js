@@ -1,4 +1,4 @@
-const pdfFilesInput = document.getElementById("pdfFiles");
+const pdfFilesInput = document.getElementById("pdfInput");
 const uploadSection = document.getElementById("uploadSection");
 const workSection = document.getElementById("workSection");
 const fileList = document.getElementById("fileList");
