@@ -86,6 +86,15 @@ async function renderFileList(){
 
 async function renderPdfPreview(file, canvasId){
     try{
+        const canvas = document.getElementById(canvasId);
+
+        if(!canvas) return;
+
+        if(canvas.renderTask){
+            canvas.renderTask.cancel();
+            canvas.renderTask = null;
+        }
+
         const bytes = await file.arrayBuffer();
 
         const pdf = await pdfjsLib.getDocument({
@@ -94,24 +103,35 @@ async function renderPdfPreview(file, canvasId){
 
         const page = await pdf.getPage(1);
 
-        const canvas = document.getElementById(canvasId);
-        const ctx = canvas.getContext("2d");
-
-        const viewport = page.getViewport({ scale: 0.25 });
+        const viewport = page.getViewport({
+            scale: 0.25
+        });
 
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
-       await page.render({
-    canvasContext: ctx,
-    viewport: viewport
-}).promise;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const renderTask = page.render({
+            canvasContext: ctx,
+            viewport: viewport
+        });
+
+        canvas.renderTask = renderTask;
+
+        await renderTask.promise;
+
+        canvas.renderTask = null;
     }
     catch(error){
+        if(error && error.name === "RenderingCancelledException"){
+            return;
+        }
+
         console.error("Preview error:", error);
     }
 }
-
 /* FORMAT HELPERS */
 
 function formatSize(bytes){
