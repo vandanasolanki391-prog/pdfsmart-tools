@@ -102,10 +102,10 @@ async function renderPdfPreview(file, canvasId){
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
-        await page.render({
-            canvasContext: ctx,
-            viewport: viewport
-        }).promise;
+       await page.render({
+    canvasContext: ctx,
+    viewport: viewport
+}).promise;
     }
     catch(error){
         console.error("Preview error:", error);
