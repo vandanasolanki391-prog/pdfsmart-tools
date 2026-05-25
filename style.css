@@ -270,3 +270,13 @@ button:active {
     color:#666;
     font-size:18px;
 }
+.footer{
+    text-align:center;
+    padding:20px;
+}
+
+.footer a{
+    margin:0 10px;
+    color:#2457ff;
+    text-decoration:none;
+}
