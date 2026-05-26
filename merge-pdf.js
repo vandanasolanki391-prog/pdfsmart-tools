@@ -13,9 +13,11 @@ const zaBtn = document.getElementById("zaBtn");
 
 let selectedFiles = [];
 let dragIndex = null;
-addMoreBtn.addEventListener("click", function(){
-    pdfFilesInput.click();
-});
+if(addMoreBtn){
+    addMoreBtn.addEventListener("click", function(){
+        pdfFilesInput.click();
+    });
+}
 /* SELECT FILES */
 
 pdfFilesInput.addEventListener("change", function(e){
