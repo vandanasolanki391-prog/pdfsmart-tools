@@ -1,6 +1,7 @@
 const pdfFilesInput = document.getElementById("pdfInput");
 const uploadSection = document.getElementById("uploadSection");
 const workSection = document.getElementById("workSection");
+const addMoreBtn = document.getElementById("addMoreBtn");
 const fileList = document.getElementById("fileList");
 const mergeBtn = document.getElementById("mergeBtn");
 const statusText = document.getElementById("statusText");
