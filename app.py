@@ -44,8 +44,22 @@ def convert():
                         all_tables.append(pd.DataFrame(table))
 
         if not all_tables:
-            return "No tables found in PDF"
+    text_rows = []
 
+    with pdfplumber.open(pdf_path) as pdf:
+        for page_no, page in enumerate(pdf.pages, start=1):
+            text = page.extract_text()
+
+            if text:
+                lines = text.split("\n")
+
+                for line in lines:
+                    text_rows.append([page_no, line])
+
+    if not text_rows:
+        return "No readable text or table found in PDF"
+
+    all_tables.append(pd.DataFrame(text_rows, columns=["Page No", "Text"]))
         output_excel = filename.rsplit(".", 1)[0] + ".xlsx"
         output_path = os.path.join(OUTPUT_FOLDER, output_excel)
 
