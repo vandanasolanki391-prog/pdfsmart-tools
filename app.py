@@ -19,7 +19,7 @@ def home():
 @app.route("/convert", methods=["GET", "POST"])
 def convert():
     if request.method == "GET":
-        return redirect("/")
+        return render_template("pdf-to-excel.html")
 
     try:
         if "pdfFile" not in request.files:
