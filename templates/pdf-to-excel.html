@@ -1,0 +1,71 @@
+<!-- templates/pdf-to-excel.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Excel</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f7ff;
+            padding:40px;
+        }
+
+        .box{
+            max-width:600px;
+            margin:auto;
+            background:white;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.08);
+            text-align:center;
+        }
+
+        h1{
+            color:#2457ff;
+        }
+
+        input{
+            margin-top:20px;
+        }
+
+        button{
+            margin-top:20px;
+            padding:14px 25px;
+            border:none;
+            background:#2457ff;
+            color:white;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="box">
+
+    <h1>PDF to Excel Converter</h1>
+
+    <form action="/convert" method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="pdfFile" accept=".pdf" required>
+
+        <br>
+
+        <button type="submit">
+            Convert PDF to Excel
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
