@@ -21,64 +21,53 @@ def home():
 
 @app.route("/convert", methods=["POST"])
 def convert():
-
-    if "pdfFile" not in request.files:
-        return "No file uploaded"
-
-    pdf_file = request.files["pdfFile"]
-
-    if pdf_file.filename == "":
-        return "No selected file"
-
-    filename = secure_filename(pdf_file.filename)
-
-    pdf_path = os.path.join(UPLOAD_FOLDER, filename)
-
-    pdf_file.save(pdf_path)
-
-    all_tables = []
-
     try:
+        if "pdfFile" not in request.files:
+            return "No file uploaded"
+
+        pdf_file = request.files["pdfFile"]
+
+        if pdf_file.filename == "":
+            return "No selected file"
+
+        filename = secure_filename(pdf_file.filename)
+        pdf_path = os.path.join(UPLOAD_FOLDER, filename)
+        pdf_file.save(pdf_path)
+
+        all_tables = []
 
         with pdfplumber.open(pdf_path) as pdf:
-
             for page in pdf.pages:
-
                 tables = page.extract_tables()
 
                 for table in tables:
-
                     if table and len(table) > 0:
-
                         df = pd.DataFrame(table)
-
                         all_tables.append(df)
 
         if not all_tables:
             return "No tables found in PDF"
 
         output_excel = filename.replace(".pdf", ".xlsx")
-
         output_path = os.path.join(OUTPUT_FOLDER, output_excel)
+
         print("Saving Excel to:", output_path)
 
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-
             for i, table_df in enumerate(all_tables):
-
                 table_df.to_excel(
                     writer,
                     sheet_name=f"Table_{i+1}",
                     index=False,
                     header=False
                 )
+
         return send_file(
-        output_path,
-        as_attachment=True
-    )
+            output_path,
+            as_attachment=True
+        )
 
-except Exception as e:
-    return str(e)
-
+    except Exception as e:
+        return str(e)
 if __name__ == "__main__":
     app.run(debug=True)
