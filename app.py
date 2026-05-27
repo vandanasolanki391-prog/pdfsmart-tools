@@ -73,11 +73,11 @@ def convert():
                     header=False
                 )
         return send_file(
-            output_path,
-            as_attachment=True
-        )
+        output_path,
+        as_attachment=True
+    )
 
- except Exception as e:
+except Exception as e:
     return str(e)
 
 if __name__ == "__main__":
