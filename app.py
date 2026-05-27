@@ -77,9 +77,8 @@ def convert():
             as_attachment=True
         )
 
-    except Exception as e:
-        return f"Error: {str(e)}"
-
+ except Exception as e:
+    return str(e)
 
 if __name__ == "__main__":
     app.run(debug=True)
