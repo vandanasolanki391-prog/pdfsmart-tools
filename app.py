@@ -73,10 +73,10 @@ def convert():
                     header=False
                 )
 
-        return (
-            output_path,
-            as_attachment=True
-        )
+       return send_file(
+           output_path,
+           as_attachment=True
+       )
 
     except Exception as e:
         return f"Error: {str(e)}"
