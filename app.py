@@ -13,7 +13,8 @@ OUTPUT_FOLDER = "outputs"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("outputs", exist_ok=True)
 @app.route("/")
 def home():
     return render_template("pdf-to-excel.html")
@@ -59,6 +60,7 @@ def convert():
         output_excel = filename.replace(".pdf", ".xlsx")
 
         output_path = os.path.join(OUTPUT_FOLDER, output_excel)
+        print("Saving Excel to:", output_path)
 
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
 
@@ -71,7 +73,7 @@ def convert():
                     header=False
                 )
 
-        return send_file(
+        return (
             output_path,
             as_attachment=True
         )
