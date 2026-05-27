@@ -1,6 +1,4 @@
-# app.py
-
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect
 import pdfplumber
 import pandas as pd
 import os
@@ -13,14 +11,16 @@ OUTPUT_FOLDER = "outputs"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-os.makedirs("uploads", exist_ok=True)
-os.makedirs("outputs", exist_ok=True)
+
 @app.route("/")
 def home():
     return render_template("pdf-to-excel.html")
 
-@app.route("/convert", methods=["POST"])
+@app.route("/convert", methods=["GET", "POST"])
 def convert():
+    if request.method == "GET":
+        return redirect("/")
+
     try:
         if "pdfFile" not in request.files:
             return "No file uploaded"
@@ -39,35 +39,24 @@ def convert():
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages:
                 tables = page.extract_tables()
-
                 for table in tables:
-                    if table and len(table) > 0:
-                        df = pd.DataFrame(table)
-                        all_tables.append(df)
+                    if table:
+                        all_tables.append(pd.DataFrame(table))
 
         if not all_tables:
             return "No tables found in PDF"
 
-        output_excel = filename.replace(".pdf", ".xlsx")
+        output_excel = filename.rsplit(".", 1)[0] + ".xlsx"
         output_path = os.path.join(OUTPUT_FOLDER, output_excel)
 
-        print("Saving Excel to:", output_path)
-
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-            for i, table_df in enumerate(all_tables):
-                table_df.to_excel(
-                    writer,
-                    sheet_name=f"Table_{i+1}",
-                    index=False,
-                    header=False
-                )
+            for i, df in enumerate(all_tables):
+                df.to_excel(writer, sheet_name=f"Table_{i+1}", index=False, header=False)
 
-        return send_file(
-            output_path,
-            as_attachment=True
-        )
+        return send_file(output_path, as_attachment=True)
 
     except Exception as e:
-        return str(e)
+        return "Error: " + str(e)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
