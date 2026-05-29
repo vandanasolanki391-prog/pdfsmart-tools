@@ -986,11 +986,19 @@ downloadBtn.addEventListener("click", async function(){
                 const fontPx = parseInt(editorStyle.fontSize);
 
                 lines.forEach((line, index) => {
-                    tempCtx.fillText(
-                        line,
-                        x + 10,
-                        y + 30 + index * (fontPx + 6)
-                    );
+                   const editorRect = editor.getBoundingClientRect();
+                const boxRect = el.getBoundingClientRect();
+
+                const paddingLeft = editorRect.left - boxRect.left;
+                const paddingTop = editorRect.top - boxRect.top;
+
+                tempCtx.textBaseline = "top";
+
+                tempCtx.fillText(
+                line,
+                x + paddingLeft,
+                y + paddingTop + index * (fontPx + 6)
+                );
                 });
             }
 
