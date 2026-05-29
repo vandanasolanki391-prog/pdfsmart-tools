@@ -784,6 +784,10 @@ document.getElementById("addTextBtn").addEventListener("click", function(){
     createTextBox("Type here", false);
 });
 
+document.getElementById("smallTextBtn").addEventListener("click", function(){
+    createSmallTextBox("Type");
+});
+
 document.getElementById("editBoxBtn").addEventListener("click", function(){
     createTextBox("Edit text here", true);
 });
