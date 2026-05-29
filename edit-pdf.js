@@ -507,6 +507,38 @@ function createTextBox(text, large = false){
 
     setStatus("Text box added on selected page.");
 }
+function createSmallTextBox(text){
+    const box = document.createElement("div");
+    box.className = "edit-box small-text-box";
+
+    box.style.left = "120px";
+    box.style.top = "120px";
+    box.style.width = "90px";
+    box.style.height = "24px";
+    box.style.background = "transparent";
+
+    const textArea = document.createElement("div");
+    textArea.className = "text-editor";
+    textArea.contentEditable = true;
+    textArea.innerText = text;
+
+    textArea.style.fontFamily = fontFamily.value;
+    textArea.style.fontSize = "11px";
+    textArea.style.color = textColor.value;
+    textArea.style.padding = "0px";
+    textArea.style.lineHeight = "1.1";
+
+    box.appendChild(textArea);
+
+    appendToSelectedOverlay(box);
+
+    makeMovable(box);
+    selectElement(box);
+
+    textArea.focus();
+
+    setStatus("Small table text added. Drag and adjust inside cell.");
+}
 
 function getTextEditor(){
     if(!selectedElement) return null;
