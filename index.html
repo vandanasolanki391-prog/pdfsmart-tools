@@ -99,6 +99,11 @@
 </div>
 
 <footer>
+      <p>© 2026 PDFSmart Tools</p>
+    <p>👥 Total Visitors: 
+        <span id="visits">Loading...</span>
+    </p>
+</footer>
   ...
 </footer>
   </div>
@@ -116,5 +121,12 @@
   </p>
 <a href="terms.html">Terms & Conditions</a>
 </footer>
+  <script>
+fetch('https://api.countapi.xyz/hit/pdfsmart-tools/visits')
+.then(response => response.json())
+.then(data => {
+    document.getElementById("visits").innerText = data.value;
+});
+</script>
 </body>
 </html>
