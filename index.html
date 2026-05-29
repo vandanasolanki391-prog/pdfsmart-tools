@@ -101,7 +101,7 @@
 <footer>
       <p>© 2026 PDFSmart Tools</p>
     <p>👥 Total Visitors: 
-        <span id="visits">Loading...</span>
+        <span id="">Loading...</span>
     </p>
 </footer>
   ...
@@ -125,10 +125,13 @@
 <a href="terms.html">Terms & Conditions</a>
 </footer>
   <script>
-fetch('https://api.countapi.xyz/hit/pdfsmart-tools/visits')
-.then(response => response.json())
+fetch('https://api.counterapi.dev/v1/pdfsmarttools/visitors/up')
+.then(res => res.json())
 .then(data => {
-    document.getElementById("visits").innerText = data.value;
+    document.getElementById("visits").innerText = data.count;
+})
+.catch(() => {
+    document.getElementById("visits").innerText = "0";
 });
 </script>
 </body>
