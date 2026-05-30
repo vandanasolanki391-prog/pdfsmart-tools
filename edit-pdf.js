@@ -483,6 +483,7 @@ function createTextBox(text, large = false){
     box.style.width = large ? "220px" : "170px";
     box.style.height = large ? "90px" : "70px";
     box.style.background = textBg.value;
+    box.style.zIndex = "99999";
 
     const moveBar = document.createElement("div");
     moveBar.className = "move-bar";
@@ -554,6 +555,7 @@ function addEraser(){
     eraser.style.top = "150px";
     eraser.style.width = "180px";
     eraser.style.height = "60px";
+    eraser.style.zIndex = "9999";
 
     appendToSelectedOverlay(eraser);
 
