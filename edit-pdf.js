@@ -213,6 +213,7 @@ function makeMovable(el, moveHandle = null){
         if(e.button !== 0) return;
         if(e.target.classList.contains("resize-handle")) return;
         if(e.target.classList.contains("delete-btn")) return;
+        if(e.target.isContentEditable) return;
 
         e.preventDefault();
         e.stopPropagation();
