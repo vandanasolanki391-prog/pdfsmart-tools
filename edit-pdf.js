@@ -495,7 +495,8 @@ function createTextBox(text, large = false){
     textArea.style.fontSize = fontSize.value + "px";
     textArea.style.color = textColor.value;
 
-    // box.appendChild(moveBar);
+    
+    box.appendChild(moveBar);
     box.appendChild(textArea);
 
     appendToSelectedOverlay(box);
@@ -828,6 +829,7 @@ document.getElementById("eraseTextBtn").addEventListener("click", function(){
 
     setTimeout(() => {
         const textBox = createTextBox("", false);
+    
 
         textBox.style.left = eraser.style.left;
         textBox.style.top = eraser.style.top;
