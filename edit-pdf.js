@@ -478,11 +478,9 @@ function createTextBox(text, large = false){
     const box = document.createElement("div");
     box.className = "edit-box";
 
-    box.style.left = large ? "160px" : "120px";
-    box.style.top = large ? "160px" : "120px";
-    box.style.width = large ? "220px" : "170px";
-    box.style.height = large ? "90px" : "70px";
-    box.style.background = textBg.value;
+    box.style.width = large ? "180px" : "120px";
+    box.style.height = large ? "40px" : "24px";
+    box.style.background = "transparent";
     box.style.zIndex = "99999";
 
     const moveBar = document.createElement("div");
@@ -497,7 +495,7 @@ function createTextBox(text, large = false){
     textArea.style.fontSize = fontSize.value + "px";
     textArea.style.color = textColor.value;
 
-    box.appendChild(moveBar);
+    // box.appendChild(moveBar);
     box.appendChild(textArea);
 
     appendToSelectedOverlay(box);
@@ -524,17 +522,15 @@ function createSmallTextBox(text){
     textArea.contentEditable = true;
     textArea.innerText = text;
 
-    textArea.style.fontFamily = fontFamily.value;
-    textArea.style.fontSize = "11px";
-    textArea.style.color = textColor.value;
     textArea.style.padding = "0px";
     textArea.style.lineHeight = "1.1";
+    textArea.style.outline = "none";
 
     box.appendChild(textArea);
 
     appendToSelectedOverlay(box);
 
-    makeMovable(box);
+    makeMovable(box, moveBar);
     selectElement(box);
 
     textArea.focus();
@@ -556,6 +552,7 @@ function addEraser(){
     eraser.style.width = "180px";
     eraser.style.height = "60px";
     eraser.style.zIndex = "9999";
+   
 
     appendToSelectedOverlay(eraser);
 
@@ -814,6 +811,36 @@ shapeSize.addEventListener("input", function(){
 });
 
 /* BUTTON EVENTS */
+
+document.getElementById("eraseTextBtn").addEventListener("click", function(){
+    const eraser = document.createElement("div");
+
+    eraser.className = "eraser-box";
+    eraser.style.left = "150px";
+    eraser.style.top = "150px";
+    eraser.style.width = "120px";
+    eraser.style.height = "24px";
+    eraser.style.zIndex = "9999";
+
+    appendToSelectedOverlay(eraser);
+    makeMovable(eraser);
+    selectElement(eraser);
+
+    setTimeout(() => {
+        const textBox = createTextBox("", false);
+
+        textBox.style.left = eraser.style.left;
+        textBox.style.top = eraser.style.top;
+        textBox.style.width = eraser.style.width;
+        textBox.style.height = eraser.style.height;
+        textBox.style.zIndex = "99999";
+
+        const editor = textBox.querySelector(".text-editor");
+        editor.focus();
+
+        setStatus("Eraser with text added.");
+    }, 50);
+});
 
 document.getElementById("addTextBtn").addEventListener("click", function(){
     createTextBox("Type here", false);
