@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <url>
-    <loc>https://pdfsmarttools.in/</loc>
-    <priority>1.0</priority>
-  </url>
+<url>
+<loc>https://pdfsmarttools.in/</loc>
+</url>
 
-  <url>
-    <loc>https://pdfsmarttools.in/privacy-policy</loc>
-    <priority>0.8</priority>
-  </url>
+<url>
+<loc>https://pdfsmarttools.in/edit-pdf</loc>
+</url>
 
-  <url>
-    <loc>https://pdfsmarttools.in/terms-and-conditions</loc>
-    <priority>0.8</priority>
-  </url>
+<url>
+<loc>https://pdfsmarttools.in/merge-pdf</loc>
+</url>
+
+<url>
+<loc>https://pdfsmarttools.in/compress-pdf</loc>
+</url>
+
+<url>
+<loc>https://pdfsmarttools.in/jpg-to-pdf</loc>
+</url>
+
+<url>
+<loc>https://pdfsmarttools.in/pdf-to-word</loc>
+</url>
 
 </urlset>
