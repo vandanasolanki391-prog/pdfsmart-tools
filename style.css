@@ -280,3 +280,12 @@ button:active {
     color:#2457ff;
     text-decoration:none;
 }
+.seo-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  line-height: 1.7;
+  color: #333;
+}
