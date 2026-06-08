@@ -368,3 +368,11 @@ body{
         font-size:28px;
     }
 }
+.seo-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  line-height: 1.7;
+}
