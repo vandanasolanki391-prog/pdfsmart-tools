@@ -289,3 +289,12 @@ button:active {
   line-height: 1.7;
   color: #333;
 }
+.seo-content p,
+.seo-content li{
+    color:#111827 !important;
+}
+
+.seo-content h2,
+.seo-content h3{
+    color:#111827 !important;
+}
