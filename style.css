@@ -313,3 +313,28 @@ button:active {
 .seo-content h2{
     color:#000000 !important;
 }
+.faq-section{
+    max-width:900px;
+    margin:40px auto;
+    background:#ffffff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.08);
+}
+
+.faq-section h2{
+    text-align:center;
+    color:#111827;
+    margin-bottom:25px;
+}
+
+.faq-box h3{
+    color:#2563eb;
+    margin-top:20px;
+    margin-bottom:8px;
+}
+
+.faq-box p{
+    color:#111827;
+    line-height:1.7;
+}
