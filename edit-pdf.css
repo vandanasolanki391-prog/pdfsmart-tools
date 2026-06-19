@@ -552,3 +552,28 @@ body{
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
+.editor-screen{
+    height: calc(100vh - 70px);
+    overflow: hidden;
+}
+
+.left-tools{
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.right-panel{
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.workspace{
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
