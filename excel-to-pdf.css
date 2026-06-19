@@ -33,3 +33,48 @@
     padding:10px;
     text-align:left;
 }
+/* SEO CONTENT */
+
+.seo-content{
+    max-width:1200px;
+    margin:40px auto;
+    background:#ffffff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.08);
+    line-height:1.8;
+}
+
+.seo-content h2{
+    color:#2563eb;
+    margin-bottom:15px;
+    font-size:32px;
+}
+
+.seo-content h3{
+    margin-top:25px;
+    margin-bottom:12px;
+    color:#111827;
+}
+
+.seo-content p,
+.seo-content li{
+    color:#4b5563;
+    font-size:16px;
+}
+
+.seo-content ul,
+.seo-content ol{
+    padding-left:25px;
+}
+
+@media(max-width:768px){
+    .seo-content{
+        margin:20px;
+        padding:20px;
+    }
+
+    .seo-content h2{
+        font-size:26px;
+    }
+}
