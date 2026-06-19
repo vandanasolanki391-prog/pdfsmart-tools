@@ -298,3 +298,18 @@ button:active {
 .seo-content h3{
     color:#111827 !important;
 }
+/* FIX HOME SEO TEXT COLOR */
+.seo-content,
+.seo-content *{
+    color:#111827 !important;
+}
+
+.seo-content p{
+    color:#111827 !important;
+    opacity:1 !important;
+    font-weight:500;
+}
+
+.seo-content h2{
+    color:#000000 !important;
+}
