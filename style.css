@@ -1,208 +1,4 @@
-/* PDFSmart Tools - Premium Green Theme */
-:root{
---primary:#22C55E;
---primary-dark:#16A34A;
---primary-light:#DCFCE7;
---bg:#F8FAFC;
---card:#FFFFFF;
---text:#1F2937;
---muted:#6B7280;
---border:#D1FAE5;
-}
-*{box-sizing:border-box}
-body{
-margin:0;
-body {
-  margin: 0;
-font-family: Arial, sans-serif;
-text-align: center;
-color: #111827;
-
-
-
-min-height: 100vh;
-}
-.navbar h2,.navbar a,.logo{color:#fff}
-.navbar a{text-decoration:none;font-weight:bold;margin-left:20px}
-.navbar a:hover{color:#bbf7d0}
-.logo{font-size:50px;font-weight:900;text-shadow:0 0 12px rgba(34,197,94,.7)}
-header{padding:55px 20px 30px}
-h1{margin:0;font-size:48px;color:#fff}
-p{color:#ecfdf5;font-size:18px}
-.tools{
-max-width:1100px;margin:30px auto;padding:20px;
-display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px;
-}
-button,.upload-btn,.main-action-btn{
-height:auto;
-padding:18px 28px;
-border:none;border-radius:16px;
-background:#fff;color:var(--primary-dark);
-font-size:17px;font-weight:700;cursor:pointer;
-box-shadow:0 10px 25px rgba(0,0,0,.15);
-transition:.3s;
-}
-button:hover,.upload-btn:hover,.main-action-btn:hover{
-transform:translateY(-5px) scale(1.02);
-background:linear-gradient(135deg,#22C55E,#16A34A);
-color:#fff;
-box-shadow:0 0 20px rgba(34,197,94,.45);
-}
-button:active{transform:scale(.97)}
-.tool-page{
-min-height:calc(100vh - 80px);
-display:flex;align-items:center;justify-content:center;
-padding:30px;
-}
-.tool-card{
-width:100%;max-width:850px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(12px);
-padding:40px;border-radius:24px;
-box-shadow:0 8px 30px rgba(0,0,0,.25);
-}
-.tool-card h1,.tool-card p{color:#fff}
-.upload-area{
-border:3px dashed #22C55E;
-border-radius:20px;
-padding:60px 20px;
-background:#F0FDF4;
-transition:.3s;
-cursor:pointer;
-}
-.upload-area.dragover{
-background:#DCFCE7;
-border-color:#16A34A;
-transform:scale(1.01);
-}
-.upload-content h2{color:#166534;font-size:36px}
-.upload-content p{color:#4B5563}
-.status-box{
-margin:25px 0;padding:16px;
-background:rgba(255,255,255,.18);
-color:#fff;border-radius:12px;
-}
-.recommend-section{
-max-width:900px;margin:40px auto;padding:30px;
-background:rgba(20,83,45,.72);
-border-radius:24px;
-backdrop-filter:blur(10px);
-}
-.recommend-section h2{color:#fff}
-.recommend-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:18px}
-.recommend-buttons a{text-decoration:none}
-.seo-content,.faq-section{
-max-width:900px;
-margin:40px auto;
-padding:30px;
-background:#fff;
-border-radius:18px;
-color:#111827;
-line-height:1.7;
-box-shadow:0 6px 20px rgba(0,0,0,.08);
-}
-.seo-content *, .faq-section *{color:#111827}
-.faq-box h3{color:#16A34A}
-footer,.footer{
-margin-top:40px;
-padding:25px;
-background:rgba(255,255,255,.9);
-color:#374151;
-}
-footer a,.footer a{
-color:#16A34A;
-font-weight:bold;
-text-decoration:none;
-margin:0 10px;
-}
-footer a:hover,.footer a:hover{text-decoration:underline}
-/* ===== Premium Homepage Override ===== */
-
-body{
-    background:#F8FAFC !important;
-}
-
-/* Hero */
-header{
-    padding:70px 20px 40px;
-}
-
-.logo{
-    font-size:60px;
-    font-weight:800;
-    color:#14532D !important;
-    text-shadow:none !important;
-    margin-bottom:10px;
-}
-
-header p{
-    color:#4B5563 !important;
-    font-size:20px;
-    font-weight:500;
-}
-
-/* Tools Grid */
-.tools{
-    max-width:1200px;
-    margin:40px auto;
-    gap:24px;
-}
-
-/* Buttons */
-button{
-    background:#FFFFFF !important;
-    color:#166534 !important;
-    border:1px solid #DCFCE7 !important;
-    border-radius:18px;
-    height:85px;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
-    transition:.25s;
-}
-
-button:hover{
-    background:#22C55E !important;
-    color:#FFFFFF !important;
-    transform:translateY(-6px);
-    box-shadow:0 15px 35px rgba(34,197,94,.25);
-}
-
-/* Navbar */
-.navbar{
-    background:#14532D !important;
-    box-shadow:0 3px 15px rgba(0,0,0,.15);
-}
-
-.navbar a:hover{
-    color:#BBF7D0 !important;
-}
-
-/* Recommend Box */
-.recommend-section{
-    background:#14532D !important;
-    border-radius:20px;
-}
-
-/* Footer */
-footer{
-    background:#FFFFFF !important;
-    border-top:1px solid #E5E7EB;
-    color:#4B5563 !important;
-}
-
-footer p{
-    color:#4B5563 !important;
-}
-
-footer a{
-    color:#16A34A !important;
-}
-header{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-}
-/* RESET */
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
@@ -210,14 +6,21 @@ header{
   font-family: Arial, sans-serif;
 }
 
-/* NAVBAR */
+/* ===== BACKGROUND ===== */
+html, body {
+  min-height: 100vh;
+  background: #1e5eff !important;
+  color: #fff;
+}
+
+/* ===== NAVBAR ===== */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(135deg, #1e5eff, #4aa3ff);
   padding: 15px 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .logo {
@@ -226,7 +29,7 @@ header{
   font-weight: bold;
 }
 
-/* NAV LINKS */
+/* ===== NAV LINKS ===== */
 .nav-links {
   list-style: none;
   display: flex;
@@ -246,20 +49,18 @@ header{
   text-decoration: underline;
 }
 
-/* HERO */
+/* ===== HERO ===== */
 .hero {
   height: 85vh;
-  background: linear-gradient(135deg, #1e5eff, #4aa3ff);
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: white;
   padding: 20px;
 }
 
 .hero-content h1 {
-  font-size: 40px;
+  font-size: 42px;
   margin-bottom: 10px;
 }
 
@@ -284,58 +85,53 @@ header{
   transform: scale(1.05);
 }
 
-/* ABOUT */
+/* ===== ABOUT ===== */
 .about {
   padding: 60px 20px;
   text-align: center;
-  background: white;
+  background: transparent;
 }
 
 .about h2 {
   margin-bottom: 10px;
-  color: #1e5eff;
 }
 
-/* SERVICES */
+/* ===== SERVICES ===== */
 .services {
   display: flex;
   justify-content: center;
   gap: 20px;
   padding: 50px 20px;
   flex-wrap: wrap;
-
+  background: transparent;
 }
 
 .card {
   width: 220px;
   padding: 25px;
-  background: white;
+  background: rgba(255,255,255,0.15);
   text-align: center;
   border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  border-top: 4px solid #1e5eff;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
   transition: 0.3s;
 }
 
 .card:hover {
   transform: translateY(-5px);
+  background: rgba(255,255,255,0.25);
 }
 
-/* FOOTER */
+/* ===== BUTTONS ===== */
+button {
+  cursor: pointer;
+}
+
+/* ===== FOOTER ===== */
 footer {
-  background: linear-gradient(135deg, #1e5eff, #4aa3ff);
+  background: rgba(0,0,0,0.2);
   color: white;
   text-align: center;
   padding: 15px;
-}
-html, body {
-  background: #1e5eff !important;
-  min-height: 100vh;
-}
-html, body {
-  background: #1e5eff !important;
-}
-.about,
-.services {
-  background: transparent !important;
+  margin-top: 30px;
 }
