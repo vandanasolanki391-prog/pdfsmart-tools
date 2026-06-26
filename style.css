@@ -201,3 +201,9 @@ footer p{
 footer a{
     color:#16A34A !important;
 }
+header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
