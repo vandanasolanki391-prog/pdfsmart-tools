@@ -18,12 +18,7 @@ font-family: Arial, sans-serif;
 text-align: center;
 color: #111827;
 
-background: linear-gradient(
-135deg,
-#0F5132 0%,
-#198754 50%,
-#20C997 100%
-);
+
 
 min-height: 100vh;
 }
@@ -215,12 +210,6 @@ header{
   font-family: Arial, sans-serif;
 }
 
-/* BODY BACKGROUND */
-body {
-  background: #f4f9ff;
-  color: #0a2a66;
-}
-
 /* NAVBAR */
 .navbar {
   display: flex;
@@ -314,7 +303,7 @@ body {
   gap: 20px;
   padding: 50px 20px;
   flex-wrap: wrap;
-  background: #f4f9ff;
+
 }
 
 .card {
@@ -349,10 +338,4 @@ html, body {
 .about,
 .services {
   background: transparent !important;
-}
-  body {
-  background-color: blue !important;
-}
-  html, body {
-  background-color: blue !important;
 }
