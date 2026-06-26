@@ -343,3 +343,10 @@ html, body {
   background: #1e5eff !important;
   min-height: 100vh;
 }
+html, body {
+  background: #1e5eff !important;
+}
+.about,
+.services {
+  background: transparent !important;
+}
