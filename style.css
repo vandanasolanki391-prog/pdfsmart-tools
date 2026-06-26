@@ -16,10 +16,8 @@ font-family:Arial,sans-serif;
 text-align:center;
 color:var(--text);
 background:
-linear-gradient(135deg,
-rgba(6,95,70,.88),
-rgba(20,83,45,.90)),
-url('https://images.unsplash.com/photo-1555066931-4365d14bab8c');
+background:
+linear-gradient(135deg,#34D399,#10B981,#047857);
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
