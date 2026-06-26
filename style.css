@@ -12,22 +12,20 @@
 *{box-sizing:border-box}
 body{
 margin:0;
-font-family:Arial,sans-serif;
-text-align:center;
-color:var(--text);
-background:
-background:
-linear-gradient(135deg,#34D399,#10B981,#047857);
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-}
-.navbar{
-position:sticky;top:0;z-index:1000;
-display:flex;justify-content:space-between;align-items:center;
-padding:15px 30px;
-background:rgba(20,83,45,.88);
-backdrop-filter:blur(12px);
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #111827;
+
+  background: linear-gradient(
+    135deg,
+    #0F5132 0%,
+    #198754 50%,
+    #20C997 100%
+  );
+
+  min-height: 100vh;
 }
 .navbar h2,.navbar a,.logo{color:#fff}
 .navbar a{text-decoration:none;font-weight:bold;margin-left:20px}
