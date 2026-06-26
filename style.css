@@ -135,3 +135,17 @@ footer {
   padding: 15px;
   margin-top: 30px;
 }
+/* EXAMPLE BLUE THEME */
+body {
+  background: #eaf3ff;
+}
+
+.navbar {
+  background: #1e88e5;
+  color: white;
+}
+
+button {
+  background: #1e88e5;
+  color: white;
+}
