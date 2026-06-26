@@ -339,3 +339,7 @@ footer {
   text-align: center;
   padding: 15px;
 }
+html, body {
+  background: #1e5eff !important;
+  min-height: 100vh;
+}
