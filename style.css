@@ -226,7 +226,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1e5eff;
+  background: linear-gradient(135deg, #1e5eff, #4aa3ff);
   padding: 15px 30px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
@@ -334,7 +334,7 @@ body {
 
 /* FOOTER */
 footer {
-  background: #1e5eff;
+  background: linear-gradient(135deg, #1e5eff, #4aa3ff);
   color: white;
   text-align: center;
   padding: 15px;
