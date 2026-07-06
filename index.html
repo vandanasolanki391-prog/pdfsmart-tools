@@ -38,6 +38,14 @@
     <h1 class="logo">PDFSmart Tools</h1>
     <p>All PDF tools in one place fast, simple & free</p>
   </header>
+  <div class="search-box">
+  <input
+    type="text"
+    id="toolSearch"
+    placeholder="Search PDF tools..."
+    onkeyup="searchTools()"
+  >
+</div>
 
   <div class="tools">
 
@@ -116,5 +124,24 @@
   </p>
 <a href="terms.html">Terms & Conditions</a>
 </footer>
+<script>
+function searchTools() {
+
+    let input = document.getElementById("toolSearch").value.toLowerCase();
+
+    let buttons = document.querySelectorAll(".tools > button");
+
+    buttons.forEach(function(btn){
+
+        if(btn.innerText.toLowerCase().includes(input)){
+            btn.style.display = "";
+        }else{
+            btn.style.display = "none";
+        }
+
+    });
+
+}
+</script>  
 </body>
 </html>
