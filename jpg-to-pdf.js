@@ -9,6 +9,7 @@ const statusText = document.getElementById("statusText");
 const pageSizeSelect = document.getElementById("pageSize");
 const orientationSelect = document.getElementById("orientation");
 const marginSizeSelect = document.getElementById("marginSize");
+const dropArea = document.getElementById("dropArea");
 
 let selectedImages = [];
 let dragIndex = null;
