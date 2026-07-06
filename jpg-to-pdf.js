@@ -17,6 +17,40 @@ let dragIndex = null;
 /* SELECT IMAGES */
 
 imageFilesInput.addEventListener("change", function(e){
+    /* ===== DRAG & DROP UPLOAD ===== */
+
+["dragenter","dragover"].forEach(eventName => {
+    dropArea.addEventListener(eventName, function(e){
+        e.preventDefault();
+        dropArea.classList.add("dragover");
+    });
+});
+
+["dragleave","drop"].forEach(eventName => {
+    dropArea.addEventListener(eventName, function(e){
+        e.preventDefault();
+        dropArea.classList.remove("dragover");
+    });
+});
+
+dropArea.addEventListener("drop", function(e){
+
+    const files = Array.from(e.dataTransfer.files).filter(file =>
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png"
+    );
+
+    if(files.length === 0) return;
+
+    selectedImages = selectedImages.concat(files);
+
+    uploadSection.style.display = "none";
+    workSection.style.display = "block";
+
+    renderImageList();
+
+});
 
     const newImages = Array.from(e.target.files);
 
