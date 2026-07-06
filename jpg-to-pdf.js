@@ -17,6 +17,12 @@ let dragIndex = null;
 /* SELECT IMAGES */
 
 imageFilesInput.addEventListener("change", function(e){
+["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+    dropArea.addEventListener(eventName, function(e){
+        e.preventDefault();
+        e.stopPropagation();
+    });
+});    
     /* ===== DRAG & DROP UPLOAD ===== */
 
 ["dragenter","dragover"].forEach(eventName => {
