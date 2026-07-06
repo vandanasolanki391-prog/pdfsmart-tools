@@ -280,3 +280,33 @@ button:active {
     color:#2457ff;
     text-decoration:none;
 }
+/* ===== Search Bar ===== */
+
+.search-box{
+    max-width:700px;
+    margin:20px auto 10px;
+    padding:0 20px;
+}
+
+.search-box input{
+    width:100%;
+    padding:16px 22px;
+    font-size:17px;
+    border:none;
+    outline:none;
+    border-radius:50px;
+    background:rgba(255,255,255,0.92);
+    color:#1e293b;
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+    transition:.3s;
+    box-sizing:border-box;
+}
+
+.search-box input:focus{
+    box-shadow:0 0 0 4px rgba(59,130,246,.25);
+}
+
+.search-box input::placeholder{
+    color:#64748b;
+}
