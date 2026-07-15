@@ -310,3 +310,23 @@ button:active {
 .search-box input::placeholder{
     color:#64748b;
 }
+.home-content{
+    max-width:1000px;
+    margin:40px auto;
+    padding:20px;
+    line-height:1.8;
+    font-size:17px;
+}
+
+.home-content h2{
+    margin-top:30px;
+    color:#1e3a8a;
+}
+
+.home-content ul{
+    padding-left:20px;
+}
+
+.home-content li{
+    margin-bottom:10px;
+}
