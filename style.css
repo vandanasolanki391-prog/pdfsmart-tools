@@ -330,3 +330,41 @@ button:active {
 .home-content li{
     margin-bottom:10px;
 }
+/* ===== AdSense Content Section ===== */
+.home-content{
+    max-width:1000px;
+    margin:40px auto;
+    background:#ffffff;
+    border-radius:22px;
+    padding:40px;
+    box-shadow:0 12px 35px rgba(0,0,0,.15);
+    text-align:left;
+    line-height:1.9;
+}
+
+.home-content h2{
+    color:#1e3a8a;
+    margin-top:28px;
+    font-size:32px;
+}
+
+.home-content h3{
+    color:#2563eb;
+    margin-top:18px;
+    font-size:22px;
+}
+
+.home-content p{
+    color:#334155;
+    font-size:17px;
+}
+
+.home-content ul{
+    padding-left:22px;
+}
+
+.home-content li{
+    color:#334155;
+    margin-bottom:10px;
+    font-size:17px;
+}
