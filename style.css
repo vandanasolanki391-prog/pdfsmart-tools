@@ -368,3 +368,53 @@ button:active {
     margin-bottom:10px;
     font-size:17px;
 }
+.trust-badges{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+margin:25px 0;
+}
+
+.trust-badges span{
+background:white;
+padding:12px 20px;
+border-radius:30px;
+font-weight:bold;
+box-shadow:0 5px 15px rgba(0,0,0,.12);
+}
+
+.latest-articles{
+max-width:1100px;
+margin:50px auto;
+padding:20px;
+}
+
+.article-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
+
+.article-card{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 8px 25px rgba(0,0,0,.12);
+text-align:left;
+}
+
+.article-card h3{
+color:#1e3a8a;
+margin-top:0;
+}
+
+.article-card p{
+color:#475569;
+}
+
+.article-card a{
+text-decoration:none;
+font-weight:bold;
+color:#2563eb;
+}
