@@ -42,3 +42,23 @@ body{
 .navbar a:hover{
     color:#38bdf8;
 }
+/* Hero Section */
+
+.blog-hero{
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:#fff;
+    text-align:center;
+    padding:70px 20px;
+}
+
+.blog-hero h1{
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.blog-hero p{
+    max-width:750px;
+    margin:auto;
+    font-size:20px;
+    opacity:.95;
+}
