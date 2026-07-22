@@ -165,3 +165,77 @@ body{
 .article-card a:hover{
     text-decoration:underline;
 }
+/* Logo */
+
+.logo a{
+    color:#fff;
+    text-decoration:none;
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* Navigation */
+
+.navbar ul{
+    list-style:none;
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.navbar li{
+    display:inline;
+}
+
+.navbar .active{
+    color:#38bdf8;
+}
+/* Footer */
+
+footer{
+    background:#0f172a;
+    color:#fff;
+    text-align:center;
+    padding:40px 20px;
+    margin-top:60px;
+}
+
+footer p{
+    margin:12px 0;
+}
+
+footer a{
+    color:#60a5fa;
+    text-decoration:none;
+    margin:0 8px;
+}
+
+footer a:hover{
+    color:#fff;
+}
+@media(max-width:768px){
+
+.navbar{
+    flex-direction:column;
+    gap:15px;
+}
+
+.navbar ul{
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.blog-hero h1{
+    font-size:34px;
+}
+
+.featured-article{
+    margin:25px 15px;
+    padding:25px;
+}
+
+.latest-articles{
+    padding:15px;
+}
+
+}
