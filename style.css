@@ -430,3 +430,155 @@ text-decoration:none;
 font-weight:bold;
 color:#2563eb;
 }
+/* ===========================
+   BLOG ARTICLE STYLES
+=========================== */
+
+.article-content{
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.article-content article{
+    line-height: 1.8;
+    color: #444;
+}
+
+.article-content h2{
+    color: #0f4c81;
+    margin-top: 35px;
+    margin-bottom: 15px;
+    font-size: 30px;
+}
+
+.article-content h3{
+    color: #1f2937;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.article-content p{
+    margin-bottom: 18px;
+    font-size: 17px;
+}
+
+.article-content ul,
+.article-content ol{
+    margin: 20px 0 20px 30px;
+}
+
+.article-content li{
+    margin-bottom: 10px;
+}
+
+.article-content hr{
+    margin: 40px 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
+.breadcrumb{
+    margin-bottom: 25px;
+    font-size: 14px;
+    color: #666;
+}
+
+.breadcrumb a{
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover{
+    text-decoration: underline;
+}
+/* ===========================
+   ARTICLE CTA
+=========================== */
+
+.call-to-action{
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+    margin:50px 0;
+}
+
+.call-to-action h2{
+    color:#fff;
+    margin-bottom:15px;
+    font-size:32px;
+}
+
+.call-to-action p{
+    color:#f8fafc;
+    margin-bottom:20px;
+}
+
+.call-to-action .read-btn{
+    display:inline-block;
+    background:#fff;
+    color:#2563eb;
+    padding:12px 28px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.call-to-action .read-btn:hover{
+    background:#f3f4f6;
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   FAQ
+=========================== */
+
+.article-content h3{
+    margin-top:25px;
+    color:#1e3a8a;
+}
+
+/* ===========================
+   ARTICLE LINKS
+=========================== */
+
+.article-content a{
+    color:#2563eb;
+    text-decoration:none;
+}
+
+.article-content a:hover{
+    text-decoration:underline;
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width:768px){
+
+.article-content{
+    margin:20px;
+    padding:20px;
+}
+
+.article-content h2{
+    font-size:26px;
+}
+
+.call-to-action{
+    padding:25px;
+}
+
+.call-to-action h2{
+    font-size:26px;
+}
+
+}
