@@ -582,3 +582,18 @@ color:#2563eb;
 }
 
 }
+/* ===========================
+   ARTICLE META
+=========================== */
+
+.article-meta{
+    max-width:900px;
+    margin:20px auto;
+    padding:12px 20px;
+    color:#6b7280;
+    font-size:15px;
+}
+
+.article-meta p{
+    margin:0;
+}
