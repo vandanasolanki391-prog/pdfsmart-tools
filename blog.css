@@ -239,3 +239,41 @@ footer a:hover{
 }
 
 }
+.article-content{
+    max-width:900px;
+    margin:50px auto;
+    padding:0 20px;
+    line-height:1.8;
+}
+
+.article-content h2{
+    margin-top:40px;
+    color:#1d4ed8;
+}
+
+.article-content h3{
+    margin-top:25px;
+}
+
+.article-content p{
+    margin:15px 0;
+}
+
+.article-content ul,
+.article-content ol{
+    margin:20px 0 20px 30px;
+}
+
+.article-content li{
+    margin-bottom:10px;
+}
+
+.article-content a{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.article-content a:hover{
+    text-decoration:underline;
+}
