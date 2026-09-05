@@ -597,3 +597,36 @@ color:#2563eb;
 .article-meta p{
     margin:0;
 }
+
+/* =========================================
+   SEO FRIENDLY PDF TOOL LINKS
+   ========================================= */
+
+.tools .tool-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border: none;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #1e293b;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: 0.3s;
+}
+
+.tools .tool-link:hover {
+    transform: translateY(-6px) scale(1.03);
+    color: white;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    box-shadow: 0 0 18px rgba(96, 165, 250, 0.8);
+}
+
+.tools .tool-link:active {
+    transform: scale(0.95);
+}
