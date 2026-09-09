@@ -1,22 +1,215 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>About - PDFSmart Tools</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>About Us - PDFSmart Tools</title>
+
+  <meta name="description" content="Learn more about PDFSmart Tools, our mission, and the online PDF and document tools we provide.">
+  <meta name="robots" content="index, follow">
+
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* About Us Page */
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      line-height: 1.7;
+    }
+
+    .about-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 35px 30px;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 15px;
+      box-sizing: border-box;
+    }
+
+    .about-container h1 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 42px;
+      margin-bottom: 25px;
+    }
+
+    .about-container h2 {
+      color: #ffffff;
+      font-size: 24px;
+      margin-top: 30px;
+      margin-bottom: 12px;
+    }
+
+    .about-container p {
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .about-intro {
+      text-align: center;
+      font-size: 18px !important;
+      margin-bottom: 30px;
+    }
+
+    .about-list {
+      color: #ffffff;
+      font-size: 16px;
+      padding-left: 25px;
+    }
+
+    .about-list li {
+      margin-bottom: 10px;
+    }
+
+    .creator-box {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .creator-box strong {
+      font-size: 18px;
+    }
+
+    .back-home {
+      display: block;
+      width: fit-content;
+      margin: 35px auto 5px;
+      padding: 12px 22px;
+      background: #ffffff;
+      color: #111111 !important;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    .back-home:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+
+      .about-container {
+        margin: 20px 12px;
+        padding: 25px 18px;
+      }
+
+      .about-container h1 {
+        font-size: 32px;
+      }
+
+      .about-container h2 {
+        font-size: 21px;
+      }
+
+      .about-container p,
+      .about-list {
+        font-size: 15px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>About Us</h1>
+  <main class="about-container">
 
-  <p>PDFSmart Tools is a free online platform that provides simple and fast PDF tools for everyone.</p>
+    <h1>About Us</h1>
 
-  <p>Our mission is to make document handling easy, secure, and accessible.</p>
+    <p class="about-intro">
+      PDFSmart Tools is a free online platform that provides simple,
+      practical, and easy-to-use PDF and document tools for everyday needs.
+    </p>
 
-  <p><b>Created and Managed by Vandana Solanki</b></p>
 
-  <br><br>
+    <h2>Our Mission</h2>
 
-  <button onclick="location.href='index.html'">⬅ Back to Home</button>
+    <p>
+      Our mission is to make document handling easier, faster, and more
+      accessible for everyone. We aim to provide useful online tools that
+      help users complete common PDF and document tasks without unnecessary
+      complexity.
+    </p>
+
+
+    <h2>What We Provide</h2>
+
+    <p>
+      PDFSmart Tools brings together a collection of online tools designed
+      for common document-related tasks, including:
+    </p>
+
+    <ul class="about-list">
+      <li>Merge PDF files</li>
+      <li>Split PDF files</li>
+      <li>Compress PDF files</li>
+      <li>Convert PDF and document formats</li>
+      <li>OCR and text extraction</li>
+      <li>PDF translation</li>
+      <li>JPG and image-related PDF tools</li>
+      <li>Other useful document processing tools</li>
+    </ul>
+
+
+    <h2>Who Can Use PDFSmart Tools?</h2>
+
+    <p>
+      Our tools are intended for anyone who needs to work with digital
+      documents. Students, teachers, office professionals, businesses,
+      freelancers, researchers, and general internet users can use the
+      available tools for their everyday document needs.
+    </p>
+
+
+    <h2>Our Approach</h2>
+
+    <p>
+      We focus on creating tools with a simple interface so that users can
+      understand how to use them without complicated instructions. We
+      continuously work on improving the website, adding useful features,
+      and making the overall experience more convenient.
+    </p>
+
+
+    <h2>Privacy and Responsible Use</h2>
+
+    <p>
+      We respect user privacy and aim to handle information responsibly.
+      Users can learn more about how information, cookies, advertising,
+      and uploaded files are handled by visiting our
+      <a href="privacy.html">Privacy Policy</a>.
+    </p>
+
+
+    <div class="creator-box">
+
+      <p>
+        <strong>Created and Managed by Vandana Solanki</strong>
+      </p>
+
+      <p>
+        PDFSmart Tools is independently managed with the goal of providing
+        useful and accessible online document tools.
+      </p>
+
+    </div>
+
+
+    <a class="back-home" href="index.html">
+      &#8592; Back to Home
+    </a>
+
+  </main>
 
 </body>
 </html>
