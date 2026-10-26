@@ -1,7 +1,0 @@
-# requirements.txt
-
-Flask
-pdfplumber
-pandas
-openpyxl
-gunicorn
