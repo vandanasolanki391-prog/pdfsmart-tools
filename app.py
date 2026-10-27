@@ -103,22 +103,26 @@ def convert():
         )
 
         # Clean up after the response has finished.
-        @response.call_on_close
-def cleanup_files():
-    for path in (pdf_path, output_path):
-        if path and os.path.isfile(path):
-            try:
-                os.remove(path)
-                app.logger.info(
-                    'Temporary file deleted: %s', path
-                )
-            except OSError:
-                app.logger.exception(
-                    'Temporary file cleanup failed'
-                )
+               # Capture original paths for cleanup
+        cleanup_pdf_path = pdf_path
+        cleanup_output_path = output_path
 
-        # Prevent the finally block from deleting the Excel file
-        # before the download response has finished.
+        @response.call_on_close
+        def cleanup_files(pdf_to_delete=cleanup_pdf_path,
+                          output_to_delete=cleanup_output_path):
+            for path in (pdf_to_delete, output_to_delete):
+                if path and os.path.isfile(path):
+                    try:
+                        os.remove(path)
+                        app.logger.info(
+                            'Temporary file deleted: %s', path
+                        )
+                    except OSError:
+                        app.logger.exception(
+                            'Temporary file cleanup failed'
+                        )
+
+        # Prevent the finally block from deleting files early
         pdf_path = None
         output_path = None
 
