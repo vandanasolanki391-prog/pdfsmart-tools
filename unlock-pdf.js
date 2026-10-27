@@ -1,4 +1,4 @@
-const API_BASE = "https://pdf-smart-tools.onrender.com";
+const API_BASE = "https://pdfsmart-tools.onrender.com";
 const pdfFileInput = document.getElementById("pdfFile");
 const uploadSection = document.getElementById("uploadSection");
 const workSection = document.getElementById("workSection");
