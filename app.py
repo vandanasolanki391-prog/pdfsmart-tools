@@ -32,15 +32,32 @@ def convert():
     if request.method == 'GET':
         return render_template('pdf-to-excel.html')
 
+    pdf_path = None
+    output_path = None
+
     try:
         pdf_file = request.files.get('pdfFile')
+
         if not pdf_file or pdf_file.filename == '':
             return 'No PDF file selected', 400
+
         if not pdf_file.filename.lower().endswith('.pdf'):
             return 'Please upload a PDF file', 400
 
+        import uuid
+
         filename = secure_filename(pdf_file.filename)
-        pdf_path = os.path.join(UPLOAD_FOLDER, filename)
+        unique_id = uuid.uuid4().hex
+
+        pdf_path = os.path.join(
+            UPLOAD_FOLDER, f'{unique_id}_{filename}'
+        )
+
+        output_excel = (
+            f'{unique_id}_{filename.rsplit(".", 1)[0]}.xlsx'
+        )
+        output_path = os.path.join(OUTPUT_FOLDER, output_excel)
+
         pdf_file.save(pdf_path)
         all_tables = []
 
@@ -52,25 +69,64 @@ def convert():
 
         if not all_tables:
             text_rows = []
+
             with pdfplumber.open(pdf_path) as pdf:
                 for page_no, page in enumerate(pdf.pages, start=1):
                     text = page.extract_text()
+
                     if text:
                         for line in text.split('\n'):
                             text_rows.append([page_no, line])
+
             if not text_rows:
                 return 'No readable text or table found in PDF', 422
-            all_tables.append(pd.DataFrame(text_rows, columns=['Page No', 'Text']))
 
-        output_excel = filename.rsplit('.', 1)[0] + '.xlsx'
-        output_path = os.path.join(OUTPUT_FOLDER, output_excel)
+            all_tables.append(
+                pd.DataFrame(text_rows, columns=['Page No', 'Text'])
+            )
+
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
             for i, df in enumerate(all_tables):
-                df.to_excel(writer, sheet_name=f'Table_{i+1}', index=False, header=False)
-        return send_file(output_path, as_attachment=True)
+                df.to_excel(
+                    writer,
+                    sheet_name=f'Table_{i+1}',
+                    index=False,
+                    header=False
+                )
+
+        response = send_file(
+            output_path,
+            as_attachment=True,
+            download_name=f'{filename.rsplit(".", 1)[0]}.xlsx'
+        )
+
+        @response.call_on_close
+        def cleanup_files():
+            for path in (pdf_path, output_path):
+                if path and os.path.isfile(path):
+                    try:
+                        os.remove(path)
+                    except OSError:
+                        app.logger.exception('Temporary file cleanup failed')
+
+        return response
+
     except Exception:
         app.logger.exception('PDF to Excel conversion failed')
-        return 'Unable to convert this PDF. Please check the file and try again.', 500
+        return (
+            'Unable to convert this PDF. Please check the file and try again.',
+            500
+        )
+
+    finally:
+        # Remove files after conversion errors.
+        # Successful downloads are cleaned up when the response closes.
+        if output_path and not os.path.exists(output_path):
+            if pdf_path and os.path.isfile(pdf_path):
+                try:
+                    os.remove(pdf_path)
+                except OSError:
+                    app.logger.exception('Uploaded PDF cleanup failed')
 
 
 def get_uploaded_pdf():
