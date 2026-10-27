@@ -1,4 +1,4 @@
-const API_BASE = "https://pdf-smart-tools.onrender.com";
+const API_BASE = "https://pdfsmart-tools.onrender.com";
 const repairPdfUpload = document.getElementById("repairPdfUpload");
 const repairBtn = document.getElementById("repairBtn");
 const repairStatus = document.getElementById("repairStatus");
