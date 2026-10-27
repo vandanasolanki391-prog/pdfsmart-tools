@@ -32,33 +32,36 @@ def convert():
     if request.method == 'GET':
         return render_template('pdf-to-excel.html')
 
+    import tempfile
+
     pdf_path = None
     output_path = None
 
     try:
         pdf_file = request.files.get('pdfFile')
 
-        if not pdf_file or pdf_file.filename == '':
+        if not pdf_file or not pdf_file.filename:
             return 'No PDF file selected', 400
 
         if not pdf_file.filename.lower().endswith('.pdf'):
             return 'Please upload a PDF file', 400
 
-        import uuid
-
         filename = secure_filename(pdf_file.filename)
-        unique_id = uuid.uuid4().hex
+        if not filename:
+            return 'Invalid filename', 400
 
-        pdf_path = os.path.join(
-            UPLOAD_FOLDER, f'{unique_id}_{filename}'
-        )
+        # Unique temporary files prevent filename collisions.
+        with tempfile.NamedTemporaryFile(
+            suffix='.pdf', dir=UPLOAD_FOLDER, delete=False
+        ) as temp_pdf:
+            pdf_path = temp_pdf.name
+            pdf_file.save(pdf_path)
 
-        output_excel = (
-            f'{unique_id}_{filename.rsplit(".", 1)[0]}.xlsx'
-        )
-        output_path = os.path.join(OUTPUT_FOLDER, output_excel)
+        with tempfile.NamedTemporaryFile(
+            suffix='.xlsx', dir=OUTPUT_FOLDER, delete=False
+        ) as temp_excel:
+            output_path = temp_excel.name
 
-        pdf_file.save(pdf_path)
         all_tables = []
 
         with pdfplumber.open(pdf_path) as pdf:
@@ -73,7 +76,6 @@ def convert():
             with pdfplumber.open(pdf_path) as pdf:
                 for page_no, page in enumerate(pdf.pages, start=1):
                     text = page.extract_text()
-
                     if text:
                         for line in text.split('\n'):
                             text_rows.append([page_no, line])
@@ -100,6 +102,7 @@ def convert():
             download_name=f'{filename.rsplit(".", 1)[0]}.xlsx'
         )
 
+        # Clean up after the response has finished.
         @response.call_on_close
         def cleanup_files():
             for path in (pdf_path, output_path):
@@ -107,7 +110,14 @@ def convert():
                     try:
                         os.remove(path)
                     except OSError:
-                        app.logger.exception('Temporary file cleanup failed')
+                        app.logger.exception(
+                            'Temporary file cleanup failed'
+                        )
+
+        # Prevent the finally block from deleting the Excel file
+        # before the download response has finished.
+        pdf_path = None
+        output_path = None
 
         return response
 
@@ -119,14 +129,15 @@ def convert():
         )
 
     finally:
-        # Remove files after conversion errors.
-        # Successful downloads are cleaned up when the response closes.
-        if output_path and not os.path.exists(output_path):
-            if pdf_path and os.path.isfile(pdf_path):
+        # Clean up temporary files if processing fails.
+        for path in (pdf_path, output_path):
+            if path and os.path.isfile(path):
                 try:
-                    os.remove(pdf_path)
+                    os.remove(path)
                 except OSError:
-                    app.logger.exception('Uploaded PDF cleanup failed')
+                    app.logger.exception(
+                        'Temporary file cleanup failed'
+                    )
 
 
 def get_uploaded_pdf():
