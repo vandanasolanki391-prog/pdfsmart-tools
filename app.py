@@ -6,6 +6,7 @@ import os
 import io
 import tempfile
 import time
+import logging
 from werkzeug.utils import secure_filename
 import pikepdf
 
@@ -18,10 +19,12 @@ OUTPUT_FOLDER = "outputs"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
+logging.basicConfig(level=logging.INFO)
+
 
 # CORS and basic security headers
 @app.after_request
-def add_cors_headers(response):
+def add_security_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
@@ -29,7 +32,7 @@ def add_cors_headers(response):
     return response
 
 
-# Delete a temporary file and record the result
+# Delete one temporary file and log the result
 def delete_temp_file(path):
     if not path:
         return True
@@ -38,30 +41,30 @@ def delete_temp_file(path):
         if os.path.isfile(path):
             os.remove(path)
             app.logger.info("Temporary file deleted: %s", path)
-        return True
+        return not os.path.exists(path)
     except OSError:
         app.logger.exception("Temporary file cleanup failed: %s", path)
         return False
 
 
-# Remove abandoned temporary files older than 1 hour.
-# Only files with the app's own temporary filename prefixes are eligible.
+# Remove abandoned app-created temporary files older than one hour.
+# This runs when a new PDF-to-Excel conversion starts.
 def cleanup_old_temp_files():
     cutoff = time.time() - 3600
 
-    for folder, prefix in (
-        (UPLOAD_FOLDER, "pdfsmart_"),
-        (OUTPUT_FOLDER, "pdfsmart_"),
-    ):
+    for folder in (UPLOAD_FOLDER, OUTPUT_FOLDER):
         try:
             for name in os.listdir(folder):
-                if not name.startswith(prefix):
+                if not name.startswith("pdfsmart_"):
                     continue
 
                 path = os.path.join(folder, name)
 
                 try:
-                    if os.path.isfile(path) and os.path.getmtime(path) < cutoff:
+                    if (
+                        os.path.isfile(path)
+                        and os.path.getmtime(path) < cutoff
+                    ):
                         delete_temp_file(path)
                 except OSError:
                     app.logger.exception(
@@ -87,7 +90,6 @@ def convert():
     output_path = None
 
     try:
-        # Clean up abandoned files from previous requests.
         cleanup_old_temp_files()
 
         pdf_file = request.files.get('pdfFile')
@@ -99,11 +101,10 @@ def convert():
             return 'Please upload a PDF file', 400
 
         filename = secure_filename(pdf_file.filename)
-
         if not filename:
             return 'Invalid filename', 400
 
-        # Create unique temporary files to prevent filename collisions.
+        # Save uploaded PDF to a unique temporary file.
         with tempfile.NamedTemporaryFile(
             prefix='pdfsmart_',
             suffix='.pdf',
@@ -113,6 +114,7 @@ def convert():
             pdf_path = temp_pdf.name
             pdf_file.save(pdf_path)
 
+        # Create a unique temporary Excel file.
         with tempfile.NamedTemporaryFile(
             prefix='pdfsmart_',
             suffix='.xlsx',
@@ -129,16 +131,16 @@ def convert():
                     if table:
                         all_tables.append(pd.DataFrame(table))
 
-        # If no tables are found, extract readable text instead.
+        # If no tables are detected, export readable text instead.
         if not all_tables:
             text_rows = []
 
             with pdfplumber.open(pdf_path) as pdf:
                 for page_no, page in enumerate(pdf.pages, start=1):
-                    text = page.extract_text()
+                    page_text = page.extract_text()
 
-                    if text:
-                        for line in text.split('\n'):
+                    if page_text:
+                        for line in page_text.splitlines():
                             text_rows.append([page_no, line])
 
             if not text_rows:
@@ -148,8 +150,10 @@ def convert():
                 pd.DataFrame(text_rows, columns=['Page No', 'Text'])
             )
 
-        # Create the Excel workbook.
-        with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+        # Write extracted data to Excel.
+        with pd.ExcelWriter(
+            output_path, engine='openpyxl'
+        ) as writer:
             for i, df in enumerate(all_tables):
                 df.to_excel(
                     writer,
@@ -158,14 +162,13 @@ def convert():
                     header=False
                 )
 
-        # Read the completed Excel file into memory.
+        # Read the finished workbook into memory before deleting files.
         with open(output_path, 'rb') as excel_file:
             excel_data = excel_file.read()
 
         download_name = f'{filename.rsplit(".", 1)[0]}.xlsx'
 
-        # Delete temporary files after reading the Excel data.
-        # If deletion fails, the finally block will retry.
+        # Delete temporary files before sending the in-memory download.
         pdf_deleted = delete_temp_file(pdf_path)
         if pdf_deleted:
             pdf_path = None
@@ -174,7 +177,6 @@ def convert():
         if excel_deleted:
             output_path = None
 
-        # The download is now served from memory, not from the temp file.
         return send_file(
             io.BytesIO(excel_data),
             mimetype=(
@@ -193,7 +195,7 @@ def convert():
         )
 
     finally:
-        # Retry cleanup if an earlier deletion failed or processing stopped.
+        # Retry deletion if a previous attempt failed.
         for path in (pdf_path, output_path):
             if path:
                 delete_temp_file(path)
@@ -204,15 +206,21 @@ def get_uploaded_pdf():
     uploaded = request.files.get('pdfFile')
 
     if not uploaded or not uploaded.filename:
-        return None, (jsonify(error='Please select a PDF file.'), 400)
+        return None, (
+            jsonify(error='Please select a PDF file.'),
+            400
+        )
 
     if not uploaded.filename.lower().endswith('.pdf'):
-        return None, (jsonify(error='Please upload a PDF file.'), 400)
+        return None, (
+            jsonify(error='Please upload a PDF file.'),
+            400
+        )
 
     return uploaded, None
 
 
-# Return generated PDF data from memory.
+# Return PDF data from memory.
 def pdf_response(data, download_name):
     return send_file(
         io.BytesIO(data),
@@ -233,7 +241,7 @@ def protect_pdf():
 
     password = request.form.get('password', '')
 
-    if len(password) < 1:
+    if not password:
         return jsonify(error='Please enter a password.'), 400
 
     if len(password) > 200:
@@ -343,7 +351,7 @@ def compress_pdf():
         result = output.getvalue()
         original_size = source.getbuffer().nbytes
 
-        # Return the original if optimization made it larger.
+        # Keep the original if optimization makes it larger.
         if len(result) >= original_size:
             result = source.getvalue()
 
