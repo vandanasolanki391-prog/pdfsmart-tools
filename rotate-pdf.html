@@ -1,105 +1,74 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotate PDF - PDFSmart Tools</title>
-    <meta name="description" content="Rotate PDF pages online with PDFSmart Tools. Adjust page orientation and save a corrected PDF document.">
-
-    <link rel="stylesheet" href="rotate-pdf.css?v=20">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/rotate-pdf.html"></head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rotate PDF - PDFSmart Tools</title>
+<link href="rotate-pdf.css?v=20" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<meta content="Rotate PDF pages and download the updated document. Review page orientation in the output before sharing or printing." name="description"/><link href="https://pdfsmarttools.in/rotate-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
 <header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
+<div class="logo">📄 PDFSmart Tools</div>
+<a class="home-btn" href="index.html">← Back to Home</a>
 </header>
-
 <section class="rotate-layout">
-
-    <div class="rotate-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>Rotate PDF</h1>
-            <p>Select PDF file and rotate all or selected pages.</p>
-
-            <label for="pdfFile" class="upload-area">
-                <div class="upload-icon">📤</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one PDF file</p>
-            </label>
-
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>Rotate PDF</h1>
-                    <p>Preview first page and rotate PDF pages.</p>
-                </div>
-
-                <label for="pdfFile" class="change-file-btn">
+<div class="rotate-card">
+<div class="upload-section" id="uploadSection">
+<h1>Rotate PDF</h1>
+<p>Select PDF file and rotate all or selected pages.</p>
+<label class="upload-area" for="pdfFile">
+<div class="upload-icon">📤</div>
+<h2>Choose PDF File</h2>
+<p>Select one PDF file</p>
+</label>
+<input accept="application/pdf" id="pdfFile" type="file"/>
+</div>
+<div class="work-section" id="workSection" style="display:none;">
+<div class="work-header">
+<div>
+<h2>Rotate PDF</h2>
+<p>Preview first page and rotate PDF pages.</p>
+</div>
+<label class="change-file-btn" for="pdfFile">
                     Change PDF
                 </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>PDF Preview</h3>
-
-                    <div class="pdf-preview">
-                        <canvas id="previewCanvas"></canvas>
-                    </div>
-
-                    <div class="file-info" id="fileInfo">
+</div>
+<div class="preview-options-grid">
+<div class="pdf-preview-box">
+<h3>PDF Preview</h3>
+<div class="pdf-preview">
+<canvas id="previewCanvas"></canvas>
+</div>
+<div class="file-info" id="fileInfo">
                         No PDF selected
                     </div>
-                </div>
-
-                <div class="options-box">
-                    <h3>Rotate Options</h3>
-
-                    <label>Pages</label>
-                    <input 
-                        type="text" 
-                        id="pageInput" 
-                        placeholder="Example: all or 1-3, 5"
-                        value="all"
-                    >
-
-                    <small>
+</div>
+<div class="options-box">
+<h3>Rotate Options</h3>
+<label>Pages</label>
+<input id="pageInput" placeholder="Example: all or 1-3, 5" type="text" value="all"/>
+<small>
                         Use <b>all</b> for all pages, or enter pages like 1-3, 5.
                     </small>
-
-                    <label>Rotation Angle</label>
-                    <select id="rotateAngle">
-                        <option value="90">90° Clockwise</option>
-                        <option value="180">180°</option>
-                        <option value="270">270° Clockwise</option>
-                    </select>
-
-                    <button id="rotateBtn" class="rotate-btn">
-                        Rotate & Download PDF
+<label>Rotation Angle</label>
+<select id="rotateAngle">
+<option value="90">90° Clockwise</option>
+<option value="180">180°</option>
+<option value="270">270° Clockwise</option>
+</select>
+<button class="rotate-btn" id="rotateBtn">
+                        Rotate &amp; Download PDF
                     </button>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<div class="status-text" id="statusText"></div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 <script src="rotate-pdf.js?v=20"></script>
-
 </body>
 </html>

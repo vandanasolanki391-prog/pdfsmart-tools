@@ -1,123 +1,92 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word to PDF - PDFSmart Tools</title>
-    <meta name="description" content="Convert a Word document into a PDF online with PDFSmart Tools. Create a PDF copy that is convenient to share and view.">
-
-    <link rel="stylesheet" href="tools-common.css">
-    <link rel="stylesheet" href="word-to-pdf.css?v=20">
-
-    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/word-to-pdf.html"></head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Word to PDF - PDFSmart Tools</title>
+<link href="tools-common.css" rel="stylesheet"/>
+<link href="word-to-pdf.css?v=20" rel="stylesheet"/>
+<script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<meta content="Convert supported Word documents to PDF in your browser. Review page breaks, fonts and layout in the downloaded PDF." name="description"/><link href="https://pdfsmarttools.in/word-to-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
 <header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
+<div class="logo">📄 PDFSmart Tools</div>
+<a class="home-btn" href="index.html">← Back to Home</a>
 </header>
-
 <section class="tool-layout">
-
-    <div class="tool-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>Word to PDF</h1>
-            <p>Select Word file and convert it into PDF.</p>
-
-            <label for="wordFile" class="upload-area">
-                <div class="upload-icon">📝</div>
-                <h2>Choose Word File</h2>
-                <p>Select .docx file</p>
-            </label>
-
-            <input type="file" id="wordFile" accept=".docx">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>Word to PDF</h1>
-                    <p>Preview converted Word content and download as PDF.</p>
-                </div>
-
-                <label for="wordFile" class="change-file-btn">
+<div class="tool-card">
+<div class="upload-section" id="uploadSection">
+<h1>Word to PDF</h1>
+<p>Select Word file and convert it into PDF.</p>
+<label class="upload-area" for="wordFile">
+<div class="upload-icon">📝</div>
+<h2>Choose Word File</h2>
+<p>Select .docx file</p>
+</label>
+<input accept=".docx" id="wordFile" type="file"/>
+</div>
+<div class="work-section" id="workSection" style="display:none;">
+<div class="work-header">
+<div>
+<h2>Word to PDF</h2>
+<p>Preview converted Word content and download as PDF.</p>
+</div>
+<label class="change-file-btn" for="wordFile">
                     Change Word File
                 </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>File Info</h3>
-
-                    <div class="file-info" id="fileInfo">
+</div>
+<div class="preview-options-grid">
+<div class="pdf-preview-box">
+<h3>File Info</h3>
+<div class="file-info" id="fileInfo">
                         No Word file selected
                     </div>
-
-                    <small>
+<small>
                         This browser tool supports mainly .docx files. Formatting may vary slightly.
                     </small>
-                </div>
-
-                <div class="options-box">
-                    <h3>Word Preview</h3>
-
-                    <div id="wordPreview" class="word-preview">
+</div>
+<div class="options-box">
+<h3>Word Preview</h3>
+<div class="word-preview" id="wordPreview">
                         Word content preview will appear here...
                     </div>
-
-                    <button id="convertBtn" class="main-btn">
-                        Convert & Download PDF
+<button class="main-btn" id="convertBtn">
+                        Convert &amp; Download PDF
                     </button>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<div class="status-text" id="statusText"></div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-
 <section class="seo-content">
-  <h2>Word to PDF Converter Online</h2>
-
-  <p>
+<h2>Word to PDF Converter Online</h2>
+<p>
     Convert Word documents to PDF online for free. PDFSmart Tools helps you change DOCX files into PDF format directly from your browser without installing any software.
   </p>
-
-  <h3>How to Convert Word to PDF?</h3>
-  <ol>
-    <li>Upload your Word DOCX file.</li>
-    <li>Preview the Word content.</li>
-    <li>Click Convert & Download PDF.</li>
-    <li>Save the converted PDF file.</li>
-  </ol>
-
-  <h3>Features</h3>
-  <ul>
-    <li>Free Word to PDF conversion</li>
-    <li>Supports DOCX files</li>
-    <li>Preview before download</li>
-    <li>Works online in browser</li>
-    <li>No signup required</li>
-  </ul>
-
-  <h3>FAQ</h3>
-  <p><strong>Is this Word to PDF converter free?</strong><br>Yes, it is free to use.</p>
-  <p><strong>Which Word file is supported?</strong><br>This tool mainly supports .docx files.</p>
-  <p><strong>Will formatting remain same?</strong><br>Most formatting is preserved, but it may vary slightly depending on the file.</p>
+<h3>How to Convert Word to PDF?</h3>
+<ol>
+<li>Upload your Word DOCX file.</li>
+<li>Preview the Word content.</li>
+<li>Click Convert &amp; Download PDF.</li>
+<li>Save the converted PDF file.</li>
+</ol>
+<h3>Features</h3>
+<ul>
+<li>Free Word to PDF conversion</li>
+<li>Supports DOCX files</li>
+<li>Preview before download</li>
+<li>Works online in browser</li>
+<li>No signup required</li>
+</ul>
+<h3>FAQ</h3>
+<p><strong>Is this Word to PDF converter free?</strong><br/>Yes, it is free to use.</p>
+<p><strong>Which Word file is supported?</strong><br/>This tool mainly supports .docx files.</p>
+<p><strong>Will formatting remain same?</strong><br/>Most formatting is preserved, but it may vary slightly depending on the file.</p>
 </section>
-
-<script src="word-to-pdf.js?v=20"></script>    
-
-
+<script src="word-to-pdf.js?v=20"></script>
 </body>
 </html>

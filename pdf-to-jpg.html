@@ -1,116 +1,84 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to JPG - PDFSmart Tools</title>
-    <meta name="description" content="Convert PDF pages into JPG images online with PDFSmart Tools. Choose your PDF and export its pages as image files.">
-
-    <link rel="stylesheet" href="pdf-to-jpg.css?v=20">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/pdf-to-jpg.html"></head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDF to JPG - PDFSmart Tools</title>
+<link href="pdf-to-jpg.css?v=20" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<meta content="Convert PDF pages into JPG images for viewing or sharing. Image quality and file size depend on the selected settings." name="description"/><link href="https://pdfsmarttools.in/pdf-to-jpg.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
 <header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
+<div class="logo">📄 PDFSmart Tools</div>
+<a class="home-btn" href="index.html">← Back to Home</a>
 </header>
-
 <section class="converter-layout">
-
-    <div class="converter-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>PDF to JPG</h1>
-            <p>Select PDF file and convert pages into JPG images.</p>
-
-            <label for="pdfFile" class="upload-area">
-                <div class="upload-icon">📤</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one PDF file</p>
-            </label>
-
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>PDF to JPG</h1>
-                    <p>Preview first page and convert PDF pages into JPG images.</p>
-                </div>
-
-                <label for="pdfFile" class="change-file-btn">
+<div class="converter-card">
+<div class="upload-section" id="uploadSection">
+<h1>PDF to JPG</h1>
+<p>Select PDF file and convert pages into JPG images.</p>
+<label class="upload-area" for="pdfFile">
+<div class="upload-icon">📤</div>
+<h2>Choose PDF File</h2>
+<p>Select one PDF file</p>
+</label>
+<input accept="application/pdf" id="pdfFile" type="file"/>
+</div>
+<div class="work-section" id="workSection" style="display:none;">
+<div class="work-header">
+<div>
+<h2>PDF to JPG</h2>
+<p>Preview first page and convert PDF pages into JPG images.</p>
+</div>
+<label class="change-file-btn" for="pdfFile">
                     Change PDF
                 </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>PDF Preview</h3>
-
-                    <div class="pdf-preview">
-                        <canvas id="previewCanvas"></canvas>
-                    </div>
-
-                    <div class="file-info" id="fileInfo">
+</div>
+<div class="preview-options-grid">
+<div class="pdf-preview-box">
+<h3>PDF Preview</h3>
+<div class="pdf-preview">
+<canvas id="previewCanvas"></canvas>
+</div>
+<div class="file-info" id="fileInfo">
                         No PDF selected
                     </div>
-                </div>
-
-                <div class="options-box">
-                    <h3>Convert Options</h3>
-
-                    <label>Pages</label>
-                    <input 
-                        type="text" 
-                        id="pageInput" 
-                        placeholder="Example: all or 1-3, 5"
-                        value="all"
-                    >
-
-                    <small>
+</div>
+<div class="options-box">
+<h3>Convert Options</h3>
+<label>Pages</label>
+<input id="pageInput" placeholder="Example: all or 1-3, 5" type="text" value="all"/>
+<small>
                         Use <b>all</b> for all pages, or enter pages like 1-3, 5.
                     </small>
-
-                    <label>Image Quality</label>
-                    <select id="imageQuality">
-                        <option value="0.7">Normal Quality</option>
-                        <option value="0.9" selected>High Quality</option>
-                        <option value="1">Maximum Quality</option>
-                    </select>
-
-                    <label>Scale</label>
-                    <select id="imageScale">
-                        <option value="1">Small</option>
-                        <option value="1.5" selected>Normal</option>
-                        <option value="2">Large</option>
-                    </select>
-
-                    <button id="convertBtn" class="convert-btn">
-                        Convert & Download JPG
+<label>Image Quality</label>
+<select id="imageQuality">
+<option value="0.7">Normal Quality</option>
+<option selected="" value="0.9">High Quality</option>
+<option value="1">Maximum Quality</option>
+</select>
+<label>Scale</label>
+<select id="imageScale">
+<option value="1">Small</option>
+<option selected="" value="1.5">Normal</option>
+<option value="2">Large</option>
+</select>
+<button class="convert-btn" id="convertBtn">
+                        Convert &amp; Download JPG
                     </button>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<div class="status-text" id="statusText"></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section class="seo-content">
 <h2>PDF to JPG Converter Online</h2>
-
 <p>
 Convert PDF pages into high-quality JPG images online. Extract every page from a PDF as a separate image.
 </p>
-
 <h3>How to Convert PDF to JPG?</h3>
 <ol>
 <li>Upload your PDF file.</li>
@@ -118,7 +86,6 @@ Convert PDF pages into high-quality JPG images online. Extract every page from a
 <li>Click Convert.</li>
 <li>Download JPG images.</li>
 </ol>
-
 <h3>Features</h3>
 <ul>
 <li>Convert PDF pages to JPG</li>
@@ -127,13 +94,10 @@ Convert PDF pages into high-quality JPG images online. Extract every page from a
 <li>Works in browser</li>
 <li>Free tool</li>
 </ul>
-
 <h3>FAQ</h3>
-<p><strong>Will all pages convert?</strong><br>Yes, every PDF page can be converted to JPG.</p>
-<p><strong>Is this free?</strong><br>Yes.</p>
-</section>    
-
+<p><strong>Will all pages convert?</strong><br/>Yes, every PDF page can be converted to JPG.</p>
+<p><strong>Is this free?</strong><br/>Yes.</p>
+</section>
 <script src="pdf-to-jpg.js?v=20"></script>
-
 </body>
 </html>

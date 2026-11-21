@@ -26,14 +26,13 @@ compressBtn.addEventListener("click", async () => {
   if (!selectedFile) return alert("Please select a PDF file first.");
   compressBtn.disabled = true;
   try {
-    const selected = document.querySelector('input[name="compressLevel"]:checked');
-    const level = selected ? selected.value : "medium";
+    const level = "medium";
     statusText.innerText = "Optimizing PDF... Please wait.";
     const form = new FormData(); form.append("pdfFile", selectedFile); form.append("level", level);
     const response = await fetch(`${API_BASE}/api/compress-pdf`, { method: "POST", body: form });
     if (!response.ok) { const d = await response.json().catch(() => ({})); throw new Error(d.error || "Compression failed."); }
     const blob = await response.blob(); const newSize = blob.size; const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "compressed-pdf.pdf"; a.click(); URL.revokeObjectURL(url);
+    const a = document.createElement("a"); a.href = url; a.download = "compressed-pdf.pdf"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     const reduction = ((originalSize - newSize) / originalSize * 100).toFixed(1);
     statusText.innerText = `Optimization finished. New size: ${formatSize(newSize)} | Size change: ${reduction}% (positive means smaller). Image-heavy PDFs may not shrink much.`;
   } catch (e) { statusText.innerText = e.message; alert(e.message); }

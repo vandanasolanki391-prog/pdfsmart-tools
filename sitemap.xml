@@ -1,127 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-<url>
-<loc>https://pdfsmarttools.in/</loc>
-</url>
-
-<url>
-<loc>https://pdfsmarttools.in/edit-pdf</loc>
-</url>
-
-<url>
-<loc>https://pdfsmarttools.in/merge-pdf</loc>
-</url>
-
-<url>
-<loc>https://pdfsmarttools.in/compress-pdf</loc>
-</url>
-
-<url>
-<loc>https://pdfsmarttools.in/jpg-to-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/split-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/pdf-to-jpg</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/word-to-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/pdf-to-excel</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/add-watermark</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/rotate-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/delete-pages</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/extract-pages</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/organize-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/protect-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/unlock-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/ocr-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/repair-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/translate-pdf</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/about</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/contact</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/privacy</loc>
-</url>
-
-<url>
-  <loc>https://pdfsmarttools.in/terms</loc>
-</url>  
-
-<url>
-<loc>https://pdfsmarttools.in/pdf-to-word</loc>
-</url>
-
-<url>
-    <loc>https://pdfsmarttools.in/blog.html</loc>
-</url>
-
-<url>
-    <loc>https://pdfsmarttools.in/blog/merge-pdf-files-online.html</loc>
-</url>
-
-<url>
-    <loc>https://pdfsmarttools.in/blog/compress-pdf-without-losing-quality.html</loc>
-</url>
-
-<url>
-    <loc>https://pdfsmarttools.in/blog/convert-pdf-to-word.html</loc>
-</url>  
-  
-
-<url>
-  <loc>https://pdfsmarttools.in/disclaimer</loc>
-</url>
-
-<url>
-<loc>https://pdfsmarttools.in/blog/best-free-pdf-tools-for-students</loc>
-</url>
-<url>
-<loc>https://pdfsmarttools.in/blog/how-to-protect-pdf-documents</loc>
-</url>
+  <url><loc>https://pdfsmarttools.in/about.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/add-watermark.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog/best-free-pdf-tools-for-students.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog/compress-pdf-without-losing-quality.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog/convert-pdf-to-word.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog/how-to-protect-pdf-documents.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog/merge-pdf-files-online.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/blog.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/compress-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/contact.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/delete-pages.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/disclaimer.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/edit-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/extract-pages.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/</loc></url>
+  <url><loc>https://pdfsmarttools.in/jpg-to-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/merge-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/ocr-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/organize-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/pdf-to-excel.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/pdf-to-jpg.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/pdf-to-word.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/privacy.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/protect-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/repair-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/rotate-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/split-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/terms.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/translate-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/unlock-pdf.html</loc></url>
+  <url><loc>https://pdfsmarttools.in/word-to-pdf.html</loc></url>
 </urlset>

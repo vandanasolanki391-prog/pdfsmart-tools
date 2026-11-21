@@ -17,7 +17,7 @@ pdfFileInput.addEventListener("change", e => {
 lockBtn.addEventListener("click", async () => {
   if (!selectedFile) return alert("Please select PDF file first.");
   const password = passwordInput.value;
-  if (!password) return alert("Please enter password.");
+  if (password.length < 8) return alert("Use a password with at least 8 characters.");
   if (password !== confirmPasswordInput.value) return alert("Passwords do not match.");
   lockBtn.disabled = true;
   try {
@@ -26,7 +26,7 @@ lockBtn.addEventListener("click", async () => {
     const response = await fetch(`${API_BASE}/api/protect-pdf`, { method: "POST", body: form });
     if (!response.ok) { const d = await response.json().catch(() => ({})); throw new Error(d.error || "Protection failed."); }
     const blob = await response.blob(); const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "protected-pdf.pdf"; a.click(); URL.revokeObjectURL(url);
+    const a = document.createElement("a"); a.href = url; a.download = "protected-pdf.pdf"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     statusText.innerText = "Password-protected PDF downloaded. Keep your password safe.";
   } catch (e) { statusText.innerText = e.message; alert(e.message); }
   finally { lockBtn.disabled = false; }

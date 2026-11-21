@@ -7,6 +7,7 @@ import io
 import tempfile
 import time
 import logging
+import secrets
 from werkzeug.utils import secure_filename
 import pikepdf
 
@@ -25,9 +26,13 @@ logging.basicConfig(level=logging.INFO)
 # CORS and basic security headers
 @app.after_request
 def add_security_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    allowed_origins = {'https://pdfsmarttools.in', 'https://www.pdfsmarttools.in'}
+    origin = request.headers.get('Origin', '')
+    if origin in allowed_origins:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Vary'] = 'Origin'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
@@ -241,8 +246,8 @@ def protect_pdf():
 
     password = request.form.get('password', '')
 
-    if not password:
-        return jsonify(error='Please enter a password.'), 400
+    if len(password) < 8:
+        return jsonify(error='Use a password with at least 8 characters.'), 400
 
     if len(password) > 200:
         return jsonify(error='Password is too long.'), 400
@@ -256,7 +261,7 @@ def protect_pdf():
                 output,
                 encryption=pikepdf.Encryption(
                     user=password,
-                    owner=password,
+                    owner=secrets.token_urlsafe(32),
                     R=6
                 )
             )

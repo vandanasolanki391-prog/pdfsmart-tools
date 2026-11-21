@@ -1,131 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to Excel - PDFSmart Tools</title>
-    <meta name="description" content="Extract readable text from a PDF and export it to an Excel spreadsheet with PDFSmart Tools. Complex tables may need manual review.">
-
-    <link rel="stylesheet" href="tools-common.css">
-    <link rel="stylesheet" href="pdf-to-excel.css?v=20">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/pdf-to-excel.html"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to Excel Converter Online | PDFSmart Tools</title>
+  <meta name="description" content="Convert detected PDF tables into Excel worksheets. If no table is detected, export readable text by page. Scanned PDFs may need OCR first.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://pdfsmarttools.in/pdf-to-excel.html">
+  <link rel="stylesheet" href="tools-common.css">
+  <style>
+    .converter-form{max-width:760px;margin:0 auto;background:#fff;padding:32px;border-radius:20px;box-shadow:0 6px 25px rgba(0,0,0,.08)}
+    .converter-form h1{color:#2563eb;font-size:clamp(30px,5vw,42px);margin-bottom:12px}
+    .converter-form p,.converter-form li{line-height:1.7;color:#4b5563}
+    .converter-form input[type=file]{display:block;width:100%;margin:22px 0;padding:14px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc}
+    .converter-form button{border:0;border-radius:10px;padding:14px 22px;background:#2563eb;color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+    .converter-form button:hover{background:#1d4ed8}
+    .converter-form .note{background:#eff6ff;border-left:4px solid #2563eb;padding:14px 16px;margin-top:22px;border-radius:8px}
+    .seo-content{max-width:760px;margin:30px auto;padding:0 20px;line-height:1.7}
+    @media(max-width:600px){.converter-form{padding:22px}}
+  </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
-<header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
-</header>
-
-<section class="tool-layout">
-
-    <div class="tool-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>PDF to Excel</h1>
-            <p>Select PDF and extract readable text into Excel format.</p>
-
-            <label for="pdfFile" class="upload-area">
-                <div class="upload-icon">📊</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one PDF file</p>
-            </label>
-
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>PDF to Excel</h1>
-                    <p>Preview first page and export extracted text into Excel.</p>
-                </div>
-
-                <label for="pdfFile" class="change-file-btn">
-                    Change PDF
-                </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>PDF Preview</h3>
-
-                    <div class="pdf-preview">
-                        <canvas id="previewCanvas"></canvas>
-                    </div>
-
-                    <div class="file-info" id="fileInfo">
-                        No PDF selected
-                    </div>
-                </div>
-
-                <div class="options-box">
-                    <h3>Convert Options</h3>
-
-                    <label>Pages</label>
-                    <input 
-                        type="text" 
-                        id="pageInput" 
-                        placeholder="Example: all or 1-3, 5"
-                        value="all"
-                    >
-
-                    <small>
-                        This browser tool extracts selectable PDF text into rows. For scanned PDF, use OCR first.
-                    </small>
-
-                    <button id="convertBtn" class="main-btn">
-                        Convert & Download Excel
-                    </button>
-
-                    <label>Extracted Text Preview</label>
-                    <textarea 
-                        id="textPreview" 
-                        placeholder="Extracted text will appear here..."
-                    ></textarea>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
+<header class="topbar"><div class="logo">📄 PDFSmart Tools</div><a href="index.html" class="home-btn">← Back to Home</a></header>
+<main class="tool-layout">
+  <section class="converter-form">
+    <h1>PDF to Excel</h1>
+    <p>Upload a PDF to extract detected tables into an Excel workbook. Each detected table is placed in its own worksheet.</p>
+    <form action="https://pdfsmart-tools.onrender.com/convert" method="POST" enctype="multipart/form-data">
+      <label for="pdfFile"><strong>Choose a PDF file</strong></label>
+      <input id="pdfFile" type="file" name="pdfFile" accept="application/pdf,.pdf" required>
+      <button type="submit">Convert &amp; Download Excel</button>
+    </form>
+    <p class="note"><strong>Important:</strong> If the PDF contains no detected tables, readable text is exported by page instead. Scanned/image-only PDFs do not contain selectable text and may need OCR first. Check the Excel workbook before relying on its contents. Maximum upload size: 50 MB.</p>
+  </section>
+</main>
 <section class="seo-content">
-<h2>PDF to Excel Converter Online</h2>
-
-<p>
-Convert PDF tables and data into editable Excel spreadsheets online for free. Extract rows, columns and tabular data quickly.
-</p>
-
-<h3>How to Convert PDF to Excel?</h3>
-<ol>
-<li>Upload your PDF file.</li>
-<li>Select pages if needed.</li>
-<li>Click Convert.</li>
-<li>Download the Excel file.</li>
-</ol>
-
-<h3>Features</h3>
-<ul>
-<li>Convert PDF tables to Excel</li>
-<li>Editable spreadsheet output</li>
-<li>Fast online conversion</li>
-<li>No software required</li>
-</ul>
-
-<h3>FAQ</h3>
-<p><strong>Can tables be converted?</strong><br>Yes, table data is extracted into Excel format.</p>
-<p><strong>Is this free?</strong><br>Yes.</p>
+  <h2>How PDF to Excel conversion works</h2>
+  <ol><li>Select a text-based PDF from your device.</li><li>Choose Convert &amp; Download Excel.</li><li>Open the workbook and review each worksheet.</li><li>Compare important figures and rows with the source PDF before using the data.</li></ol>
+  <h2>What this converter can and cannot do</h2>
+  <p>The converter uses table detection to create separate worksheets. Table structure, merged cells, multi-column layouts and unusual fonts can affect extraction. If no table is detected, the tool places readable text lines into a worksheet with page numbers. It does not perform OCR on scanned pages, and it cannot guarantee a perfect match to the original layout.</p>
+  <h2>PDF to Excel questions</h2>
+  <p><strong>Will every PDF become a structured spreadsheet?</strong> No. The result depends on whether the PDF contains detectable tables. When tables are not found, readable text is exported as rows.</p>
+  <p><strong>Can I convert a scanned PDF?</strong> Not directly. Run OCR with a suitable tool first, then check the recognised text before conversion.</p>
+  <p><strong>Does the converter keep the original layout?</strong> No. It extracts data into worksheets; formatting and table structure may differ. Always verify important values.</p>
 </section>
-<script src="pdf-to-excel.js?v=20"></script>
-
 </body>
 </html>

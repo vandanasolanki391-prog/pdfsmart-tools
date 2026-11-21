@@ -1,146 +1,107 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to Word Converter Online Free - PDFSmart Tools</title>
-    <meta name="description" content="Extract selectable text from a PDF and export it to an editable Word document. Scanned PDFs require OCR before conversion.">
-    <link rel="stylesheet" href="tools-common.css">
-    <link rel="stylesheet" href="pdf-to-word.css?v=20">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/pdf-to-word.html"></head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDF to Word Converter Online Free - PDFSmart Tools</title>
+<meta content="Extract selectable text from PDF pages and download it in a Word-compatible DOC file. Original page layout is not preserved; scanned PDFs need OCR first." name="description"/>
+<link href="tools-common.css" rel="stylesheet"/>
+<link href="pdf-to-word.css?v=20" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<link href="https://pdfsmarttools.in/pdf-to-word.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
 <header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
+<div class="logo">📄 PDFSmart Tools</div>
+<a class="home-btn" href="index.html">← Back to Home</a>
 </header>
-
 <section class="tool-layout">
-
-    <div class="tool-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>PDF to Word</h1>
-            <p>Select PDF and convert readable text into Word format.</p>
-
-            <label for="pdfFile" class="upload-area">
-                <div class="upload-icon">📄</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one PDF file</p>
-            </label>
-
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>PDF to Word</h1>
-                    <p>Preview first page and export text as Word file.</p>
-                </div>
-
-                <label for="pdfFile" class="change-file-btn">
+<div class="tool-card">
+<div class="upload-section" id="uploadSection">
+<h1>PDF to Word</h1>
+<p>Select a PDF to extract selectable text into a Word-compatible DOC file.</p>
+<label class="upload-area" for="pdfFile">
+<div class="upload-icon">📄</div>
+<h2>Choose PDF File</h2>
+<p>Select one PDF file</p>
+</label>
+<input accept="application/pdf" id="pdfFile" type="file"/>
+</div>
+<div class="work-section" id="workSection" style="display:none;">
+<div class="work-header">
+<div>
+<h2>PDF to Word</h2>
+<p>Preview the first page and export extracted text. Original layout and formatting are not preserved.</p>
+</div>
+<label class="change-file-btn" for="pdfFile">
                     Change PDF
                 </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>PDF Preview</h3>
-
-                    <div class="pdf-preview">
-                        <canvas id="previewCanvas"></canvas>
-                    </div>
-
-                    <div class="file-info" id="fileInfo">
+</div>
+<div class="preview-options-grid">
+<div class="pdf-preview-box">
+<h3>PDF Preview</h3>
+<div class="pdf-preview">
+<canvas id="previewCanvas"></canvas>
+</div>
+<div class="file-info" id="fileInfo">
                         No PDF selected
                     </div>
-                </div>
-
-                <div class="options-box">
-                    <h3>Convert Options</h3>
-
-                    <label>Pages</label>
-                    <input 
-                        type="text" 
-                        id="pageInput" 
-                        placeholder="Example: all or 1-3, 5"
-                        value="all"
-                    >
-
-                    <small>
+</div>
+<div class="options-box">
+<h3>Convert Options</h3>
+<label>Pages</label>
+<input id="pageInput" placeholder="Example: all or 1-3, 5" type="text" value="all"/>
+<small>
                         This tool extracts selectable PDF text. For scanned PDFs, use OCR PDF first.
                     </small>
-
-                    <button id="convertBtn" class="main-btn">
-                        Convert & Download Word
+<button class="main-btn" id="convertBtn">
+                        Convert &amp; Download Word
                     </button>
-
-                    <label>Extracted Text Preview</label>
-                    <textarea 
-                        id="textPreview" 
-                        placeholder="Extracted text will appear here..."
-                    ></textarea>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
+<label>Extracted Text Preview</label>
+<textarea id="textPreview" placeholder="Extracted text will appear here..."></textarea>
+<div class="status-text" id="statusText"></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 
 <section class="seo-content">
-  <h2>PDF to Word Converter Online</h2>
-
-  <p>
-    Convert PDF files to editable Word documents online for free. Our PDF to Word converter helps you extract readable text from PDF files and download it in Word format.
+<h2>PDF to Word Converter Online</h2>
+<p>
+    This browser-based tool extracts selectable text from PDF pages and packages it in a Word-compatible DOC file. It does not recreate the original PDF layout, tables or images.
   </p>
-
-  <h3>How to Convert PDF to Word?</h3>
-  <ol>
-    <li>Upload your PDF file.</li>
-    <li>Select all pages or enter specific page numbers.</li>
-    <li>Click Convert & Download Word.</li>
-    <li>Download your editable Word file.</li>
-  </ol>
-
-  <h3>Features</h3>
-  <ul>
-    <li>Free PDF to Word conversion</li>
-    <li>Convert selected PDF pages</li>
-    <li>Preview extracted text</li>
-    <li>Works online in browser</li>
-    <li>No signup required</li>
-  </ul>
-
-  <h3>FAQ</h3>
-  <p><strong>Is this PDF to Word converter free?</strong><br>Yes, it is free to use.</p>
-  <p><strong>Can scanned PDF convert?</strong><br>For scanned PDF files, please use OCR PDF first.</p>
-  <p><strong>Can I convert selected pages?</strong><br>Yes, you can enter page numbers like 1-3, 5.</p>
+<h3>How to Convert PDF to Word?</h3>
+<ol>
+<li>Upload your PDF file.</li>
+<li>Select all pages or enter specific page numbers.</li>
+<li>Click Convert &amp; Download Word.</li>
+<li>Download the Word-compatible DOC file and review the extracted text.</li>
+</ol>
+<h3>Features</h3>
+<ul>
+<li>Free PDF to Word conversion</li>
+<li>Convert selected PDF pages</li>
+<li>Preview extracted text</li>
+<li>Works online in browser</li>
+<li>No signup required</li>
+</ul>
+<h3>FAQ</h3>
+<p><strong>Is this PDF to Word converter free?</strong><br/>Yes, it is free to use.</p>
+<p><strong>Can scanned PDF convert?</strong><br/>Scanned PDFs need OCR first. OCR accuracy depends on image quality and language.</p>
+<p><strong>Can I convert selected pages?</strong><br/>Yes. Enter page numbers such as 1-3, 5.</p>
 </section>
-
-
 <section class="related-content" style="max-width:900px;margin:30px auto;padding:24px;line-height:1.7;">
-    <h2>Helpful PDF Guides</h2>
-    <p>Explore our guides for practical tips on converting and managing PDF files.</p>
-    <ul>
-        <li><a href="blog/convert-pdf-to-word.html">How to Convert PDF to Word</a></li>
-        <li><a href="blog/merge-pdf-files-online.html">How to Merge PDF Files Online</a></li>
-        <li><a href="blog/compress-pdf-without-losing-quality.html">How to Compress PDF Without Losing Quality</a></li>
-        <li><a href="blog.html">View All PDF Guides</a></li>
-    </ul>
+<h2>Helpful PDF Guides</h2>
+<p>Explore our guides for practical tips on converting and managing PDF files.</p>
+<ul>
+<li><a href="blog/convert-pdf-to-word.html">How to Convert PDF to Word</a></li>
+<li><a href="blog/merge-pdf-files-online.html">How to Merge PDF Files Online</a></li>
+<li><a href="blog/compress-pdf-without-losing-quality.html">How to Compress PDF Without Losing Quality</a></li>
+<li><a href="blog.html">View All PDF Guides</a></li>
+</ul>
 </section>
-
-<script src="pdf-to-word.js?v=20"></script>    
-
+<script src="pdf-to-word.js?v=20"></script>
 </body>
 </html>

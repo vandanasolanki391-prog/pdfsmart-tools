@@ -1,125 +1,88 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR PDF - PDFSmart Tools</title>
-    <meta name="description" content="Use OCR to recognize text in scanned PDF pages with PDFSmart Tools. Recognition quality depends on scan clarity and document language.">
-
-    <link rel="stylesheet" href="tools-common.css">
-    <link rel="stylesheet" href="ocr-pdf.css?v=20">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://unpkg.com/tesseract.js@v5/dist/tesseract.min.js"></script>
-    <link rel="canonical" href="https://pdfsmarttools.in/ocr-pdf.html"></head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OCR PDF - PDFSmart Tools</title>
+<link href="tools-common.css" rel="stylesheet"/>
+<link href="ocr-pdf.css?v=20" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<meta content="Use OCR to recognise printed text in supported PDF pages. OCR accuracy depends on scan quality, language and page layout." name="description"/><link href="https://pdfsmarttools.in/ocr-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+</head>
 <body>
-
 <header class="topbar">
-    <div class="logo">📄 PDFSmart Tools</div>
-    <a href="index.html" class="home-btn">← Back to Home</a>
+<div class="logo">📄 PDFSmart Tools</div>
+<a class="home-btn" href="index.html">← Back to Home</a>
 </header>
-
 <section class="tool-layout">
-
-    <div class="tool-card">
-
-        <div id="uploadSection" class="upload-section">
-            <h1>OCR PDF</h1>
-            <p>Select scanned PDF and extract readable text.</p>
-
-            <label for="pdfFile" class="upload-area">
-                <div class="upload-icon">📤</div>
-                <h2>Choose PDF File</h2>
-                <p>Select one scanned PDF file</p>
-            </label>
-
-            <input type="file" id="pdfFile" accept="application/pdf">
-        </div>
-
-        <div id="workSection" class="work-section" style="display:none;">
-
-            <div class="work-header">
-                <div>
-                    <h1>OCR PDF</h1>
-                    <p>Preview first page and extract text using OCR.</p>
-                </div>
-
-                <label for="pdfFile" class="change-file-btn">
+<div class="tool-card">
+<div class="upload-section" id="uploadSection">
+<h1>OCR PDF</h1>
+<p>Select scanned PDF and extract readable text.</p>
+<label class="upload-area" for="pdfFile">
+<div class="upload-icon">📤</div>
+<h2>Choose PDF File</h2>
+<p>Select one scanned PDF file</p>
+</label>
+<input accept="application/pdf" id="pdfFile" type="file"/>
+</div>
+<div class="work-section" id="workSection" style="display:none;">
+<div class="work-header">
+<div>
+<h2>OCR PDF</h2>
+<p>Preview first page and extract text using OCR.</p>
+</div>
+<label class="change-file-btn" for="pdfFile">
                     Change PDF
                 </label>
-            </div>
-
-            <div class="preview-options-grid">
-
-                <div class="pdf-preview-box">
-                    <h3>PDF Preview</h3>
-
-                    <div class="pdf-preview">
-                        <canvas id="previewCanvas"></canvas>
-                    </div>
-
-                    <div class="file-info" id="fileInfo">
+</div>
+<div class="preview-options-grid">
+<div class="pdf-preview-box">
+<h3>PDF Preview</h3>
+<div class="pdf-preview">
+<canvas id="previewCanvas"></canvas>
+</div>
+<div class="file-info" id="fileInfo">
                         No PDF selected
                     </div>
-                </div>
-
-                <div class="options-box">
-                    <h3>OCR Options</h3>
-
-                    <label>Pages</label>
-                    <input 
-                        type="text" 
-                        id="pageInput" 
-                        placeholder="Example: all or 1-3, 5"
-                        value="1"
-                    >
-
-                    <small>
+</div>
+<div class="options-box">
+<h3>OCR Options</h3>
+<label>Pages</label>
+<input id="pageInput" placeholder="Example: all or 1-3, 5" type="text" value="1"/>
+<small>
                         OCR may take time. For faster result, scan selected pages only.
                     </small>
-
-                    <button id="ocrBtn" class="main-btn">
+<button class="main-btn" id="ocrBtn">
                         Run OCR
                     </button>
-
-                    <label>Extracted Text</label>
-                    <textarea 
-                        id="ocrOutput" 
-                        placeholder="OCR text will appear here..."
-                    ></textarea>
-
-                    <button id="copyBtn" class="secondary-btn">
+<label>Extracted Text</label>
+<textarea id="ocrOutput" placeholder="OCR text will appear here..."></textarea>
+<button class="secondary-btn" id="copyBtn">
                         Copy Text
                     </button>
-
-                    <button id="downloadTextBtn" class="secondary-btn">
+<button class="secondary-btn" id="downloadTextBtn">
                         Download Text File
                     </button>
-
-                    <div id="statusText" class="status-text"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<div class="status-text" id="statusText"></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section class="seo-content">
 <h2>OCR PDF Online</h2>
-
 <p>
 Convert scanned PDF files into searchable and selectable text using OCR technology.
 </p>
-
 <h3>How to Use OCR PDF?</h3>
 <ol>
 <li>Upload scanned PDF.</li>
 <li>Run OCR process.</li>
 <li>Download searchable PDF.</li>
 </ol>
-
 <h3>Features</h3>
 <ul>
 <li>Extract text from scanned PDFs</li>
@@ -127,11 +90,9 @@ Convert scanned PDF files into searchable and selectable text using OCR technolo
 <li>Fast OCR processing</li>
 <li>No installation required</li>
 </ul>
-
 <h3>FAQ</h3>
-<p><strong>Can scanned documents be converted?</strong><br>Yes.</p>
+<p><strong>Can scanned documents be converted?</strong><br/>Yes.</p>
 </section>
 <script src="ocr-pdf.js?v=20"></script>
-
 </body>
 </html>
