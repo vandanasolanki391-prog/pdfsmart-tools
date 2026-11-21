@@ -10,6 +10,14 @@
 <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <meta content="Convert supported Word documents to PDF in your browser. Review page breaks, fonts and layout in the downloaded PDF." name="description"/><link href="https://pdfsmarttools.in/word-to-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -22,7 +30,9 @@
 <h1>Word to PDF</h1>
 <p>Select Word file and convert it into PDF.</p>
 <label class="upload-area" for="wordFile">
-<div class="upload-icon">📝</div>
+<div class="upload-icon">📝
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose Word File</h2>
 <p>Select .docx file</p>
 </label>
@@ -88,5 +98,7 @@
 <p><strong>Will formatting remain same?</strong><br/>Most formatting is preserved, but it may vary slightly depending on the file.</p>
 </section>
 <script src="word-to-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

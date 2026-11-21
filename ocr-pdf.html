@@ -10,6 +10,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <meta content="Use OCR to recognise printed text in supported PDF pages. OCR accuracy depends on scan quality, language and page layout." name="description"/><link href="https://pdfsmarttools.in/ocr-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -22,7 +30,9 @@
 <h1>OCR PDF</h1>
 <p>Select scanned PDF and extract readable text.</p>
 <label class="upload-area" for="pdfFile">
-<div class="upload-icon">📤</div>
+<div class="upload-icon">📤
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose PDF File</h2>
 <p>Select one scanned PDF file</p>
 </label>
@@ -94,5 +104,7 @@ Convert scanned PDF files into searchable and selectable text using OCR technolo
 <p><strong>Can scanned documents be converted?</strong><br/>Yes.</p>
 </section>
 <script src="ocr-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

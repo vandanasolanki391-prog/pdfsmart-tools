@@ -9,6 +9,14 @@
 <link href="unlock-pdf.css?v=20" rel="stylesheet"/>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <meta content="Remove password protection from a PDF when you know the document password and are authorised to access the file." name="description"/><link href="https://pdfsmarttools.in/unlock-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -21,7 +29,9 @@
 <h1>Unlock PDF</h1>
 <p>Select PDF file and try to remove simple restrictions.</p>
 <label class="upload-area" for="pdfFile">
-<div class="upload-icon">🔓</div>
+<div class="upload-icon">🔓
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose PDF File</h2>
 <p>Select one PDF file</p>
 </label>
@@ -87,5 +97,7 @@ Remove PDF password protection online and access your PDF documents easily.
 <p><strong>Is it secure?</strong><br/>Yes.</p>
 </section>
 <script src="unlock-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

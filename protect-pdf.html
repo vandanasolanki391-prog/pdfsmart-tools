@@ -9,6 +9,14 @@
 <link href="protect-pdf.css?v=20" rel="stylesheet"/>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <meta content="Encrypt a PDF with a password so a reader must enter it to open the file. Test the downloaded PDF in a separate PDF reader." name="description"/><link href="https://pdfsmarttools.in/protect-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -21,7 +29,9 @@
 <h1>Protect PDF</h1>
 <p>Select a PDF and encrypt it with a password required to open the downloaded file.</p>
 <label class="upload-area" for="pdfFile">
-<div class="upload-icon">🔒</div>
+<div class="upload-icon">🔒
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose PDF File</h2>
 <p>Select one PDF file</p>
 </label>
@@ -31,7 +41,7 @@
 <div class="work-header">
 <div>
 <h2>Lock PDF</h2>
-<p>Browser-only password locking is limited. This tool adds lock information page.</p>
+<p>This tool applies password encryption to your PDF on our server. Choose a password of at least 8 characters.</p>
 </div>
 <label class="change-file-btn" for="pdfFile">
                     Change PDF
@@ -44,7 +54,7 @@
                         No PDF selected
                     </div>
 <small>
-                        Real password encryption usually needs server-side processing.
+                        Your PDF is sent to our server for encryption. Download the protected copy and test it in a separate PDF reader.
                     </small>
 </div>
 <div class="options-box">
@@ -89,5 +99,7 @@ Encrypt a PDF with a password required to open it. Choose a strong password and 
 <p><strong>Will the PDF remain secure?</strong><br/>The tool applies PDF password encryption. Reopen the downloaded file in a separate PDF reader to verify that it asks for the password.</p>
 </section>
 <script src="protect-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

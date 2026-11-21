@@ -9,6 +9,14 @@
 <link href="jpg-to-pdf.css?v=20" rel="stylesheet"/>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <link href="https://pdfsmarttools.in/jpg-to-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -21,7 +29,9 @@
 <h1>JPG to PDF</h1>
 <p>Select JPG / PNG images and convert them into one PDF.</p>
 <label class="upload-area" for="imageFiles">
-<div class="upload-icon">🖼️</div>
+<div class="upload-icon">🖼️
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose Images</h2>
 <p>Select multiple JPG / PNG files</p>
 </label>
@@ -93,5 +103,7 @@ Convert JPG images to PDF online for free. Combine one or multiple JPG files int
 <p><strong>Is image quality preserved?</strong><br/>Yes, original quality is maintained as much as possible.</p>
 </section>
 <script src="jpg-to-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

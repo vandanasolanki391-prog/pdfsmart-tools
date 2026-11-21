@@ -10,6 +10,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <meta content="Extract selectable text or run English OCR from PDF pages, then use the limited Gujarati or Hindi word-translation feature. Review results before relying on them." name="description"/><link href="https://pdfsmarttools.in/translate-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -22,7 +30,9 @@
 <h1>Translate PDF</h1>
 <p>Select a PDF page, recognise text with English OCR and apply a limited word-substitution translation.</p>
 <label class="upload-area" for="pdfFile">
-<div class="upload-icon">🌐</div>
+<div class="upload-icon">🌐
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose PDF File</h2>
 <p>Select one PDF file</p>
 </label>
@@ -98,5 +108,7 @@
 </ul>
 </section>
 <script src="translate-pdf.js?v=20"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

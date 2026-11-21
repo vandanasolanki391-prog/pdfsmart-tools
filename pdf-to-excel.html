@@ -20,6 +20,14 @@
     @media(max-width:600px){.converter-form{padding:22px}}
   </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar"><div class="logo">📄 PDFSmart Tools</div><a href="index.html" class="home-btn">← Back to Home</a></header>
@@ -45,5 +53,7 @@
   <p><strong>Can I convert a scanned PDF?</strong> Not directly. Run OCR with a suitable tool first, then check the recognised text before conversion.</p>
   <p><strong>Does the converter keep the original layout?</strong> No. It extracts data into worksheets; formatting and table structure may differ. Always verify important values.</p>
 </section>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>

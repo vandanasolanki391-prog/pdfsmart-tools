@@ -10,6 +10,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <meta content="Reorder PDF pages and arrange a document before downloading. Check the final page order after processing." name="description"/><link href="https://pdfsmarttools.in/organize-pdf.html" rel="canonical"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6167762191554858" crossorigin="anonymous"></script>
+
+<style id="pdfsmart-drag-drop-styles">
+.file-drop-zone { transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.drop-hint { margin-top: 8px; font-size: .9em; opacity: .78; }
+.file-drop-zone.file-drag-active { border: 2px dashed #2563eb !important; background: #eff6ff !important; box-shadow: 0 0 0 4px rgba(37,99,235,.10); }
+.file-drop-zone.file-drag-active * { pointer-events: none; }
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -22,7 +30,9 @@
 <h1>Organize PDF</h1>
 <p>Select PDF files and rearrange or remove pages.</p>
 <label class="upload-area" for="pdfFile">
-<div class="upload-icon">🗂️</div>
+<div class="upload-icon">🗂️
+<p class="drop-hint">Or drag and drop your file here</p>
+</div>
 <h2>Choose PDF Files</h2>
 <p>Select one or multiple PDF files</p>
 </label>
@@ -71,5 +81,7 @@
 </ul>
 </section>
 <script src="organize-pdf.js?v=21"></script>
+
+<script src="upload-drag.js?v=27"></script>
 </body>
 </html>
